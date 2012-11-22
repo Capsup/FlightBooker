@@ -32,11 +32,11 @@ public class Database
         } 
 		catch( ClassNotFoundException e )
         {
-	        e.printStackTrace();
+	        System.out.println( "Driver could not be loaded. Error: " + e );
         }
 		catch( SQLException e )
 		{
-			System.out.println( "Connection could not be established. Error: " + e. )
+			System.out.println( "Connection could not be established. Error: " + e );
 		}
 	}
 	
