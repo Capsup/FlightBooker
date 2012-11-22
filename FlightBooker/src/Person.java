@@ -1,5 +1,5 @@
 
-public class Customer {
+public class Person {
 
 	private String firstName;
 	private String surName;
@@ -13,9 +13,9 @@ public class Customer {
 	private int customerID;
 
 	/*
-	 * Opretter en ny Customer og initialiserer alle dets felter.
+	 * Opretter en ny Person og initialiserer alle dets felter.
 	 */
-	public Customer(String firstName, String surName, String gender, String dateOfBirth, String country,
+	public Person(String firstName, String surName, String gender, String dateOfBirth, String country,
 			String nationality, String adress, String phone, String passportNumber, int customerID)
 	{
 		this.firstName = firstName;
