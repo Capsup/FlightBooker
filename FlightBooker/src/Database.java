@@ -1,7 +1,9 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+
+import java.sql.Statement;
 
 
 public class Database
@@ -40,8 +42,22 @@ public class Database
 		}
 	}
 	
-	public void executeQuery( String sQuery )
+	public ResultSet executeQuery( String sQuery )
 	{
-		
+		try
+		{
+    		if( !connection.isValid( 1 ))
+    			connectToDatabase();
+    		Statement statement = connection.createStatement();
+    		boolean bSuccess = statement.execute( sQuery );
+    		
+    		if( bSuccess )
+    			return( statement.getResultSet() );
+		}
+		catch( SQLException e )
+		{
+			System.out.println( "Query failed to execute. Error: " + e );
+		}
+		return null;
 	}
 }
