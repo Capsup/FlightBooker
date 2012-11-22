@@ -14,10 +14,12 @@ public class Customer {
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
+		
 		if(male)
 			sex = "Male";
-			else 
-				sex = "Female";
+		else 
+			sex = "Female";
+		
 		this.CPRnumber = CPRnumber;
 		this.passportNumber = passportNumber;
 		this.birthDate = birthDate;
