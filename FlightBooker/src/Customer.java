@@ -2,26 +2,34 @@
 public class Customer {
 
 	private String firstName;
-	private String lastName;
-	private String sex;
-	private String CPRnumber;
+	private String surName;
+	private String gender;
+	private String dateOfBirth;
+	private String country;
+	private String nationality;
+	private String adress;
+	private String phone;
 	private String passportNumber;
-	private String birthDate;
 	private int customerID;
-	private boolean isGay;	
-	
-	public Customer(String firstName, String lastName, boolean male, String CPRnumber, String passportNumber, String birthDate, int customerID, boolean isGay)
+
+	/*
+	 * Opretter en ny Customer og initialiserer alle dets felter.
+	 */
+	public Customer(String firstName, String surName, String gender, String dateOfBirth, String country,
+			String nationality, String adress, String phone, String passportNumber, int customerID)
 	{
 		this.firstName = firstName;
-		this.lastName = lastName;
-		if(male)
-			sex = "Male";
-			else 
-				sex = "Female";
-		this.CPRnumber = CPRnumber;
+		this.surName = surName;
+		this.gender = gender;		
+		this.dateOfBirth = dateOfBirth;
+		this.country = country;
+		this.nationality = nationality;
+		this.adress = adress;
+		this.phone = phone;
 		this.passportNumber = passportNumber;
-		this.birthDate = birthDate;
 		this.customerID = customerID;			
 	}
-	
+
+
+
 }
