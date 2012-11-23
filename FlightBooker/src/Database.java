@@ -1,3 +1,4 @@
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -60,4 +61,57 @@ public class Database
 		}
 		return null;
 	}
+	
+	public boolean AddValue( String sTable, String... args )
+	{
+		//String[] sVarArgs = args;
+		ResultSet result = executeQuery( "SELECT * FROM " + sTable );
+		
+		if( result == null )
+		{
+			System.out.println( "Selection query failed." );
+			return false;
+		}
+		
+		try
+        {
+	        if( args.length != result.getMetaData().getColumnCount() )
+	        {
+	        	throw new InvalidParameterException( "Amount of arguments not equal to amount of columns." );
+	        }
+        } 
+		catch( SQLException e )
+        {
+	        System.out.println( "Database error: " + e );
+	        return false;
+        }
+		
+		StringBuilder sStr = new StringBuilder();
+		
+		for( int i = 0; i < args.length; i++ )
+			sStr.append( i == 0 ? "" : ", " ).append( "'" ).append( args[i] ).append("'");
+		
+		result = executeQuery( "INSERT INTO " + sTable + " VALUES(" + sStr.toString() + ")" );
+		
+		try
+        {
+	        if( result.next() )
+	        {
+	        	return true;
+	        }
+        } 
+		catch( SQLException e )
+        {
+	        System.out.println( "Insertion into database failed. Error: " + e);
+	        return false;
+        }
+		return false;
+	}
+	
+	public void UpdateValue( String sTable, String... args )
+	{
+		
+	}
+	
+	
 }
