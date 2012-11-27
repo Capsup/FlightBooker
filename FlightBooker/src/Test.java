@@ -10,9 +10,6 @@ public class Test
 	public static void main( String[] args )
 	{
 		MainMenu frame = new MainMenu();
-
-		
-		System.out.println("Jesper is da shizzesdfvgleleeleer");
 	}
 
 }
