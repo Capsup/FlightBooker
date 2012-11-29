@@ -1,15 +1,12 @@
 import javax.swing.JFrame;
 
-
-public class Test
+public class Main
 {
-
 	/**
 	 * @param args
 	 */
 	public static void main( String[] args )
 	{
-		MainMenu frame = new MainMenu();
+		FlightInfoWindow frame = new FlightInfoWindow();
 	}
-
 }
