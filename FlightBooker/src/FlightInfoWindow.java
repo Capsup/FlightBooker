@@ -1,19 +1,30 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
+
 
 public class FlightInfoWindow extends JFrame {
 	
-	private static FlightInfoWindow instance = null;
+	private FlightInfoWindow instance = null;
 
+	private BufferedImage img; 
+	
 	public FlightInfoWindow(/* flight id */)
 	{
+		loadImage(img, "pictures/747-test.jpg");
+		
 		setFrame();
 		makeContent();
 		this.setVisible(true);
 
 		//Spawner rammen midt på skærmen
 		this.setLocationRelativeTo(null);
+		
 	}
 	
 	class ButtonListener implements ActionListener
@@ -43,7 +54,7 @@ public class FlightInfoWindow extends JFrame {
 	private void setFrame()
 	{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setSize(200, 250);
+		this.setSize(700, 120);
 		this.setResizable(false);
 		this.setTitle("Flight Info FLIGHTID");
 		
@@ -60,11 +71,27 @@ public class FlightInfoWindow extends JFrame {
 	private void makeContent()
 	{
 		Container contentPane = this.getContentPane();    
-		this.setLayout(new BorderLayout());
-
+		
+		this.setLayout(new FlowLayout());
+		
+		JPanel west = new JPanel();
+		
+		try{
+			west = new JPanelWithBackground("/images/aww yeah2.png");
+			
+			west.setPreferredSize(new Dimension(100,100));
+			
+			west.paintComponents(west.getGraphics());
+			
+		}
+		catch(IOException e){
+		}
+		
 		//Laver et JPanel kaldet buttons
 		JPanel buttons = new JPanel();
-		buttons.setLayout(new FlowLayout(FlowLayout.CENTER,5,15));
+		
+		//JPanel buttons = new JPanelWithBackground("/images/aww yeah.png");
+		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
 
 		//Laver knapper
 		JButton bNewReservation = new JButton("New reservation");
@@ -86,12 +113,29 @@ public class FlightInfoWindow extends JFrame {
 		//Tilføjer knapperne til panelet buttons
 		buttons.add(bNewReservation);
 		buttons.add(bInspectReservations);
-		buttons.add(bOK);        
-
-		contentPane.add(buttons, BorderLayout.CENTER);
+		buttons.add(bOK);
+		
+		JPanel east = new JPanel();
+		
+		try{
+			east = new JPanelWithBackground("/images/aww yeah2.png");
+			
+			east.setPreferredSize(new Dimension(100,100));
+			
+			east.paintComponents(east.getGraphics());
+			
+		}
+		catch(IOException e){
+		}
+		
+		contentPane.add(west, FlowLayout.LEFT);
+		
+		contentPane.add(buttons, FlowLayout.CENTER);
+		
+		contentPane.add(east, FlowLayout.RIGHT);
 	}
 	
-	public static FlightInfoWindow getInstance() {
+	public FlightInfoWindow getInstance() {
 		if(instance == null) {
 			instance = new FlightInfoWindow();
 			
@@ -113,6 +157,12 @@ public class FlightInfoWindow extends JFrame {
 	{
 		instance.dispose();
 		instance = null;
+	}
+	
+	private void loadImage(Image img, String path)
+	{
+		
+		
 	}
 
 }
