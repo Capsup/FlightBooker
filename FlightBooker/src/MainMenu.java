@@ -9,6 +9,8 @@ public class MainMenu extends JFrame {
 		setFrame();
 		makeContent();
 		this.setVisible(true);
+		
+		//Behøver kun næste linje, hvis en fast størrelse på skærmen ikke sættes
 		//this.pack();
 
 		//Spawner rammen midt på skærmen

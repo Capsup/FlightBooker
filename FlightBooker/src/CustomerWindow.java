@@ -1,8 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.*;
+
 /*
  * CustomerWindow er vinduet hvor der kan søges efter kunder
  */
@@ -28,8 +28,8 @@ public class CustomerWindow extends JFrame {
 	{
 		//Laver en dialogboks, hvor der skal vælges kundetype
 		new NewOrExistDialog();	
-		//Dialogen skal åbne samme vindue, skal hente eksisterendes kundeinfo ind i vinduet
 
+		//Dialogen skal åbne samme vindue, skal hente eksisterendes kundeinfo ind i vinduet
 		setFrame();		
 		makeContent();
 		this.setVisible(true);
@@ -121,22 +121,50 @@ public class CustomerWindow extends JFrame {
 	{
 		public NewOrExistDialog()
 		{
-			Object[] options = {"New customer",	"Existing customer"};
+			JPanel popupPanel = new JPanel();
+			ButtonGroup buttonMenu = new ButtonGroup();
+			JRadioButtonMenuItem newCus = new JRadioButtonMenuItem("New Customer", false);
+			JRadioButtonMenuItem exisCus = new JRadioButtonMenuItem("Existing Customer", true);
+
+			buttonMenu.add(newCus);
+			buttonMenu.add(exisCus);
+
+			popupPanel.add(newCus);
+			popupPanel.add(exisCus);			
+
+			Object[] options = {newCus, exisCus};
+
+			int n = JOptionPane.showOptionDialog(instance,
+					popupPanel,
+					"Customer type",
+					JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					null, null);
+
+			/*			Object[] options = {"New customer",	"Existing customer"};
 			int n = JOptionPane.showOptionDialog(instance,
 					"New or existing customer?",
 					"Customer type",
 					JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
 					null,
-					options, options);
+					options, options);*/		
+
 
 			//addWindowListener(new CloseListener());
 			//Hvis der skal laves en ny kunde
-			if(n == 1)
+			if(n == 0)
 			{
-				System.out.println("Existing customer");
+				System.out.println("OK");
 				//Her indsættes databasekode, der henter kundedata
 			}			
+
+			if(n == 2)
+			{
+				System.out.println("Cancel");
+				close();
+			}
 		}
 	}
 
@@ -152,13 +180,7 @@ public class CustomerWindow extends JFrame {
 				surName.getText() + " - " + customerID.getText());		
 
 		//Tilføjer listener til rammen, der tjekker om vinduet lukkes
-		this.addWindowListener( 
-				new WindowAdapter() { 
-					public void windowClosing(WindowEvent e) { 
-						close(); 
-					} 
-				} 
-				);
+		this.addWindowListener(new CloseListener());
 	}
 
 	/*
@@ -208,14 +230,14 @@ public class CustomerWindow extends JFrame {
 
 		for(String label : reservationLabelStrings)
 			reservationLabels.add(new JLabel(label));
-		
+
 		reservationsOverview.add(reservationLabels);
-		
+
 		TitledBorder reservationsBorder = BorderFactory.createTitledBorder("Reservations");		
 		reservationsOverview.setBorder(reservationsBorder);
-		
+
 		//Gridlayout in a gridlayout til at lave et grid til reservationerne
-		
+
 		// 5x1 i et 
 
 		//Laver knapper
@@ -284,7 +306,6 @@ public class CustomerWindow extends JFrame {
 		reservationPanel.setLayout(new BorderLayout());
 		reservationPanel.add(reservationsOverview,BorderLayout.CENTER);
 		reservationPanel.add(buttons2,BorderLayout.SOUTH);
-
 
 		TitledBorder customerBorder = BorderFactory.createTitledBorder("Customer details");
 		infoPanel.setBorder(customerBorder);
