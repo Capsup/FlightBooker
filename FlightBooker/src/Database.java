@@ -20,6 +20,7 @@ public class Database
 	{
 		if( instance != null )
 			return( instance );
+		
 		return( new Database() );
 	}
 
@@ -29,9 +30,11 @@ public class Database
 		{
 			// Load the driver
 			Class.forName( "com.mysql.jdbc.Driver" );
+			
 			// Get instance of connection
 			connection = DriverManager.getConnection( "jdbc:mysql://mysql.itu.dk/FlightBooker", "flightbooker",
 			        "flightbooking" );
+			
 		} catch( ClassNotFoundException e )
 		{
 			System.out.println( "Driver could not be loaded. Error: " + e );
@@ -47,12 +50,16 @@ public class Database
 		{
 			if( connection == null || !connection.isValid( 1 ) )
 				connectToDatabase();
+			
 			Statement statement = connection.createStatement();
-			if( sQuery.contains( "UPDATE" ) )
+			
+			//DEBUG:
+			/*if( sQuery.contains( "UPDATE" ) )
 			{
 				@SuppressWarnings( "unused" )
 				boolean t = true;
-			}
+			}*/
+			
 			if( sQuery.contains( "SELECT" ) )
 			{
 				boolean bSuccess = statement.execute( sQuery );
@@ -82,7 +89,6 @@ public class Database
 
 	public boolean AddValue( String sTable, String... args )
 	{
-		// String[] sVarArgs = args;
 		ResultSet result = executeQuery( "SELECT * FROM " + sTable );
 
 		if( result == null )
@@ -146,8 +152,6 @@ public class Database
 		return false;
 	}
 
-	
-	
 	public boolean UpdateValue( String sTable, int ID, String... args )
 	{
 		if( args.length % 2 != 0 )
@@ -156,9 +160,6 @@ public class Database
 		}
 		
 		StringBuilder sValuesBuilder = new StringBuilder();
-		
-		/*for( int i = 0; i < args.length; i+=2 )
-			sValuesBuilder.append( i == 0 ? "" : " AND " ).append( args[i] ).append( "=" ).append( "'" ).append( args[i+1] ).append( "'" );*/
 		
 		for( int i = 0; i < args.length; i+=2 )
 			sValuesBuilder.append( i == 0 ? "" : ", " ).append( args[i] ).append( "=" ).append( "'" ).append( args[i+1] ).append( "'" );
@@ -174,26 +175,19 @@ public class Database
 		return false;
 	}
 	
-	/*UpdateValue( "persons", "5", "name", "Jørgen", "age", "78", "reservations", "1")
-	
-	void UpdateValue(String tableName, String currentId, String... args)
-	{
-		UPDATE persons SET 'name=jørgen' WHERE id=currentId;
-	}*/
-	
 	public boolean DeleteValue( String sTable, String... args )
 	{
 		if( args.length % 2 != 0 )
 		{
 			throw new InvalidParameterException( "Arguments are not in pairs." );
 		}
-		
-		StringBuilder sValuesBuilder = new StringBuilder();
+
+		String sValue = "";
 		
 		for( int i = 0; i < args.length; i+=2 )
-			sValuesBuilder.append( i == 0 ? "" : " AND " ).append( args[i] ).append( "=" ).append( "'" ).append( args[i+1] ).append( "'" );
+			sValue = (i == 0 ? "" : " AND ") + args[i] + "=" + "'" + args[i + 1] + "'";
 		
-		ResultSet result = executeQuery( "DELETE FROM " + sTable + " WHERE " + sValuesBuilder );
+		ResultSet result = executeQuery( "DELETE FROM " + sTable + " WHERE " + sValue );
 		
 		if( result != null )
 		{
