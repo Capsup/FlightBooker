@@ -23,7 +23,9 @@ public class FindFlightWindow extends JFrame {
 		public void actionPerformed(ActionEvent event)
 		{
 			System.out.println("Inspect flight");
-			FlightInfoWindow.getInstance();
+			new FlightInfoWindow();
+			
+			//FlightInfoWindow.getInstance();
 		}
 	}
 	
