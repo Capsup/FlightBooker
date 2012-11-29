@@ -11,5 +11,4 @@ public class Test
 	{
 		MainMenu frame = new MainMenu();
 	}
-
 }
