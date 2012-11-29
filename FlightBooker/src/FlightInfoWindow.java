@@ -6,7 +6,7 @@ public class FlightInfoWindow extends JFrame {
 	
 	private static FlightInfoWindow instance = null;
 
-	private FlightInfoWindow(/* flight id */)
+	public FlightInfoWindow(/* flight id */)
 	{
 		setFrame();
 		makeContent();
@@ -94,9 +94,17 @@ public class FlightInfoWindow extends JFrame {
 	public static FlightInfoWindow getInstance() {
 		if(instance == null) {
 			instance = new FlightInfoWindow();
+			
+			return instance;
 		}
-		return instance;
+		else
+		{
+			return null;
+		}
+		
+		
 	}
+	
 	
 	/*
 	 * Fjerner rammen og sætter instance til null
