@@ -47,8 +47,20 @@ public class MainMenu extends JFrame {
 		//Tilføjer listener til rammen, der tjekker om vinduet lukkes
 		this.addWindowListener( 
 				new WindowAdapter() { 
-					public void windowClosing(WindowEvent e) { 
-						exitDialog(); 
+					public void windowClosing(WindowEvent e) {
+
+						Window[] allWindows = Window.getWindows();
+						int openWindows = 0;
+						for(Window currentWindow : allWindows)
+							if(currentWindow.isVisible())
+								openWindows++;
+						
+						if(openWindows > 1)
+							exitDialog(); 
+						
+						else {
+							System.exit(0);
+						}
 					} 
 				} 
 				);
@@ -102,7 +114,7 @@ public class MainMenu extends JFrame {
 	{
 		int n = JOptionPane.showConfirmDialog(this.getContentPane(), "This program will now close. Any changes not saved, will be discarded. Exit?",
 				"Exit?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-		
+
 		//If "Yes" is chosen
 		if(n == 0){
 			System.exit(0);

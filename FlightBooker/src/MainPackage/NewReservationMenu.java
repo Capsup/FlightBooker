@@ -35,6 +35,8 @@ public class NewReservationMenu
 				break;
 			case "Inspect Reservation": 	
 				System.out.println("MEH!");
+				Window[] allWindows = Window.getWindows();
+				System.out.println(allWindows.length);
 				break;
 			
 			}
