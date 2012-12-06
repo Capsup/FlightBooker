@@ -26,7 +26,7 @@ public class MainMenu extends JFrame {
 				new NewReservationMenu(new JFrame());
 				break;
 
-			case "Find...":
+			case "Find":
 				new FindDialog();
 				break;
 			}
