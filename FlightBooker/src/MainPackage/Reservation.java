@@ -27,7 +27,19 @@ public class Reservation
 	//Returns an array of Persons containing the passengers of the reservation.
 	public Passenger[] getPassengers()
 	{
-		return passengerArray;
+		if(passengerArray != null)
+		{
+			return passengerArray;
+		}
+		else
+		{
+			return null;	
+		}
+	}
+	
+	public void setPassengers(Passenger[] passengers)
+	{
+		passengerArray = passengers;
 	}
 	
 	//Returns the Date object of the flight.
@@ -35,4 +47,10 @@ public class Reservation
 	{
 		return flight.getDate();
 	}
+	
+	public void setFlight(Flight flight)
+	{
+		this.flight = flight;
+	}
+	
 }

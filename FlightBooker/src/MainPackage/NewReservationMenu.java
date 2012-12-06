@@ -2,9 +2,14 @@ package MainPackage;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 
 import MainPackage.MainMenu.ButtonListener;
 import MainPackage.Plane.PlaneType;
@@ -14,13 +19,33 @@ public class NewReservationMenu
 	private JFrame frame;
 	private JPanel mainPanel;
 	
+	private Dimension frameSize = new Dimension(600, 800);
+	
+	private Reservation currentReservation;
+	private Flight currentFlight;
+	private Passenger[] currentPassengers;
+	
+	private JFormattedTextField seatAmountLabel;
+	
+	private PlanePanel planePanel;
+	
 	public NewReservationMenu(JFrame frame)
 	{
 		this.frame = frame;
 		
+		initializeReservation();
+		
 		setupFrame();
 		
 		makeContent();
+		
+		//Test
+		currentPassengers = new Passenger[10];
+		
+		for(int i=0; i<currentPassengers.length; i++)
+			currentPassengers[i] = new Passenger(null, null);
+		
+		updateReservation();
 	}
 	
 	class ButtonListener implements ActionListener
@@ -41,9 +66,20 @@ public class NewReservationMenu
 		}
 	}
 	
+	class TextListener implements PropertyChangeListener
+	{
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) 
+		{
+			updateReservation();
+			
+			updateFlightPanel();
+		}
+	}
+	
 	private void setupFrame()
 	{
-		frame.setSize(400, 600);
+		frame.setSize(frameSize.width, frameSize.height);
 		frame.setResizable(false);
 		frame.setTitle("Passenger Manager");
 		frame.setLocationRelativeTo(null);
@@ -64,12 +100,27 @@ public class NewReservationMenu
 		
 			//Top Title
 		JPanel topTitlePanel = new JPanel();
-		topTitlePanel.setLayout(new BoxLayout(topTitlePanel, BoxLayout.Y_AXIS));
+		//topTitlePanel.setLayout(new BoxLayout(topTitlePanel, BoxLayout.Y_AXIS));
+		topTitlePanel.setLayout(null);
+		topTitlePanel.setPreferredSize(new Dimension(100, (frameSize.height/6)));
+		
+		Insets insets = topTitlePanel.getInsets();
 		
 		JLabel startDateTitleLabel = new JLabel("Start Date");
-		JLabel endDateTitleLabel = new JLabel("Start Date");
+		//startDateTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
+		startDateTitleLabel.setBounds(insets.left, insets.top, 100, 25);
+		
+		JLabel endDateTitleLabel = new JLabel("End Date");
+		//endDateTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
+		endDateTitleLabel.setBounds(insets.left, insets.top+((frameSize.height/6)/4), 100, 25);
+		
 		JLabel destinationTitleLabel = new JLabel("Destination");
+		//destinationTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
+		destinationTitleLabel.setBounds(insets.left, insets.top+((frameSize.height/6)/4)*2, 100, 25);
+		
 		JLabel seatAmountTitleLabel = new JLabel("Seat Amount");
+		//seatAmountTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
+		seatAmountTitleLabel.setBounds(insets.left, insets.top+((frameSize.height/6)/4)*3, 100, 25);
 		
 		topTitlePanel.add(startDateTitleLabel);
 		topTitlePanel.add(endDateTitleLabel);
@@ -81,16 +132,27 @@ public class NewReservationMenu
 		topParameterPanel.setLayout(new BoxLayout(topParameterPanel, BoxLayout.Y_AXIS));
 		
 		JTextField startDateLabel = new JTextField();
-		startDateLabel.setPreferredSize(new Dimension(100,15));
+		startDateLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
 		
 		JTextField endDateLabel = new JTextField();
-		endDateLabel.setPreferredSize(new Dimension(100,15));
+		endDateLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
 		
 		JTextField destinationLabel = new JTextField();
-		destinationLabel.setPreferredSize(new Dimension(100,15));
+		destinationLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
 		
-		JTextField seatAmountLabel = new JTextField();
-		seatAmountLabel.setPreferredSize(new Dimension(100,15));
+		//SKAL KUN VÆRE TAL
+		seatAmountLabel = new JFormattedTextField();
+		try 
+		{
+			seatAmountLabel = new JFormattedTextField(new MaskFormatter("#"));
+		} 
+		catch (ParseException e) {
+			System.out.println("FUCK TRY/CATCH");
+		}
+		
+		seatAmountLabel.addPropertyChangeListener(new TextListener());
+		
+		seatAmountLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
 		
 		topParameterPanel.add(startDateLabel);
 		topParameterPanel.add(endDateLabel);
@@ -106,10 +168,10 @@ public class NewReservationMenu
 		
 		JList viewedList = new JList();
 		
-		viewedList.setPreferredSize(new Dimension(370,1000));
+		viewedList.setPreferredSize(new Dimension(frameSize.width-50,1000));
 		
 		JScrollPane scrollPane = new JScrollPane(viewedList);
-		scrollPane.setPreferredSize(new Dimension(390, 275));
+		scrollPane.setPreferredSize(new Dimension(frameSize.width, frameSize.height/3));
 		middlePanel.add(scrollPane);
 		
 		//Bottom
@@ -119,7 +181,14 @@ public class NewReservationMenu
 		bottomPanel.setBorder(BorderFactory.createEtchedBorder(1));
 		
 			//Plane Panel
-		PlanePanel planePanel = new PlanePanel(new Plane(PlaneType.BOEING747));
+		//Test
+		Flight testFlight = new Flight(new Date(), new Plane(PlaneType.BOEING737));
+		
+		planePanel = new PlanePanel(testFlight, currentReservation, new Dimension(frameSize.width, frameSize.height/2));
+		
+		//Final
+		//PlanePanel planePanel = new PlanePanel(currentFlight, new Dimension(frameSize.width, frameSize.height/2));
+		
 		
 			//Button Panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -149,6 +218,7 @@ public class NewReservationMenu
 		inspectReservationButton.addActionListener(listener);
 		
 		update();
+		updateReservation();
 	}
 	
 	private void update()
@@ -156,4 +226,80 @@ public class NewReservationMenu
 		frame.setVisible(true);
 	}
 	
+	private void initializeReservation()
+	{
+		currentReservation = new Reservation(null, null, null, new Passenger[5]);
+		
+		Passenger[] passengerArray = currentReservation.getPassengers();
+		
+		for(int i=0; i<passengerArray.length; i++)
+		{
+			passengerArray[i] = new Passenger(null, null);
+		}
+		
+		
+		currentReservation.setPassengers(passengerArray);
+		
+	
+	}
+	
+	private void updateReservation()
+	{
+		currentReservation.setFlight(currentFlight);
+		
+		updatePassengers();
+	}
+	
+	private void updatePassengers()
+	{
+		int amount = 0;
+		
+		if(seatAmountLabel.getValue() != null)
+		{
+			amount = Integer.parseInt((String)seatAmountLabel.getValue());
+		}
+		
+		if( amount == 0 )
+			return;
+		
+		Passenger[] passengerArray = new Passenger[amount];
+		
+		
+		for(int i=0; i<passengerArray.length; i++)
+		{
+			if(i < currentReservation.getPassengers().length)
+			{
+				if(currentReservation.getPassengers()[i] != null)
+				{
+					passengerArray[i] = currentReservation.getPassengers()[i];
+				}
+				else
+				{
+					passengerArray[i] = new Passenger(null, null);
+				}
+			}
+			else 
+			{
+				passengerArray[i] = new Passenger(null, null);
+			}
+		}
+		
+		if(currentReservation.getPassengers().length > passengerArray.length)
+		{
+			int start = passengerArray.length;
+			
+			for(int i=start; i < currentReservation.getPassengers().length; i++)
+			{	
+				currentReservation.getPassengers()[i].getSeat().changeBookingStatus(false);
+			}
+		}
+		
+		currentReservation.setPassengers(passengerArray);
+	}
+	
+	void updateFlightPanel()
+	{
+		if(planePanel != null)
+			planePanel.updateSeats();
+	}
 }
