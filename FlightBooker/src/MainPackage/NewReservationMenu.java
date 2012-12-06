@@ -19,7 +19,7 @@ public class NewReservationMenu
 	private JFrame frame;
 	private JPanel mainPanel;
 	
-	private Dimension frameSize = new Dimension(600, 800);
+	private Dimension frameSize = new Dimension(600, 1000);
 	
 	private Reservation currentReservation;
 	private Flight currentFlight;
@@ -96,31 +96,32 @@ public class NewReservationMenu
 		JPanel topPanel = new JPanel();
 		
 		topPanel.setLayout(new BorderLayout());
-		topPanel.setBorder(BorderFactory.createEtchedBorder(1));
+		//topPanel.setBorder(BorderFactory.createEtchedBorder(1));
+		topPanel.setPreferredSize(new Dimension(frameSize.width, (frameSize.height/6)));
 		
 			//Top Title
 		JPanel topTitlePanel = new JPanel();
 		//topTitlePanel.setLayout(new BoxLayout(topTitlePanel, BoxLayout.Y_AXIS));
 		topTitlePanel.setLayout(null);
-		topTitlePanel.setPreferredSize(new Dimension(100, (frameSize.height/6)));
+		topTitlePanel.setPreferredSize(new Dimension(frameSize.width/2, (frameSize.height/6)));
 		
 		Insets insets = topTitlePanel.getInsets();
 		
 		JLabel startDateTitleLabel = new JLabel("Start Date");
 		//startDateTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
-		startDateTitleLabel.setBounds(insets.left, insets.top, 100, 25);
+		startDateTitleLabel.setBounds(insets.left+(frameSize.width/5), insets.top, 100, 25);
 		
 		JLabel endDateTitleLabel = new JLabel("End Date");
 		//endDateTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
-		endDateTitleLabel.setBounds(insets.left, insets.top+((frameSize.height/6)/4), 100, 25);
+		endDateTitleLabel.setBounds(insets.left+(frameSize.width/5), insets.top+((frameSize.height/6)/4), 100, 25);
 		
-		JLabel destinationTitleLabel = new JLabel("Destination");
+		JLabel destinationTitleLabel = new JLabel("Origin / Destination");
 		//destinationTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
-		destinationTitleLabel.setBounds(insets.left, insets.top+((frameSize.height/6)/4)*2, 100, 25);
+		destinationTitleLabel.setBounds(insets.left+(frameSize.width/5), insets.top+((frameSize.height/6)/4)*2, 100, 25);
 		
 		JLabel seatAmountTitleLabel = new JLabel("Seat Amount");
 		//seatAmountTitleLabel.setPreferredSize(new Dimension(100,(frameWidth/6)/4));
-		seatAmountTitleLabel.setBounds(insets.left, insets.top+((frameSize.height/6)/4)*3, 100, 25);
+		seatAmountTitleLabel.setBounds(insets.left+(frameSize.width/5), insets.top+((frameSize.height/6)/4)*3, 100, 25);
 		
 		topTitlePanel.add(startDateTitleLabel);
 		topTitlePanel.add(endDateTitleLabel);
@@ -130,18 +131,20 @@ public class NewReservationMenu
 			//Top Parameter
 		JPanel topParameterPanel = new JPanel();
 		topParameterPanel.setLayout(new BoxLayout(topParameterPanel, BoxLayout.Y_AXIS));
+		topParameterPanel.setPreferredSize(new Dimension(frameSize.width/4, (frameSize.height/6)));
 		
 		JTextField startDateLabel = new JTextField();
-		startDateLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
+		startDateLabel.setPreferredSize(new Dimension(100,((frameSize.height/6)/4)));
 		
 		JTextField endDateLabel = new JTextField();
-		endDateLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
+		endDateLabel.setPreferredSize(new Dimension(100,((frameSize.height/6)/4)));
 		
 		JTextField destinationLabel = new JTextField();
-		destinationLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
+		destinationLabel.setPreferredSize(new Dimension(100,((frameSize.height/6)/4)));
 		
 		//SKAL KUN VÆRE TAL
 		seatAmountLabel = new JFormattedTextField();
+		
 		try 
 		{
 			seatAmountLabel = new JFormattedTextField(new MaskFormatter("#"));
@@ -152,7 +155,7 @@ public class NewReservationMenu
 		
 		seatAmountLabel.addPropertyChangeListener(new TextListener());
 		
-		seatAmountLabel.setPreferredSize(new Dimension(100,(frameSize.height/6)/4));
+		seatAmountLabel.setPreferredSize(new Dimension(100,((frameSize.height/6)/4)));
 		
 		topParameterPanel.add(startDateLabel);
 		topParameterPanel.add(endDateLabel);
@@ -164,7 +167,8 @@ public class NewReservationMenu
 		
 		//Center
 		JPanel middlePanel = new JPanel();
-		middlePanel.setBorder(BorderFactory.createEtchedBorder(1));
+		//middlePanel.setBorder(BorderFactory.createEtchedBorder(1));
+		middlePanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/3));
 		
 		JList viewedList = new JList();
 		
@@ -178,20 +182,21 @@ public class NewReservationMenu
 		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-		bottomPanel.setBorder(BorderFactory.createEtchedBorder(1));
+		//bottomPanel.setBorder(BorderFactory.createEtchedBorder(1));
+		bottomPanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/2));
 		
 			//Plane Panel
 		//Test
-		Flight testFlight = new Flight(new Date(), new Plane(PlaneType.BOEING737));
+		Flight testFlight = new Flight(new Date(), new Plane(PlaneType.BOEING747));
 		
-		planePanel = new PlanePanel(testFlight, currentReservation, new Dimension(frameSize.width, frameSize.height/2));
+		planePanel = new PlanePanel(testFlight, currentReservation, new Dimension(frameSize.width, (frameSize.height/2/6*5)));
 		
 		//Final
 		//PlanePanel planePanel = new PlanePanel(currentFlight, new Dimension(frameSize.width, frameSize.height/2));
 		
-		
 			//Button Panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		buttonPanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/6/2*1));
 		
 		JButton makeReservationButton = new JButton("Make Reservation");
 		JButton inspectReservationButton = new JButton("Inspect Reservation");
@@ -202,7 +207,6 @@ public class NewReservationMenu
 		
 		bottomPanel.add(planePanel, BorderLayout.NORTH);
 		bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
-		
 		
 		//Finish up
 		mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -228,7 +232,7 @@ public class NewReservationMenu
 	
 	private void initializeReservation()
 	{
-		currentReservation = new Reservation(null, null, null, new Passenger[5]);
+		currentReservation = new Reservation(null, null, null, new Passenger[0]);
 		
 		Passenger[] passengerArray = currentReservation.getPassengers();
 		
@@ -290,7 +294,8 @@ public class NewReservationMenu
 			
 			for(int i=start; i < currentReservation.getPassengers().length; i++)
 			{	
-				currentReservation.getPassengers()[i].getSeat().changeBookingStatus(false);
+				if(currentReservation.getPassengers()[i].getSeat() != null)
+					currentReservation.getPassengers()[i].getSeat().changeBookingStatus(false);
 			}
 		}
 		
