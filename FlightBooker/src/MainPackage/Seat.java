@@ -1,5 +1,7 @@
 package MainPackage;
 
+import java.awt.Dimension;
+ 
 public class Seat 
 {
 	private int x;
@@ -16,5 +18,15 @@ public class Seat
 	public boolean isBooked()
 	{
 		return booked;
+	}
+	
+	public void changeBookingStatus(boolean value)
+	{
+		booked = value;
+	}
+	
+	public Dimension getPosition()
+	{
+		return new Dimension(x, y);
 	}
 }

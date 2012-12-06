@@ -30,9 +30,29 @@ public class Flight
 			System.out.println("The new plane needs to be of same size or bigger");
 	}
 	
+	public Seat getSeat(int x, int y)
+	{
+		if(seatArray[x][y] != null)
+		{
+			return seatArray[x][y];
+		}
+		else 
+		{
+			System.out.println("Seat does not exist");
+			
+			return null;
+		}
+		
+	}
+	
 	public Date getDate()
 	{
 		return flyDate;
+	}
+	
+	public Plane getPlane()
+	{
+		return plane;
 	}
 	
 	
