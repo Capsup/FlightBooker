@@ -1,6 +1,8 @@
 package MainPackage;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -10,6 +12,16 @@ public class PassengerManagerMenu
 	private JPanel mainPanel;
 	
 	private int passengerAmount = 5;
+	
+	private class actionListener implements ActionListener
+	{
+		@Override
+        public void actionPerformed( ActionEvent e )
+        {
+	        if( e.getActionCommand() == "edit" )
+	        	new PassengerInformationEditor();
+        }
+	}
 	
 	public PassengerManagerMenu(JFrame frame)
 	{
@@ -61,25 +73,32 @@ public class PassengerManagerMenu
 		JPanel mainPassengerPanel = new JPanel();
 		mainPassengerPanel.setLayout(new BoxLayout(mainPassengerPanel, BoxLayout.Y_AXIS));
 		
-		for(int i=0; i<passengerAmount; i++)
-		{
-			JPanel passengerPanel = new JPanel();
-			passengerPanel.setLayout(new BoxLayout(passengerPanel,BoxLayout.X_AXIS));
-			passengerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
-			
-			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
-			JButton editButton = new JButton("Edit");
-			JButton deleteButton = new JButton("-");
-			
-			passengerPanel.add(passengerLabel);
-			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-			passengerPanel.add(editButton);
-			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-			passengerPanel.add(deleteButton);
-			passengerPanel.add(Box.createRigidArea(new Dimension(0,30)));
-			
-			mainPassengerPanel.add(passengerPanel);
-		}
+//		for(int i=0; i<passengerAmount; i++)
+//		{
+//			JPanel passengerPanel = new JPanel();
+//			passengerPanel.setLayout(new BoxLayout(passengerPanel,BoxLayout.X_AXIS));
+//			passengerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+//			
+//			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
+//			JButton editButton = new JButton("Edit");
+//			editButton.setActionCommand( "edit" );
+//			editButton.addActionListener( new actionListener() );
+//			JButton deleteButton = new JButton("-");
+//			
+//			passengerPanel.add(passengerLabel);
+//			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+//			passengerPanel.add(editButton);
+//			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+//			passengerPanel.add(deleteButton);
+//			passengerPanel.add(Box.createRigidArea(new Dimension(0,30)));
+//			
+//			mainPassengerPanel.add(passengerPanel);
+//		}
+		
+		for( int i = 0; i < 1; i++ )
+        {
+	        
+        }
 		
 		scrollPane.setViewportView(mainPassengerPanel);
 		
