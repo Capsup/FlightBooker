@@ -169,7 +169,7 @@ public class PassengerInformationMenu {
 		};
 
 		JTable reservationTable = new JTable(reservationsData, columns);
-		reservationTable.setBounds(0, 260, 200, 200);
+		reservationTable.setBounds(40, 260, 200, 200);
 
 		mainPanel.add(buttonsPanel);
 		mainPanel.add(reservationTable);
