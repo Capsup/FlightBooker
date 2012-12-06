@@ -18,18 +18,18 @@ public class PassengerInformationEditor extends JFrame
 		@Override
 		public void actionPerformed( ActionEvent e )
 		{
-		    if( e.getActionCommand() == "ok" )
-		    	System.out.println("WAZZUP");
-		    else if( e.getActionCommand() == "cancel" )
-	            getInstance().dispose();
+			if( e.getActionCommand() == "ok" )
+				System.out.println( "WAZZUP" );
+			else if( e.getActionCommand() == "cancel" )
+				getInstance().dispose();
 		}
 	}
-	
+
 	public PassengerInformationEditor getInstance()
 	{
 		return this;
 	}
-	
+
 	public PassengerInformationEditor()
 	{
 		setupFrame();
@@ -141,9 +141,9 @@ public class PassengerInformationEditor extends JFrame
 	{
 		this.setVisible( true );
 	}
-	
+
 	private void addPassenger()
 	{
-		
+
 	}
 }

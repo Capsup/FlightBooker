@@ -3,6 +3,7 @@ package MainPackage;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.*;
 
@@ -95,10 +96,19 @@ public class PassengerManagerMenu
 //			mainPassengerPanel.add(passengerPanel);
 //		}
 		
+		
+		
 		for( int i = 0; i < 1; i++ )
         {
+	        JPanel passengerPanel = new JPanel();
+	        passengerPanel.setLayout( null );
+	        
+	        JTextField passengerField = new JTextField();
+	        passengerField.setBounds( 20, 50, 100, 100 );
 	        
         }
+		
+		
 		
 		scrollPane.setViewportView(mainPassengerPanel);
 		
