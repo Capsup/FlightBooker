@@ -9,15 +9,18 @@ public class Plane
 	
 	private int planeID;
 	private Seat[][] seatArray;
+	private String planeTypeString;
 	
 	public Plane(PlaneType planeType)
 	{
 		switch(planeType)
 		{
 			case BOEING747:
+				planeTypeString = "Boeing 747";
 				seatArray = new Seat[6][10];
 				break;
 			case BOEING737:
+				planeTypeString = "Boeing 737";
 				seatArray = new Seat[4][8];
 				break;
 		}
@@ -40,4 +43,8 @@ public class Plane
 		return count;
 	}
 	
+	public String getPlaneTypeString()
+	{
+		return planeTypeString;
+	}
 }
