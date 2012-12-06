@@ -33,8 +33,14 @@ public class PassengerInformationMenu {
 			String command = e.getActionCommand();
 			if( command == "OK")
 				System.out.println("OK");
+			if(isEditing)
+			{
+				System.out.println("Commit changes");
+				editOff();
+			}
+
 			//SEND TIL DATABASE
-			
+
 			if( command == "Cancel")
 			{
 				System.out.println("Cancel");
