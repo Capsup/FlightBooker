@@ -18,10 +18,18 @@ public class Main
 	{
 		Dimension dScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		FindDialog frame = new FindDialog( dScreenSize, SIZE_X, SIZE_Y );
+		/*FindDialog frame = new FindDialog( dScreenSize, SIZE_X, SIZE_Y );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		/*frame.setLocation( (int) ( dScreenSize.width * 0.5f - ( SIZE_X * 0.5f )), (int) (dScreenSize.height * 0.5f - ( SIZE_Y * 0.5f )) );
-		frame.setSize( new Dimension( SIZE_X, SIZE_Y ) );*/
+		frame.setVisible( true );*/
+		
+		JFrame frame = new JFrame();
+		frame.setPreferredSize( new Dimension( SIZE_X, SIZE_Y ) );
+		
+		PassengerManagerMenu menu = new PassengerManagerMenu( frame );
+		
+		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		frame.setVisible( true );
+		
+		//Database.getInstance().AddValue("persons", "")
 	}
 }

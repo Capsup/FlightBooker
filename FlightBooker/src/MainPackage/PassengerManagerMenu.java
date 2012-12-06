@@ -41,16 +41,29 @@ public class PassengerManagerMenu
 		
 		JLabel mainPassengerHeader = new JLabel("Main Menu");
 		mainPassengerHeader.setFont(headerFont);
-		JLabel mainPassenger = new JLabel("Sir Martin Fagalot, 60249924");
-		mainPassenger.setFont(normalFont);
-		
 		topPanel.add(mainPassengerHeader);
-		topPanel.add(mainPassenger);
+		
+		//Center
+		JPanel centerPanel = new JPanel();
+		SpringLayout springLayout = new SpringLayout();
+		
+		contentPane.setLayout( springLayout );
+		
+		
+		
+		/*JLabel mainPassenger = new JLabel("Sir Martin Fagalot, 60249924");
+		mainPassenger.setFont(normalFont);
+		topPanel.add(mainPassenger);*/
 		
 		
 		mainPanel.add(topPanel, BorderLayout.NORTH);
 		
 		contentPane.add(mainPanel);
+		
+	}
+	
+	private void addCustomer( SpringLayout layout )
+	{
 		
 	}
 	
