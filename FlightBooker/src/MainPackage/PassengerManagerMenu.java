@@ -9,23 +9,26 @@ public class PassengerManagerMenu
 	private JFrame frame;
 	private JPanel mainPanel;
 	
-	private Font headerFont;
-	private Font normalFont;
+	private int passengerAmount = 5;
 	
 	public PassengerManagerMenu(JFrame frame)
 	{
 		this.frame = frame;
 		
 		setupFrame();
-		setupFonts();
+		//setupFonts();
 		
 		makeContent();
 	}
 	
 	private void setupFrame()
 	{
-		frame.setSize(400, 600);
+		frame.setSize(300, 600);
 		frame.setResizable(false);
+		
+		frame.setLocationRelativeTo(null);
+		
+		update();
 	}
 	
 	private void makeContent()
@@ -35,42 +38,60 @@ public class PassengerManagerMenu
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		
-		//Top
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+		//Middle
+		JPanel middlePanel = new JPanel();
+		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 		
-		JLabel mainPassengerHeader = new JLabel("Main Menu");
-		mainPassengerHeader.setFont(headerFont);
-		topPanel.add(mainPassengerHeader);
+		JLabel mainPassengerHeaderLabel = new JLabel("Main Passenger");
+		//mainPassengerHeaderLabel.setFont(FontCollection.HEADER);
+		JLabel mainPassengerLabel = new JLabel("Sir Martin Fagalot, 60249924");
+		//mainPassengerLabel.setFont(FontCollection.NORMAL);
+		JLabel additionalPassengerLabel = new JLabel("Additional Passengers");
+		//additionalPassengerLabel.setFont(FontCollection.HEADER);
 		
-		//Center
-		JPanel centerPanel = new JPanel();
-		SpringLayout springLayout = new SpringLayout();
+		middlePanel.add(mainPassengerHeaderLabel);
+		middlePanel.add(mainPassengerLabel);
+		middlePanel.add(additionalPassengerLabel);
 		
-		contentPane.setLayout( springLayout );
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setPreferredSize(new Dimension(100,200));
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		middlePanel.add(scrollPane);
 		
+		JPanel mainPassengerPanel = new JPanel();
+		mainPassengerPanel.setLayout(new BoxLayout(mainPassengerPanel, BoxLayout.Y_AXIS));
 		
+		for(int i=0; i<passengerAmount; i++)
+		{
+			JPanel passengerPanel = new JPanel();
+			passengerPanel.setLayout(new BoxLayout(passengerPanel,BoxLayout.X_AXIS));
+			passengerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+			
+			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
+			JButton editButton = new JButton("Edit");
+			JButton deleteButton = new JButton("-");
+			
+			passengerPanel.add(passengerLabel);
+			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+			passengerPanel.add(editButton);
+			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+			passengerPanel.add(deleteButton);
+			passengerPanel.add(Box.createRigidArea(new Dimension(0,30)));
+			
+			mainPassengerPanel.add(passengerPanel);
+		}
 		
-		/*JLabel mainPassenger = new JLabel("Sir Martin Fagalot, 60249924");
-		mainPassenger.setFont(normalFont);
-		topPanel.add(mainPassenger);*/
+		scrollPane.setViewportView(mainPassengerPanel);
 		
-		
-		mainPanel.add(topPanel, BorderLayout.NORTH);
+		mainPanel.add(middlePanel, BorderLayout.CENTER);
 		
 		contentPane.add(mainPanel);
 		
 	}
 	
-	private void addCustomer( SpringLayout layout )
+	private void update()
 	{
-		
-	}
+		frame.setVisible(true);
 	
-	private void setupFonts()
-	{
-		headerFont = new Font("TimesRoman", Font.BOLD, 16);
-		normalFont = new Font("TimesRoman", Font.PLAIN, 16);
-		
 	}
 }
