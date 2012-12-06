@@ -1,16 +1,11 @@
 package MainPackage;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
-import org.w3c.dom.css.Rect;
 
 
 public class JPanelWithBackground extends JPanel {

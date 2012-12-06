@@ -2,7 +2,7 @@ package MainPackage;
 
 public class Passenger 
 {
-	private Person person;
+    private Person person;
 	private Seat seat;
 	
 	public Passenger(Person person, Seat seat)
