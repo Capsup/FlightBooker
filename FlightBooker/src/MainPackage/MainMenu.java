@@ -27,7 +27,7 @@ public class MainMenu extends JFrame {
 				break;
 
 			case "Find...":
-				System.out.println("Find...");
+				new FindDialog();
 				break;
 			}
 		}
@@ -62,11 +62,13 @@ public class MainMenu extends JFrame {
 
 		//New Reservation Button
 		JButton newReservationButton = new JButton("New Reservation");
+		newReservationButton.setActionCommand("New Reservation");
 		newReservationButton.setPreferredSize(buttonSize);
 		newReservationButton.setAlignmentX(CENTER_ALIGNMENT);
 
 		//Find Button
 		JButton findButton = new JButton("Find...");
+		findButton.setActionCommand("Find");
 		findButton.setPreferredSize(buttonSize);
 		findButton.setAlignmentX(CENTER_ALIGNMENT);
 

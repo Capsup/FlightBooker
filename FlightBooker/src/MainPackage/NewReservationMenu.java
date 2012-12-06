@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import MainPackage.MainMenu.ButtonListener;
+import MainPackage.Plane.PlaneType;
 
 public class NewReservationMenu
 {
@@ -29,7 +30,7 @@ public class NewReservationMenu
 			switch(event.getActionCommand())
 			{
 			case "Make Reservation": 	
-				mainPanel.setVisible(false);
+				frame.remove(mainPanel);
 				new PassengerManagerMenu(frame);
 				break;
 			case "Inspect Reservation": 	
@@ -117,21 +118,10 @@ public class NewReservationMenu
 		bottomPanel.setLayout(new BorderLayout());
 		bottomPanel.setBorder(BorderFactory.createEtchedBorder(1));
 		
-			//Image Panel
-		JPanel imagePanel = new JPanel();
+			//Plane Panel
+		PlanePanel planePanel = new PlanePanel(new Plane(PlaneType.BOEING747));
 		
-		try
-		{
-			imagePanel = new JPanelWithBackground("/images/747-test.jpg");
-		}
-		catch(IOException e)
-		{
-			System.out.println("I suck");
-		}
-		
-		imagePanel.setPreferredSize(new Dimension(400, 100));
-		
-		//Button Panel
+			//Button Panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
 		JButton makeReservationButton = new JButton("Make Reservation");
@@ -141,7 +131,7 @@ public class NewReservationMenu
 		buttonPanel.add(makeReservationButton);
 		buttonPanel.add(inspectReservationButton);
 		
-		bottomPanel.add(imagePanel, BorderLayout.NORTH);
+		bottomPanel.add(planePanel, BorderLayout.NORTH);
 		bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
 		
 		

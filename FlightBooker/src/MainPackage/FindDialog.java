@@ -2,6 +2,7 @@ package MainPackage;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -40,8 +41,9 @@ class FindDialog extends JFrame
         }
     }
     
-    public FindDialog( Dimension dScreenSize, int iSizeX, int iSizeY )
+    public FindDialog()
     {
+    	Dimension dScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
     	Container pane = getContentPane();
     	SpringLayout layout = new SpringLayout();
     	float fScale = ( dScreenSize.width / dScreenSize.height ) / ( 1600 / 1200 );
@@ -50,8 +52,9 @@ class FindDialog extends JFrame
     	
     	//this.setLocation( (int) ( dScreenSize.width * 0.5f - ( iSizeX * 0.5f )), (int) (dScreenSize.height * 0.5f - ( iSizeY * 0.5f )) );
     	
-    	this.setSize( new Dimension( iSizeX, iSizeY ) );
+    	this.setSize( new Dimension( 800, 600 ) );
     	this.setLocationRelativeTo( null );
+    	this.setVisible(true);
     	
     	CriteriaLabel1 = new JLabel( "Criteria: " );
     	pane.add( CriteriaLabel1 );
