@@ -7,7 +7,7 @@ public class Plane
 		BOEING747, BOEING737, BOEING1337;
 	}
 	
-	private int planeID;
+    private int planeID;
 	private Seat[][] seatArray;
 	private String planeTypeString;
 	

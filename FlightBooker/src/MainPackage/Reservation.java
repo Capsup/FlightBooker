@@ -6,7 +6,7 @@ public class Reservation
 	private Person owner;
 	private Passenger[] passengerArray;
 	private Flight flight;
-	private Date reservedDate;
+    private Date reservedDate;
 	
 	public Reservation(Person customer, Flight flight, Date reservedDate, Passenger[] passengers)
 	{

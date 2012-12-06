@@ -3,16 +3,9 @@ package MainPackage;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.Panel;
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-
 import javax.swing.*;
-
-import org.w3c.dom.css.Rect;
-
-import MainPackage.Plane.PlaneType;
 
 public class PlanePanel extends JPanel 
 {

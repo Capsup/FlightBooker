@@ -1,7 +1,7 @@
 package MainPackage;
 
 import java.awt.Dimension;
-
+ 
 public class Seat 
 {
 	private int x;
