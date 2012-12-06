@@ -1,6 +1,9 @@
 package MainPackage;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.*;
 
@@ -10,6 +13,16 @@ public class PassengerManagerMenu
 	private JPanel mainPanel;
 	
 	private int passengerAmount = 5;
+	
+	private class actionListener implements ActionListener
+	{
+		@Override
+        public void actionPerformed( ActionEvent e )
+        {
+	        if( e.getActionCommand() == "edit" )
+	        	new PassengerInformationEditor();
+        }
+	}
 	
 	public PassengerManagerMenu(JFrame frame)
 	{
@@ -69,6 +82,8 @@ public class PassengerManagerMenu
 			
 			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
 			JButton editButton = new JButton("Edit");
+			editButton.setActionCommand( "edit" );
+			editButton.addActionListener( new actionListener() );
 			JButton deleteButton = new JButton("-");
 			
 			passengerPanel.add(passengerLabel);
@@ -80,6 +95,18 @@ public class PassengerManagerMenu
 			
 			mainPassengerPanel.add(passengerPanel);
 		}
+		
+		
+		
+//		for( int i = 0; i < 1; i++ )
+//        {
+//	        JPanel passengerPanel = new JPanel();
+//	        passengerPanel.setLayout( null );
+//	        
+//	        JTextField passengerField = new JTextField();
+//	        passengerField.setBounds( 20, 50, 100, 100 );
+//	        
+//        }
 		
 		scrollPane.setViewportView(mainPassengerPanel);
 		
