@@ -70,6 +70,7 @@ public class NewReservationMenu
 	private JDateChooser startDateLabel;
 	private DefaultListModel listModel;
 	private JList viewedList;
+	private JScrollPane scrollPane;
 	
 	public NewReservationMenu(JFrame frame)
 	{
@@ -155,7 +156,12 @@ public class NewReservationMenu
 			if( currentFlight.getDate().after( startDateLabel.getCalendar() ) )
 			{
 				//TODO: Make this possible!!!!!!!!!!!!!
-				//JPanel flightPanel = setupFlightPanel( currentFlight );
+				JPanel flightPanel = setupFlightPanel( currentFlight );
+				
+				JButton flightPanelButton = new JButton();
+				flightPanelButton.add(flightPanel);
+				
+				viewedList.add(flightPanelButton);
 				
 //				if( flightPanel != null )
 //				{
@@ -166,7 +172,9 @@ public class NewReservationMenu
 //					//listModel.addElement( test );
 //				}
 				
-				mainPanel.repaint();
+				//viewedList.repaint();
+				//scrollPane.repaint();
+				mainPanel.validate();
 			}
 		}
 	}
@@ -175,7 +183,7 @@ public class NewReservationMenu
 	{
 		frame.setSize(frameSize.width, frameSize.height);
 		frame.setResizable(false);
-		frame.setTitle("Passenger Manager");
+		frame.setTitle("New Reservation Menu");
 		frame.setLocationRelativeTo(null);
 	}
 	
@@ -301,7 +309,7 @@ public class NewReservationMenu
 			}
 		}
 		
-		JScrollPane scrollPane = new JScrollPane(viewedList);
+		scrollPane = new JScrollPane(viewedList);
 		scrollPane.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		topRightPanel.add(scrollPane);
 		
@@ -347,14 +355,15 @@ public class NewReservationMenu
 		updateReservation();
 	}
 	
-	void setupFlightPanel(int index, Flight currentFlight)
+	JPanel setupFlightPanel(Flight currentFlight)
 	{
 		//Flight Panel
-		flightPanels[index] = new JPanel();
-		flightPanels[index].setLayout(new BoxLayout(flightPanels[index], BoxLayout.X_AXIS));
-		flightPanels[index].setAlignmentX(Component.LEFT_ALIGNMENT);
-		flightPanels[index].setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		flightPanels[index].setBackground(Color.WHITE);
+		JPanel newFlightPanel = new JPanel();
+		
+		newFlightPanel.setLayout(new BoxLayout(newFlightPanel, BoxLayout.X_AXIS));
+		newFlightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		newFlightPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		newFlightPanel.setBackground(Color.WHITE);
 		
 			//First Panel
 		JPanel firstPanel = new JPanel();
@@ -430,13 +439,14 @@ public class NewReservationMenu
 			//Third Panel Finished
 		
 		//Flight Panel Finish Up
-		flightPanels[index].add(firstPanel);
-		flightPanels[index].add(Box.createHorizontalGlue());
-		flightPanels[index].add(secondPanel);
-		flightPanels[index].add(Box.createHorizontalGlue());
-		flightPanels[index].add(thirdPanel);
+		newFlightPanel.add(firstPanel);
+		newFlightPanel.add(Box.createHorizontalGlue());
+		newFlightPanel.add(secondPanel);
+		newFlightPanel.add(Box.createHorizontalGlue());
+		newFlightPanel.add(thirdPanel);
 		//Flight Panel Finished
 		
+		return newFlightPanel;
 	}
 	
 	private void update()
