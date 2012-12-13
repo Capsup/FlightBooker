@@ -81,8 +81,7 @@ public class Flight
 	
 	public int getSeatsLeft()
 	{
-		int seatsLeft = seatArray.length*seatArray[0].length;
-		
+		int seatsLeft = getSeatAmount();
 		
 		if(reservations != null)
 		{
@@ -97,5 +96,10 @@ public class Flight
 		}
 		
 		return seatsLeft;
+	}
+	
+	public int getSeatAmount()
+	{
+		return seatArray.length*seatArray[0].length;
 	}
 }
