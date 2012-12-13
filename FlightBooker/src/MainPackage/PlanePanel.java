@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.HashMap;
+
 import javax.swing.*;
 
 public class PlanePanel extends JPanel 
@@ -15,12 +17,33 @@ public class PlanePanel extends JPanel
 	private Reservation currentReservation;
 	private SeatButton[][] seatButtonArray;
 	
-	public PlanePanel(Flight flight, Reservation reservation, Dimension size)
+	private HashMap<Dimension, SeatButton> seatMap;
+	
+	//Properties
+	double scaleModifier;
+	int panelToButtonScale;
+	
+	int squaredSize;
+	int indent = (int)(10/scaleModifier);
+	
+	int leftPadding;
+	int topPadding;		
+	
+	Insets insets = getInsets();
+	
+	//Other
+	private boolean editable;
+	
+	public PlanePanel(Flight flight, Reservation reservation, Dimension size, boolean editable)
 	{
 		this.flight = flight;
 		plane = flight.getPlane();
 		this.panelSize = size;
 		currentReservation = reservation;
+		
+		this.editable = editable;
+		
+		setupProperties();
 		
 		makeContent();
 	}
@@ -31,9 +54,10 @@ public class PlanePanel extends JPanel
 		
 		try
 		{
-			String path = "/images/"+plane.getPlaneTypeString()+".jpg";
+			String path = "/images/"+plane.getPlaneTypeString()+".png";
 			
-			Rectangle rect = new Rectangle(-100, -125, 800, 600);
+			//Needs automization
+			Rectangle rect = new Rectangle(0,0, panelSize.width, panelSize.height);
 			
 			mainPanel = new JPanelWithBackground(path, rect);
 			
@@ -46,12 +70,13 @@ public class PlanePanel extends JPanel
 		
 		mainPanel.setLayout(null);
 		
-		SeatButton seatButton;
 		
+		/*
 		Insets insets = getInsets();
 		Dimension size;
 		
 		Seat[][] seatArray = plane.getSeatArray();
+		
 		
 		double scaleModifier = Math.sqrt((seatArray.length*seatArray[0].length)/30f);
 		int panelToButtonScale = panelSize.height/10;
@@ -59,30 +84,102 @@ public class PlanePanel extends JPanel
 		int squaredSize = (int) (panelToButtonScale/scaleModifier);
 		int indent = (int)(10/scaleModifier);
 		
-		seatButtonArray = new SeatButton[seatArray.length][];
+		int leftPadding = panelSize.width/2-((squaredSize+indent)*seatArray[0].length)/2;
+		int topPadding = panelSize.height/2-((squaredSize+indent)*seatArray.length)/2;		
+		*/
 		
-		for(int i=0; i<seatArray.length; i++)
+		SeatButton seatButton;
+		
+		//Initialize seats for the current Reservation
+		Passenger[] passengers = currentReservation.getPassengers();
+		Dimension passengerSeatPosition;
+		
+		if(passengers != null)
 		{
-			seatButtonArray[i] = new SeatButton[seatArray[i].length];
-			
-			for(int j=0; j<seatArray[i].length; j++)
+			for (Passenger passenger : passengers) 
 			{
-				seatButton = new SeatButton(flight.getSeat(i, j), currentReservation);
+				if(passenger != null && passenger.getSeat() != null)
+				{
+					passengerSeatPosition = passenger.getSeat().getPosition();
+					
+					int x = passengerSeatPosition.width;
+					int y = passengerSeatPosition.height;
+					
+					seatButton = InitializeSeatButton(x, y, mainPanel);
+					
+					seatButton.setBooked();
+				}
+			}
+		}
+		
+		//Initialize seats for any reservation already booked
+		Reservation[] reservations = flight.getReservations();
+		
+		if(reservations != null)
+		{
+			for (Reservation reservation : reservations) 
+			{
+				passengers = reservation.getPassengers();
 				
-				seatButtonArray[i][j] = seatButton;
+				for (Passenger passenger : passengers) 
+				{
+					passengerSeatPosition = passenger.getSeat().getPosition();
+					
+					int x = passengerSeatPosition.width;
+					int y = passengerSeatPosition.height;
+					
+					if(seatButtonArray[x][y] == null)
+					{
+						seatButton = InitializeSeatButton(x, y, mainPanel);
+						
+						seatButton.setBooked();
+					}
+				}
+			}
+		}
+		
+		for(int i=0; i<seatButtonArray.length; i++)
+		{
+			for(int j=0; j<seatButtonArray[i].length; j++)
+			{
+				if(seatButtonArray[i][j] == null)
+				{
+					InitializeSeatButton(i, j, mainPanel);
+					
+					/*
+					seatButton = new SeatButton(flight.getSeat(i, j), currentReservation);
 				
-				size = new Dimension(squaredSize, squaredSize);
+					seatButtonArray[i][j] = seatButton;
 				
-				seatButton.setBounds(35+j*(squaredSize+indent)+insets.left, 110+i*(squaredSize+indent)+insets.top, squaredSize, squaredSize);
+					size = new Dimension(squaredSize, squaredSize);
 				
-				mainPanel.add(seatButton);
+					seatButton.setBounds(leftPadding+j*(squaredSize+indent)+insets.left, topPadding+i*(squaredSize+indent)+insets.top, squaredSize, squaredSize);
+				
+					mainPanel.add(seatButton);
+					*/
+				}
 			}
 		}
 		
 		updateSeats();
 		
-		add(mainPanel, BorderLayout.CENTER);
+		add(mainPanel);
 		
+	}
+	
+	SeatButton InitializeSeatButton(int x, int y, JPanel mainPanel)
+	{
+		SeatButton seatButton = new SeatButton(flight.getSeat(x, y), currentReservation);
+		
+		seatButtonArray[x][y] = seatButton;
+	
+		Dimension size = new Dimension(squaredSize, squaredSize);
+	
+		seatButton.setBounds(leftPadding+y*(squaredSize+indent)+insets.left, topPadding+x*(squaredSize+indent)+insets.top, squaredSize, squaredSize);
+	
+		mainPanel.add(seatButton);
+		
+		return seatButton;
 	}
 	
 	public void updateSeats()
@@ -92,8 +189,31 @@ public class PlanePanel extends JPanel
 			for(int j=0; j<seatButtonArray[i].length; j++)
 			{
 				seatButtonArray[i][j].update();
-				
+				seatButtonArray[i][j].setEnabled(editable);
 			}
 		}
+	}
+	
+	void setupProperties()
+	{
+		Seat[][] seatArray = plane.getSeatArray();
+		
+		scaleModifier = Math.sqrt((seatArray.length*seatArray[0].length)/30f);
+		panelToButtonScale = panelSize.height/10;
+		
+		squaredSize = (int) (panelToButtonScale/scaleModifier);
+		indent = (int)(10/scaleModifier);
+		
+		leftPadding = panelSize.width/2-((squaredSize+indent)*seatArray[0].length)/2;
+		topPadding = panelSize.height/2-((squaredSize+indent)*seatArray.length)/2;		
+		
+		seatButtonArray = new SeatButton[seatArray.length][seatArray[0].length];
+		
+	}
+	
+	void setEditable()
+	{
+		editable = !editable;
+		updateSeats();
 	}
 }

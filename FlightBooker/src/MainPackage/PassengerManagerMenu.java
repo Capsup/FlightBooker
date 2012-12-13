@@ -52,10 +52,9 @@ public class PassengerManagerMenu
 	        // TODO Auto-generated method stub
 	        
         }
-		
 	}
 	
-	public PassengerManagerMenu(JFrame frame)
+	public PassengerManagerMenu(JFrame frame, Reservation currentReservation)
 	{
 		this.frame = frame;
 		

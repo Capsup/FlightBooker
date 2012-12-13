@@ -48,6 +48,14 @@ public class Reservation
 		return flight.getDate();
 	}
 	
+	public Flight getFlight()
+	{
+		if(flight != null)
+			return flight;
+		else 
+			return null;
+	}
+	
 	public void setFlight(Flight flight)
 	{
 		this.flight = flight;

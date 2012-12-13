@@ -5,16 +5,24 @@ public class Flight
 {
 	private Date flyDate;
 	private Plane plane;
+	private Airport origin;
+	private Airport destination;
 	
 	private Seat[][] seatArray;
 	
-	public Flight(Date flyDate, Plane plane)
+	private Reservation[] reservations;
+	
+	public Flight(Date flyDate, Plane plane, Airport origin, Airport destination)
 	{
 		this.flyDate = flyDate;
 		
 		this.plane = plane;
 		
 		this.seatArray = plane.getSeatArray();
+		
+		this.origin = origin;
+		
+		this.destination = destination;
 	}
 	
 	public boolean checkSeatReservation(int x, int y)
@@ -55,5 +63,18 @@ public class Flight
 		return plane;
 	}
 	
+	public Reservation[] getReservations()
+	{
+		return reservations;
+	}
 	
+	public Airport getOrigin()
+	{
+		return origin;
+	}
+	
+	public Airport getDestination()
+	{
+		return destination;
+	}
 }

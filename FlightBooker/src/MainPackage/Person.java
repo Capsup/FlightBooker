@@ -30,6 +30,18 @@ public class Person {
 		this.customerID = customerID;			
 	}
 
-
-
+	public String getFirstName()
+	{
+		return firstName;
+	}
+	
+	public String getSurName()
+	{
+		return surName;
+	}
+	
+	public String getPhone()
+	{
+		return phone;
+	}
 }
