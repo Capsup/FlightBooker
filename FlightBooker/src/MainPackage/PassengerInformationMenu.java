@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableRowSorter;
 
 public class PassengerInformationMenu {
 
@@ -16,14 +18,15 @@ public class PassengerInformationMenu {
 
 	private JButton editButton;
 	private JButton inspectReservationButton;
-	private JButton okButton;
+	private JButton closeButton;
+	
+	private JTable reservationsTable;
 
 	public PassengerInformationMenu(JFrame frame/*, Passenger passenger */)
 	{
 		//this.passenger = passenger;
 		this.passenger = new Passenger(new Person("Jesper", "Nysteen", "male",
 				"06-04-1991", "Denmark", "Danish", "Skaffervej 15, 3 tv", "31225525","3443542624654", 1), new Seat(1, 1));
-
 
 		this.frame = frame;
 		setupFrame();
@@ -48,8 +51,8 @@ public class PassengerInformationMenu {
 				System.out.println("Inspect reservation");
 			}
 
-			if( command == "OK") {
-				System.out.println("OK");
+			if( command == "Close") {
+				System.out.println("Close");
 			}
 
 		}
@@ -59,7 +62,6 @@ public class PassengerInformationMenu {
 	{
 		frame.setSize(500, 700);
 		frame.setResizable(false);
-
 		frame.setLocationRelativeTo(null);
 
 		update();
@@ -71,7 +73,7 @@ public class PassengerInformationMenu {
 		contentPane.setLayout( null );
 
 		mainPanel = new JPanel();
-		mainPanel.setLayout( new FlowLayout());
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		mainPanel.setBounds( 10, 40, frame.getWidth() - 25, frame.getHeight() - 40 * 2 - 20 );
 
 		JLabel nameLabel = new JLabel( "Name: " );
@@ -82,10 +84,10 @@ public class PassengerInformationMenu {
 		JLabel adressLabel = new JLabel( "Adress: " );
 		JLabel phoneLabel = new JLabel( "Phone: " );
 		JLabel passportLabel = new JLabel( "Passport Nr: " );
-		
+
 		JLabel[] labels = {nameLabel, genderLabel, birthLabel, countryLabel, nationalityLabel, adressLabel, phoneLabel, passportLabel};
 		JPanel infoLabelsPanel = new JPanel(new GridLayout(labels.length, 1));
-		
+
 		for(JLabel label : labels)
 			infoLabelsPanel.add(label);
 
@@ -105,10 +107,10 @@ public class PassengerInformationMenu {
 			field.setEditable(false);
 
 		JPanel infoFieldsPanel = new JPanel(new GridLayout(infoFields.length, 1));
-		
+
 		for(JTextField field : infoFields)
 			infoFieldsPanel.add(field);
-		
+
 		JPanel passengerButtonPanel = new JPanel();
 		passengerButtonPanel.setLayout(new FlowLayout());
 
@@ -117,25 +119,32 @@ public class PassengerInformationMenu {
 		editButton.addActionListener( new actionListener() );
 
 		passengerButtonPanel.add( editButton );		
-		
+
 		JPanel passengerInfoPanel = new JPanel(new BorderLayout());
 		passengerInfoPanel.add(infoLabelsPanel, BorderLayout.WEST);
 		passengerInfoPanel.add(infoFieldsPanel, BorderLayout.CENTER);
 		passengerInfoPanel.add(passengerButtonPanel, BorderLayout.SOUTH);
-		passengerInfoPanel.setBorder( BorderFactory.createEtchedBorder() );
-		//JLabel passengerTitleLabel = new JLabel( "Passenger information" );
-		//passengerInfoPanel.add( passengerTitleLabel );
+		TitledBorder passengerTitleBorder = BorderFactory.createTitledBorder("Passenger details");
+		passengerInfoPanel.setBorder(passengerTitleBorder);
 
 		String[] columns = {"Date of reservation","Destination","Passengers"};
 
-		Object[][] reservationsData = {
-				{new Date(System.currentTimeMillis()), "CPH",
-					new Integer(5)}
-		};
+		Object[][] reservationsData = makeReservationData();
 
-		JTable reservationTable = new JTable(reservationsData, columns);
-		JScrollPane scrollPane = new JScrollPane(reservationTable);
-		reservationTable.setFillsViewportHeight(true);
+		reservationsTable = new JTable(reservationsData, columns);
+		reservationsTable.setColumnSelectionAllowed(false);
+		reservationsTable.setCellSelectionEnabled(false);
+		reservationsTable.setRowSelectionAllowed(true);
+		
+		reservationsTable.setFillsViewportHeight(true);
+		JScrollPane reservationsScrollPane = new JScrollPane(reservationsTable);
+		reservationsScrollPane.setPreferredSize(new Dimension(mainPanel.getWidth()-10,200));
+
+		TitledBorder reservationsTitleBorder = BorderFactory.createTitledBorder("Passenger reservations");
+		reservationsScrollPane.setBorder(reservationsTitleBorder);
+		
+		//reservationTable.setAutoCreateRowSorter(true);
+		//reservationTable.setRowSorter(new TableRowSorter<>());
 		//reservationTable.setPreferredScrollableViewportSize(new Dimension(200,400));
 
 		JPanel reservationsButtonPanel = new JPanel();
@@ -145,15 +154,15 @@ public class PassengerInformationMenu {
 		inspectReservationButton.setActionCommand( "Inspect reservation" );
 		inspectReservationButton.addActionListener( new actionListener() );
 
-		okButton = new JButton( "OK" );
-		okButton.setActionCommand( "OK" );
-		okButton.addActionListener( new actionListener() );
+		closeButton = new JButton( "Close" );
+		closeButton.setActionCommand( "Close" );
+		closeButton.addActionListener( new actionListener() );
 
 		reservationsButtonPanel.add( inspectReservationButton);
-		reservationsButtonPanel.add( okButton );
+		reservationsButtonPanel.add( closeButton );
 
 		mainPanel.add(passengerInfoPanel);
-		mainPanel.add(scrollPane);
+		mainPanel.add(reservationsScrollPane);
 		mainPanel.add(reservationsButtonPanel);
 
 		frame.add( mainPanel );
@@ -165,4 +174,38 @@ public class PassengerInformationMenu {
 		frame.setVisible(true);
 	}
 
+	private Object[][] makeReservationData()
+	{
+		Object[][] reservationsData = {
+				{new Date(34567887), "CPH",
+					new Integer(5)}, 
+					{new Date(System.currentTimeMillis()), "JFK",
+						new Integer(1)},
+						{new Date(System.currentTimeMillis()), "LOL",
+							new Integer(3)},
+							{new Date(System.currentTimeMillis()), "JFK",
+								new Integer(1)},
+								{new Date(System.currentTimeMillis()), "JFK",
+									new Integer(1)},
+									{new Date(System.currentTimeMillis()), "JFK",
+										new Integer(1)},
+										{new Date(System.currentTimeMillis()), "JFK",
+											new Integer(1)},
+											{new Date(System.currentTimeMillis()), "JFK",
+												new Integer(1)},
+												{new Date(System.currentTimeMillis()), "JFK",
+													new Integer(1)},
+													{new Date(System.currentTimeMillis()), "JFK",
+														new Integer(1)},
+														{new Date(System.currentTimeMillis()), "JFK",
+															new Integer(1)},
+															{new Date(System.currentTimeMillis()), "JFK",
+																new Integer(1)},
+																{new Date(System.currentTimeMillis()), "JFK",
+																	new Integer(1)},
+																	{new Date(System.currentTimeMillis()), "JFK",
+																		new Integer(1)},
+		};
+		return reservationsData;
+	}
 }
