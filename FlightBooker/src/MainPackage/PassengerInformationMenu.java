@@ -1,4 +1,4 @@
-package MainPackage;
+	package MainPackage;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -68,6 +68,7 @@ public class PassengerInformationMenu {
 		frame.setSize(500, 700);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
+		frame.setTitle("Passenger Information");
 
 		frame.addWindowListener( 
 				new WindowAdapter() { 
@@ -85,6 +86,7 @@ public class PassengerInformationMenu {
 
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		//mainPanel.setLayout(new FlowLayout());
 		mainPanel.setBounds( 10, 40, frame.getWidth() - 25, frame.getHeight() - 40 * 2 - 20 );
 
 		JLabel nameLabel = new JLabel( "Name: " );
@@ -132,6 +134,7 @@ public class PassengerInformationMenu {
 		passengerButtonPanel.add( editButton );		
 
 		JPanel passengerInfoPanel = new JPanel(new BorderLayout());
+		passengerInfoPanel.setPreferredSize(new Dimension(11,11));
 		passengerInfoPanel.add(infoLabelsPanel, BorderLayout.WEST);
 		passengerInfoPanel.add(infoFieldsPanel, BorderLayout.CENTER);
 		passengerInfoPanel.add(passengerButtonPanel, BorderLayout.SOUTH);
@@ -189,7 +192,7 @@ public class PassengerInformationMenu {
 	{
 		System.out.println("Update");
 		//database passenger.getPerson() for at opdatere ændrede persondata
-		this.passenger = Database.getInstance().Get(1, Passenger.class);
+		this.passenger = Database.getInstance().Get(3, Passenger.class);
 	}
 
 	private Object[][] makeReservationData()
