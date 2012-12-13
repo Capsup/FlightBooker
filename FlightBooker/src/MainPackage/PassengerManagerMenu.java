@@ -15,7 +15,8 @@ public class PassengerManagerMenu
 {
 	private JFrame frame;
 	private JPanel mainPanel;
-	private JPanel mainPassengerPanel, passengerPanel, resultPanel;
+	private JPanel mainPassengerPanel, passengerPanel;
+	private JTextField passengerField;
 	
 	private int passengerAmount = 5;
 	
@@ -66,11 +67,19 @@ public class PassengerManagerMenu
 	
 
 	public void calculateResults()
-    {
-	    resultPanel.setBounds( 100, 100, 100, 100 );
-		JLabel testlLabel = new JLabel("wutwut");
-		testlLabel.setBounds( 0, 0, 100, 100 );
-		resultPanel.add( testlLabel );
+	{
+//		JLabel testlLabel = new JLabel("wutwut");
+//		testlLabel.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 5, 100, 20 );
+		//testlLabel.setBounds( 130, 50, 50, 20 );
+		
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		JList<String> list = new JList<String>(listModel);
+		list.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 1, 100, 100 );
+		
+		
+		
+		passengerPanel.add( list );
+		passengerPanel.repaint();
     }
 
 	private void setupFrame()
@@ -143,7 +152,7 @@ public class PassengerManagerMenu
 	        passengerPanel = new JPanel();
 	        passengerPanel.setLayout( null );
 	        
-	        JTextField passengerField = new JTextField();
+	        passengerField = new JTextField();
 	        passengerField.setBounds( 20, 50, 100, 25 );
 	        passengerField.addKeyListener( new keyListener() );
 	        
@@ -151,12 +160,6 @@ public class PassengerManagerMenu
 	        
 	        mainPassengerPanel.add( passengerPanel );
         }
-		
-		resultPanel = new JPanel();
-		resultPanel.setLayout( null );
-
-		
-		passengerPanel.add( resultPanel );
 		
 		scrollPane.setViewportView(mainPassengerPanel);
 		
