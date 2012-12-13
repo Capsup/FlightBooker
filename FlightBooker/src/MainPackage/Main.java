@@ -1,5 +1,8 @@
 package MainPackage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Main
 {
 	/**
@@ -12,14 +15,17 @@ public class Main
 	public static void main( String[] args )
 	{
 		new MainMenu();
-		int iID = Database.getInstance().Add( new Person( "Black", "Widow", "Female", "06-04-1991", "Mother Russia", "Russian", "SHIELD", "1351351345", "9285813", 123123 ) );
+		//int iID = Database.getInstance().Add( new Person( "Black", "Widow", "Female", "06-04-1991", "Mother Russia", "Russian", "SHIELD", "1351351345", "9285813", 123123 ) );
 		// Passenger passenger = ( Passenger ) Database.getInstance().Get( iID );
 		
-		Passenger[] passengers = ( Passenger[] ) Database.getInstance().Get( "Passenger" );
+		/*Object[] objects = Database.getInstance().Get( "Person" );
+		Person[] passengers = Arrays.asList( objects ).toArray( new Person[objects.length] );*/
 		
-		for( int i = 0; i < passengers.length; i++ )
+		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
+		
+		for( int i = 0; i < persons.size(); i++ )
         {
-	        System.out.println(passengers[i]);
+	        System.out.println(persons.get( i ).getFirstName());
         }
 	}
 }

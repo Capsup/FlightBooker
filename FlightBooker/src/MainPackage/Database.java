@@ -1,7 +1,10 @@
 package MainPackage;
 
+import java.awt.List;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Type;
+import java.rmi.activation.Activator;
 import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,6 +14,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class Database
 {
@@ -261,23 +266,52 @@ public class Database
 		return null;
 	}
 	
-	public Object[] Get( String sType )
+	public <T extends Object> T Get( int iID, Class<T> type )
 	{
 		try
 		{
 			if( connection == null || !connection.isValid( 1 ) )
 				connectToDatabase();
 
-			PreparedStatement statement = connection.prepareStatement( "SELECT object FROM " + sType.toLowerCase() );
+			PreparedStatement statement = connection.prepareStatement( "SELECT object FROM " + type.getSimpleName().toLowerCase() + " WHERE id = ?" );
+			statement.setLong( 1, iID );
 
 			ResultSet rSet = statement.executeQuery();
-			Object[] object = new Object[rSet.getMetaData().getColumnCount()];
-			
-			for( int i = 0; i <= object.length; i++ )
-				object[i] = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();
+			Object object = null;
 
-			/*while( rSet.next() )
-				object = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();*/
+			if( rSet.next() )
+				object = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();
+
+			statement.close();
+
+			return type.cast( object );
+		} 
+		catch( SQLException | ClassNotFoundException | IOException e )
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public <T extends Object> ArrayList<T> Get( Class<T> type )
+	{
+		try
+		{
+			if( connection == null || !connection.isValid( 1 ) )
+				connectToDatabase();
+
+			PreparedStatement statement = connection.prepareStatement( "SELECT object FROM " + type.getSimpleName().toLowerCase() );
+
+			ResultSet rSet = statement.executeQuery();
+			
+			ArrayList<T> object = new ArrayList<>();
+			
+			for( int i = 0; i < rSet.getMetaData().getColumnCount(); i++ )
+			{
+				rSet.next();
+				object.add( type.cast( new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject() ) );
+			}
 
 			statement.close();
 
