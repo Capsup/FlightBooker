@@ -11,13 +11,20 @@ public class PassengerInformationMenu {
 
 	private JFrame frame;
 	private JPanel mainPanel;
+	
+	private Passenger passenger;
 
 	private JTextField[] infoFields;
 
 	private boolean isEditing = false;
 
-	public PassengerInformationMenu(JFrame frame)
+	public PassengerInformationMenu(JFrame frame/*, Passenger passenger */)
 	{
+		//this.passenger = passenger;
+		this.passenger = new Passenger(new Person("Jesper", "Nysteen", "male",
+				"06-04-1991", "Denmark", "Danish", "Skaffervej 15, 3 tv", "31225525","3443542624654", 1), new Seat(1, 1));
+		
+		
 		this.frame = frame;
 		setupFrame();
 		//setupFonts();
@@ -77,35 +84,35 @@ public class PassengerInformationMenu {
 		mainPanel.setBorder( BorderFactory.createEtchedBorder() );
 		mainPanel.setBounds( 10, 40, frame.getWidth() - 25, frame.getHeight() - 40 * 2 - 20 );
 
-		JLabel nameLabel = new JLabel( "Name:" );
-		JLabel genderLabel = new JLabel( "Gender:" );
-		JLabel birthLabel = new JLabel( "Date of birth:" );
-		JLabel countryLabel = new JLabel( "Country:" );
-		JLabel nationalityLabel = new JLabel( "Nationality" );
-		JLabel addressLabel = new JLabel( "Address:" );
-		JLabel phoneLabel = new JLabel( "Phone:" );
-		JLabel passportLabel = new JLabel( "Passport Nr:" );
+		JLabel nameLabel = new JLabel( "Name: " );
+		JLabel genderLabel = new JLabel( "Gender: " );
+		JLabel birthLabel = new JLabel( "Date of birth: " );
+		JLabel countryLabel = new JLabel( "Country: " );
+		JLabel nationalityLabel = new JLabel( "Nationality: " );
+		JLabel adressLabel = new JLabel( "Adress: " );
+		JLabel phoneLabel = new JLabel( "Phone: " );
+		JLabel passportLabel = new JLabel( "Passport Nr: " );
 
 		nameLabel.setBounds( 10, 10, 85, 20 );
 		genderLabel.setBounds( 10, 35, 85, 20 );
 		birthLabel.setBounds( 10, 60, 85, 20 );
 		countryLabel.setBounds( 10, 85, 85, 20 );
 		nationalityLabel.setBounds( 10, 110, 85, 20 );
-		addressLabel.setBounds( 10, 135, 85, 20 );
+		adressLabel.setBounds( 10, 135, 85, 20 );
 		phoneLabel.setBounds( 10, 160, 85, 20 );
 		passportLabel.setBounds( 10, 185, 85, 20 );
 
-		JTextField nameTextField = new JTextField();
-		JTextField genderTextField = new JTextField();
-		JTextField birthTextField = new JTextField();
-		JTextField countryTextField = new JTextField();
-		JTextField nationaTextField = new JTextField();
-		JTextField addressTextField = new JTextField();
-		JTextField phoneTextField = new JTextField();
-		JTextField passporTextField = new JTextField();
+		JTextField nameTextField = new JTextField(passenger.getPerson().getFirstName());
+		JTextField genderTextField = new JTextField(passenger.getPerson().getSurName());
+		JTextField birthTextField = new JTextField(passenger.getPerson().getDateOfBirth());
+		JTextField countryTextField = new JTextField(passenger.getPerson().getCountry());
+		JTextField nationaTextField = new JTextField(passenger.getPerson().getNationality());
+		JTextField adressTextField = new JTextField(passenger.getPerson().getAdress());
+		JTextField phoneTextField = new JTextField(passenger.getPerson().getPhone());
+		JTextField passporTextField = new JTextField(passenger.getPerson().getPassportNumber());
 
 		infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
-				nationaTextField, addressTextField, phoneTextField, passporTextField};
+				nationaTextField, adressTextField, phoneTextField, passporTextField};
 
 		editOff();
 
@@ -114,7 +121,7 @@ public class PassengerInformationMenu {
 		birthTextField.setBounds( 90, 60, 175, 20 );
 		countryTextField.setBounds( 90, 85, 175, 20 );
 		nationaTextField.setBounds( 90, 110, 175, 20 );
-		addressTextField.setBounds( 90, 135, 175, 20 );
+		adressTextField.setBounds( 90, 135, 175, 20 );
 		phoneTextField.setBounds( 90, 160, 175, 20 );
 		passporTextField.setBounds( 90, 185, 175, 20 );
 
@@ -129,7 +136,7 @@ public class PassengerInformationMenu {
 		mainPanel.add( birthLabel );
 		mainPanel.add( countryLabel );
 		mainPanel.add( nationalityLabel );
-		mainPanel.add( addressLabel );
+		mainPanel.add( adressLabel );
 		mainPanel.add( phoneLabel );
 		mainPanel.add( passportLabel );
 		mainPanel.add( nameTextField );
@@ -137,7 +144,7 @@ public class PassengerInformationMenu {
 		mainPanel.add( birthTextField );
 		mainPanel.add( countryTextField );
 		mainPanel.add( nationaTextField );
-		mainPanel.add( addressTextField );
+		mainPanel.add( adressTextField );
 		mainPanel.add( phoneTextField );
 		mainPanel.add( passporTextField );
 

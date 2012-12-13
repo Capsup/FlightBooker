@@ -11,6 +11,8 @@ public class Person {
 	private String phone;
 	private String passportNumber;
 	private int customerID;
+	
+	private Reservation[] reservations;
 
 	/*
 	 * Opretter en ny Person og initialiserer alle dets felter.
@@ -40,8 +42,43 @@ public class Person {
 		return surName;
 	}
 	
+	public String getGender()
+	{
+		return gender;
+	}
+	
+	public String getDateOfBirth()
+	{
+		return dateOfBirth;
+	}
+	
+	public String getCountry()
+	{
+		return country;
+	}
+	
+	public String getNationality()
+	{
+		return nationality;
+	}
+	
+	public String getAdress()
+	{
+		return adress;
+	}
+	
 	public String getPhone()
 	{
 		return phone;
+	}
+	
+	public String getPassportNumber()
+	{
+		return passportNumber;
+	}
+	
+	public int getCustomerID()
+	{
+		return customerID;
 	}
 }
