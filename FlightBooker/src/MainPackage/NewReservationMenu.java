@@ -24,6 +24,7 @@ import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -61,14 +62,20 @@ public class NewReservationMenu
 	
 	private PlanePanel planePanel;
 	
+	private ArrayList<Flight> flights;
+	
 	//Start parameters
 	private int startSeatAmount = 0;
+	
+	private JDateChooser startDateLabel;
+	private DefaultListModel listModel;
+	private JList viewedList;
 	
 	public NewReservationMenu(JFrame frame)
 	{
 		this.frame = frame;
 		
-		ArrayList<Flight> flights = Database.getInstance().Get( Flight.class );
+		flights = Database.getInstance().Get( Flight.class );
 		
 		//Test
 		displayedFlights = new Flight[flights.size()];
@@ -111,8 +118,8 @@ public class NewReservationMenu
 				if(canCommit())
 				{
 					frame.remove(mainPanel);
-					new PassengerManagerMenu(frame, currentReservation);
-					//new ReservationInfoMenu(frame, currentReservation);
+					//new PassengerManagerMenu(frame, currentReservation);
+					new ReservationInfoMenu(frame, currentReservation);
 				}
 				break;
 			case "Inspect Reservation": 	
@@ -129,7 +136,38 @@ public class NewReservationMenu
 		{
 			//System.out.println(evt.getPropertyName());
 			//if( evt.getPropertyName().equals( "value" ) )
-				updateReservation();
+			calculateResults();
+			updateReservation();
+		}
+	}
+	
+	private void calculateResults()
+	{
+		//flightPanels = new JPanel[flights.size()];
+		if( listModel == null )
+			return;
+		//listModel.clear();
+		//viewedList.removeAll();
+		for( int i = 0; i < flights.size(); i++ )
+		{
+			Flight currentFlight = flights.get( i );
+			boolean bSuccess = true;
+			if( currentFlight.getDate().after( startDateLabel.getCalendar() ) )
+			{
+				//TODO: Make this possible!!!!!!!!!!!!!
+				//JPanel flightPanel = setupFlightPanel( currentFlight );
+				
+//				if( flightPanel != null )
+//				{
+//					JButton test = new JButton();
+//					test.add(flightPanel);
+//					
+//					viewedList.add(test);
+//					//listModel.addElement( test );
+//				}
+				
+				mainPanel.repaint();
+			}
 		}
 	}
 	
@@ -199,7 +237,7 @@ public class NewReservationMenu
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		
 		*/
-		JDateChooser startDateLabel = new JDateChooser();
+		startDateLabel = new JDateChooser();
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		startDateLabel.setDate(Calendar.getInstance().getTime());
 		
@@ -247,7 +285,8 @@ public class NewReservationMenu
 		JPanel topRightPanel = new JPanel();
 		//topRightPanel.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		
-		JList viewedList = new JList();
+		listModel = new DefaultListModel<>();
+		viewedList = new JList<>();
 		viewedList.setLayout(new BoxLayout(viewedList, BoxLayout.Y_AXIS));
 		viewedList.setPreferredSize(new Dimension(200,1000));
 		
