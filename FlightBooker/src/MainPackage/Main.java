@@ -2,6 +2,10 @@ package MainPackage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+
+import MainPackage.Airport.AirportType;
+import MainPackage.Plane.PlaneType;
 
 public class Main
 {
