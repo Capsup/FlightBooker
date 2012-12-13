@@ -5,8 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -17,6 +21,13 @@ public class PassengerManagerMenu
 	private JPanel mainPanel;
 	private JPanel mainPassengerPanel, passengerPanel;
 	private JTextField passengerField;
+	//WORKS:
+	/*private DefaultListModel<String> listModel;
+	private JList<String> list;*/
+	/////
+	//private ArrayList<Person> persons;
+	private PersonData listModel;
+	private JList<Person> list;
 	
 	private int passengerAmount = 5;
 	
@@ -43,8 +54,14 @@ public class PassengerManagerMenu
 		@Override
         public void keyReleased( KeyEvent e )
         {
-	        calculateResults();
-	        
+			//WORKS:
+			listModel.clear();
+			if( !passengerField.getText().equals( "" ) )
+				calculateResults();
+			if( passengerField.getText().equals( "" ) )
+				list.setVisible( false );
+			////
+			//calculateResults();
         }
 
 		@Override
@@ -53,6 +70,98 @@ public class PassengerManagerMenu
 	        // TODO Auto-generated method stub
 	        
         }
+	}
+	
+	private class mouseListener implements MouseListener
+	{
+
+		@Override
+        public void mouseClicked( MouseEvent e )
+        {
+			Person selectedPerson = listModel.listPersons.get( list.getSelectedIndex() );
+			
+			if( selectedPerson != null )
+			{
+				passengerField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
+			}
+			
+			list.setVisible( false );
+			//System.out.println(list.getSelectedValue());
+			//list.getSelectedIndex();
+        }
+
+		@Override
+        public void mouseEntered( MouseEvent e )
+        {
+	        // TODO Auto-generated method stub
+	        
+        }
+
+		@Override
+        public void mouseExited( MouseEvent e )
+        {
+	        // TODO Auto-generated method stub
+	        
+        }
+
+		@Override
+        public void mousePressed( MouseEvent e )
+        {
+
+        }
+
+		@Override
+        public void mouseReleased( MouseEvent e )
+        {
+	        // TODO Auto-generated method stub
+	        
+        }
+		
+	}
+	
+	private class PersonData extends AbstractListModel
+	{
+		ArrayList<Person> listPersons;
+		
+		public PersonData( ArrayList<Person> persons )
+		{
+			this.listPersons = persons;
+		}
+		
+		public void clear()
+        {
+			int index = listPersons.size()-1;
+			listPersons.clear();
+			if (index >= 0) 
+			{
+				fireIntervalRemoved(this, 0, index);
+			}
+        }
+
+		public PersonData()
+		{
+			this.listPersons = new ArrayList<Person>();
+		}
+		
+		public void addElement( Person person )
+		{
+			int index = listPersons.size();
+			listPersons.add( person );
+			fireIntervalAdded( this, index, index );
+		}
+		
+		@Override
+        public Object getElementAt( int index )
+        {
+	        return( listPersons.get( index ).getFirstName() + " " + listPersons.get( index ).getSurName() );
+        }
+
+		@Override
+        public int getSize()
+        {
+	        return listPersons.size();
+        }
+		
 	}
 	
 	public PassengerManagerMenu(JFrame frame, Reservation currentReservation)
@@ -66,21 +175,39 @@ public class PassengerManagerMenu
 	}
 	
 
-	public void calculateResults()
+	/*public void calculateResults()
 	{
 //		JLabel testlLabel = new JLabel("wutwut");
 //		testlLabel.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 5, 100, 20 );
 		//testlLabel.setBounds( 130, 50, 50, 20 );
 		
-		DefaultListModel<String> listModel = new DefaultListModel<>();
-		JList<String> list = new JList<String>(listModel);
-		list.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 1, 100, 100 );
+
 		
+		//listModel.clear();
+		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
+		for( Person person : persons )
+        {
+	        if( person.getFirstName().toLowerCase().startsWith( passengerField.getText() ) )
+	        	listModel.addElement( person.getFirstName() );
+        }
 		
+		list.setVisible( true );
+
+    }*/
+	
+	public void calculateResults()
+	{
+		//listModel.addElement( Database.getInstance().Get( Person.class ).get( 0 ) );
 		
-		passengerPanel.add( list );
-		passengerPanel.repaint();
-    }
+		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
+		for( Person person : persons )
+        {
+	        if( person.getFirstName().toLowerCase().startsWith( passengerField.getText() ) )
+	        	listModel.addElement( person );
+        }
+		
+		list.setVisible( true );
+	}
 
 	private void setupFrame()
 	{
@@ -153,10 +280,30 @@ public class PassengerManagerMenu
 	        passengerPanel.setLayout( null );
 	        
 	        passengerField = new JTextField();
-	        passengerField.setBounds( 20, 50, 100, 25 );
+	        passengerField.setBounds( 20, 50, 200, 25 );
 	        passengerField.addKeyListener( new keyListener() );
 	        
 	        passengerPanel.add( passengerField );
+	        
+	        //WORKS:
+			/*listModel = new DefaultListModel<>();
+			list = new JList<String>(listModel);
+			list.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 1, 100, 100 );
+			
+			list.setVisible( false );
+			
+			passengerPanel.add( list );*/
+			////////
+	        
+	        //listModel = new DefaultListModel<>();
+	        
+	        listModel = new PersonData();
+	        list = new JList<>(listModel);
+	        list.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 1, 200, 100 );
+	        list.addMouseListener( new mouseListener() );
+	        passengerPanel.add( list );
+	        
+	        list.setVisible( false );
 	        
 	        mainPassengerPanel.add( passengerPanel );
         }

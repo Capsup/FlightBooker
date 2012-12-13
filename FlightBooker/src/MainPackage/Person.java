@@ -85,4 +85,9 @@ public class Person implements Serializable
 	{
 		return customerID;
 	}
+	
+	/*public String toString()
+	{
+		return firstName;
+	}*/
 }
