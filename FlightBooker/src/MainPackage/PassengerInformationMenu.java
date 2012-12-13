@@ -7,7 +7,7 @@ import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 
 public class PassengerInformationMenu {
 
@@ -19,7 +19,7 @@ public class PassengerInformationMenu {
 	private JButton editButton;
 	private JButton inspectReservationButton;
 	private JButton closeButton;
-	
+
 	private JTable reservationsTable;
 
 	public PassengerInformationMenu(JFrame frame/*, Passenger passenger */)
@@ -49,10 +49,12 @@ public class PassengerInformationMenu {
 
 			if( command == "Inspect reservation") {
 				System.out.println("Inspect reservation");
+				System.out.println(reservationsTable.getSelectionModel().getAnchorSelectionIndex());
 			}
 
 			if( command == "Close") {
 				System.out.println("Close");
+				frame.dispose();
 			}
 
 		}
@@ -127,26 +129,32 @@ public class PassengerInformationMenu {
 		TitledBorder passengerTitleBorder = BorderFactory.createTitledBorder("Passenger details");
 		passengerInfoPanel.setBorder(passengerTitleBorder);
 
+		//Definerer data til reservationsTable
 		String[] columns = {"Date of reservation","Destination","Passengers"};
 
 		Object[][] reservationsData = makeReservationData();
 
+		//Laver reservationsTable
 		reservationsTable = new JTable(reservationsData, columns);
+		
+		//Sætter reservationsTable's specifikke egenskaber
 		reservationsTable.setColumnSelectionAllowed(false);
 		reservationsTable.setCellSelectionEnabled(false);
 		reservationsTable.setRowSelectionAllowed(true);
-		
+		reservationsTable.getTableHeader().setReorderingAllowed(false);
 		reservationsTable.setFillsViewportHeight(true);
+		
+		//Tilføjer en sorteringsfunktion til tablen
+		reservationsTable.setAutoCreateRowSorter(true);
+
+		//Tilføjer et scrollpane til reservationsTable
 		JScrollPane reservationsScrollPane = new JScrollPane(reservationsTable);
 		reservationsScrollPane.setPreferredSize(new Dimension(mainPanel.getWidth()-10,200));
-
+		
+		//Tilføjer en border til reservationsTablen
 		TitledBorder reservationsTitleBorder = BorderFactory.createTitledBorder("Passenger reservations");
 		reservationsScrollPane.setBorder(reservationsTitleBorder);
 		
-		//reservationTable.setAutoCreateRowSorter(true);
-		//reservationTable.setRowSorter(new TableRowSorter<>());
-		//reservationTable.setPreferredScrollableViewportSize(new Dimension(200,400));
-
 		JPanel reservationsButtonPanel = new JPanel();
 		reservationsButtonPanel.setLayout(new FlowLayout());
 
@@ -158,7 +166,7 @@ public class PassengerInformationMenu {
 		closeButton.setActionCommand( "Close" );
 		closeButton.addActionListener( new actionListener() );
 
-		reservationsButtonPanel.add( inspectReservationButton);
+		reservationsButtonPanel.add( inspectReservationButton );
 		reservationsButtonPanel.add( closeButton );
 
 		mainPanel.add(passengerInfoPanel);
@@ -179,7 +187,7 @@ public class PassengerInformationMenu {
 		Object[][] reservationsData = {
 				{new Date(34567887), "CPH",
 					new Integer(5)}, 
-					{new Date(System.currentTimeMillis()), "JFK",
+					{new Date(System.currentTimeMillis()), "ROFL",
 						new Integer(1)},
 						{new Date(System.currentTimeMillis()), "LOL",
 							new Integer(3)},

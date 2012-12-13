@@ -2,12 +2,8 @@ package MainPackage;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Calendar;
 
 import javax.swing.*;
-
-import MainPackage.Airport.AirportType;
-import MainPackage.Plane.PlaneType;
 
 public class MainMenu extends JFrame {
 
@@ -27,8 +23,7 @@ public class MainMenu extends JFrame {
 			switch(event.getActionCommand())
 			{
 			case "New Reservation": 	
-				new FlightInfoMenu(new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM)));
-				//new NewReservationMenu(new JFrame());
+				new NewReservationMenu(new JFrame());
 				//new PassengerInformationMenu(new JFrame());
 				break;
 
