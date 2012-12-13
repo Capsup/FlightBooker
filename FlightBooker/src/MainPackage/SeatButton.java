@@ -16,7 +16,6 @@ public class SeatButton extends JButton
 	
 	class ButtonListener implements ActionListener
 	{
-		
 		public void actionPerformed(ActionEvent event)
 		{
 			attemptReserve();
@@ -44,20 +43,20 @@ public class SeatButton extends JButton
 	{
 		Passenger[] passengers = currentReservation.getPassengers();
 		
-		int count = 0;
-		
-		for(int i=0; i< passengers.length; i++)
-		{
-			if(passengers[i].getSeat() == null)
-			{
-				break;
-			}
-			
-			count += 1;
-		}
-		
 		if(!seat.isBooked())
 		{
+			int count = 0;
+			
+			for(int i=0; i< passengers.length; i++)
+			{
+				if(passengers[i].getSeat() == null)
+				{
+					break;
+				}
+				
+				count += 1;
+			}
+			
 			if(count < passengers.length)
 			{
 				reserve(passengers[count]);
@@ -89,9 +88,9 @@ public class SeatButton extends JButton
 		myIndex = -1;
 	}
 	
-	public void setBooked()
+	public void setBooked(boolean booked)
 	{
-		seat.changeBookingStatus(true);
+		seat.changeBookingStatus(booked);
 	}
 	
 	void update()
@@ -122,5 +121,10 @@ public class SeatButton extends JButton
 		{
 			setBackground(null);
 		}
+	}
+	
+	void setMyIndex(int count)
+	{
+		myIndex = count;
 	}
 }

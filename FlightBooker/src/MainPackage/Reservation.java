@@ -1,4 +1,5 @@
 package MainPackage;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Reservation 
@@ -43,7 +44,7 @@ public class Reservation
 	}
 	
 	//Returns the Date object of the flight.
-	public Date getFlyDate()
+	public Calendar getFlyDate()
 	{
 		return flight.getDate();
 	}

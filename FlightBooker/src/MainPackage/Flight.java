@@ -1,9 +1,10 @@
 package MainPackage;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Flight 
 {
-	private Date flyDate;
+	private Calendar flyDate;
 	private Plane plane;
 	private Airport origin;
 	private Airport destination;
@@ -12,7 +13,7 @@ public class Flight
 	
 	private Reservation[] reservations;
 	
-	public Flight(Date flyDate, Plane plane, Airport origin, Airport destination)
+	public Flight(Calendar flyDate, Plane plane, Airport origin, Airport destination)
 	{
 		this.flyDate = flyDate;
 		
@@ -53,7 +54,7 @@ public class Flight
 		
 	}
 	
-	public Date getDate()
+	public Calendar getDate()
 	{
 		return flyDate;
 	}
@@ -76,5 +77,25 @@ public class Flight
 	public Airport getDestination()
 	{
 		return destination;
+	}
+	
+	public int getSeatsLeft()
+	{
+		int seatsLeft = seatArray.length*seatArray[0].length;
+		
+		
+		if(reservations != null)
+		{
+			int seatsTaken = 0;
+			
+			for (Reservation reservation : reservations) 
+			{
+				seatsTaken += reservation.getPassengers().length;
+			}
+			
+			seatsLeft -= seatsTaken;
+		}
+		
+		return seatsLeft;
 	}
 }

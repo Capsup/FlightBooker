@@ -20,12 +20,12 @@ public class Main
 		
 		/*Object[] objects = Database.getInstance().Get( "Person" );
 		Person[] passengers = Arrays.asList( objects ).toArray( new Person[objects.length] );*/
-		
+		/*
 		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 		
 		for( int i = 0; i < persons.size(); i++ )
         {
 	        System.out.println(persons.get( i ).getFirstName());
-        }
+        }*/
 	}
 }
