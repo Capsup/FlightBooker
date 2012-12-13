@@ -44,8 +44,12 @@ public class ReservationInfoMenu
 		{
 			switch(event.getActionCommand())
 			{
-			case "Edit Reservation": 	
-				planePanel.setEditable();
+			case "Edit Reservation":
+				if(canCommit())
+				{
+					planePanel.setEditable();
+					planePanel.updateSeats();
+				}
 				break;
 			case "Inspect Reservation": 	
 				System.out.println("MEH!");
@@ -202,5 +206,20 @@ public class ReservationInfoMenu
 		
 		editReservationButton.addActionListener(listener);
 		
+	}
+	
+	boolean canCommit()
+	{
+		boolean returnBool = true;
+		
+		Passenger[] passengers = currentReservation.getPassengers();
+		
+		for (Passenger passenger : passengers) 
+		{
+			if(passenger.getSeat() == null)
+				returnBool = false;
+		}
+		
+		return returnBool;
 	}
 }

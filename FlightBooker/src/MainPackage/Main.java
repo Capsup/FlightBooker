@@ -28,5 +28,12 @@ public class Main
 //        {
 //	        System.out.println(persons.get( i ).getFirstName());
 //        }
+		/*
+		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
+		
+		for( int i = 0; i < persons.size(); i++ )
+        {
+	        System.out.println(persons.get( i ).getFirstName());
+        }*/
 	}
 }
