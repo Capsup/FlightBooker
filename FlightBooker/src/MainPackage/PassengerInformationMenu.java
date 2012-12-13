@@ -187,7 +187,7 @@ public class PassengerInformationMenu {
 		Object[][] reservationsData = {
 				{new Date(34567887), "CPH",
 					new Integer(5)}, 
-					{new Date(System.currentTimeMillis()), "JFK",
+					{new Date(System.currentTimeMillis()), "ROFL",
 						new Integer(1)},
 						{new Date(System.currentTimeMillis()), "LOL",
 							new Integer(3)},

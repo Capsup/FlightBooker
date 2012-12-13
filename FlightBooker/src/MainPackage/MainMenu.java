@@ -24,8 +24,8 @@ public class MainMenu extends JFrame {
 			{
 			case "New Reservation": 	
 				//new FlightInfoMenu();
-				new NewReservationMenu(new JFrame());
-				//new PassengerInformationMenu(new JFrame());
+				//new NewReservationMenu(new JFrame());
+				new PassengerInformationMenu(new JFrame());
 				break;
 
 			case "Find":
