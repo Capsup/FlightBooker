@@ -11,20 +11,20 @@ public class PassengerInformationMenu {
 
 	private JFrame frame;
 	private JPanel mainPanel;
-	
-	private Passenger passenger;
 
-	private JTextField[] infoFields;
+	private Passenger passenger;	
 
-	private boolean isEditing = false;
+	private JButton editButton;
+	private JButton inspectReservationButton;
+	private JButton okButton;
 
 	public PassengerInformationMenu(JFrame frame/*, Passenger passenger */)
 	{
 		//this.passenger = passenger;
 		this.passenger = new Passenger(new Person("Jesper", "Nysteen", "male",
 				"06-04-1991", "Denmark", "Danish", "Skaffervej 15, 3 tv", "31225525","3443542624654", 1), new Seat(1, 1));
-		
-		
+
+
 		this.frame = frame;
 		setupFrame();
 		//setupFonts();
@@ -38,30 +38,26 @@ public class PassengerInformationMenu {
 		public void actionPerformed( ActionEvent e )
 		{
 			String command = e.getActionCommand();
-			if( command == "OK")
-				System.out.println("OK");
-			if(isEditing)
-			{
-				System.out.println("Commit changes");
-				editOff();
+
+			if( command == "Edit information") {
+				System.out.println("Edit information");
+				//new PassengerInformationEditor(this.passenger);
 			}
 
-			//SEND TIL DATABASE
+			if( command == "Inspect reservation") {
+				System.out.println("Inspect reservation");
+			}
 
-			if( command == "Cancel")
-			{
-				System.out.println("Cancel");
-				editOff();
-			}			
+			if( command == "OK") {
+				System.out.println("OK");
+			}
 
-			if( command == "Edit" )
-				editOn();
 		}
 	}
 
 	private void setupFrame()
 	{
-		frame.setSize(300, 600);
+		frame.setSize(500, 700);
 		frame.setResizable(false);
 
 		frame.setLocationRelativeTo(null);
@@ -74,14 +70,8 @@ public class PassengerInformationMenu {
 		Container contentPane = frame.getContentPane();
 		contentPane.setLayout( null );
 
-		JLabel titleLabel = new JLabel( "Enter passenger information" );
-		titleLabel.setBounds( 10, 10, 200, 20 );
-
-		frame.add( titleLabel );
-
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout( null );
-		mainPanel.setBorder( BorderFactory.createEtchedBorder() );
+		mainPanel = new JPanel();
+		mainPanel.setLayout( new FlowLayout());
 		mainPanel.setBounds( 10, 40, frame.getWidth() - 25, frame.getHeight() - 40 * 2 - 20 );
 
 		JLabel nameLabel = new JLabel( "Name: " );
@@ -92,15 +82,12 @@ public class PassengerInformationMenu {
 		JLabel adressLabel = new JLabel( "Adress: " );
 		JLabel phoneLabel = new JLabel( "Phone: " );
 		JLabel passportLabel = new JLabel( "Passport Nr: " );
-
-		nameLabel.setBounds( 10, 10, 85, 20 );
-		genderLabel.setBounds( 10, 35, 85, 20 );
-		birthLabel.setBounds( 10, 60, 85, 20 );
-		countryLabel.setBounds( 10, 85, 85, 20 );
-		nationalityLabel.setBounds( 10, 110, 85, 20 );
-		adressLabel.setBounds( 10, 135, 85, 20 );
-		phoneLabel.setBounds( 10, 160, 85, 20 );
-		passportLabel.setBounds( 10, 185, 85, 20 );
+		
+		JLabel[] labels = {nameLabel, genderLabel, birthLabel, countryLabel, nationalityLabel, adressLabel, phoneLabel, passportLabel};
+		JPanel infoLabelsPanel = new JPanel(new GridLayout(labels.length, 1));
+		
+		for(JLabel label : labels)
+			infoLabelsPanel.add(label);
 
 		JTextField nameTextField = new JTextField(passenger.getPerson().getFirstName());
 		JTextField genderTextField = new JTextField(passenger.getPerson().getSurName());
@@ -111,62 +98,33 @@ public class PassengerInformationMenu {
 		JTextField phoneTextField = new JTextField(passenger.getPerson().getPhone());
 		JTextField passporTextField = new JTextField(passenger.getPerson().getPassportNumber());
 
-		infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
+		JTextField[] infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
 				nationaTextField, adressTextField, phoneTextField, passporTextField};
 
-		editOff();
+		for(JTextField field : infoFields)
+			field.setEditable(false);
 
-		nameTextField.setBounds( 90, 10, 175, 20 );
-		genderTextField.setBounds( 90, 35, 175, 20 );
-		birthTextField.setBounds( 90, 60, 175, 20 );
-		countryTextField.setBounds( 90, 85, 175, 20 );
-		nationaTextField.setBounds( 90, 110, 175, 20 );
-		adressTextField.setBounds( 90, 135, 175, 20 );
-		phoneTextField.setBounds( 90, 160, 175, 20 );
-		passporTextField.setBounds( 90, 185, 175, 20 );
+		JPanel infoFieldsPanel = new JPanel(new GridLayout(infoFields.length, 1));
+		
+		for(JTextField field : infoFields)
+			infoFieldsPanel.add(field);
+		
+		JPanel passengerButtonPanel = new JPanel();
+		passengerButtonPanel.setLayout(new FlowLayout());
 
-		mainPanel.add( nameLabel );
-		mainPanel.add( nameTextField );
-		mainPanel.add( genderLabel );
-		mainPanel.add( genderTextField );
-		mainPanel.add( birthLabel );
-		mainPanel.add( birthTextField );
-		mainPanel.add( nameLabel );
-		mainPanel.add( genderLabel );
-		mainPanel.add( birthLabel );
-		mainPanel.add( countryLabel );
-		mainPanel.add( nationalityLabel );
-		mainPanel.add( adressLabel );
-		mainPanel.add( phoneLabel );
-		mainPanel.add( passportLabel );
-		mainPanel.add( nameTextField );
-		mainPanel.add( genderTextField );
-		mainPanel.add( birthTextField );
-		mainPanel.add( countryTextField );
-		mainPanel.add( nationaTextField );
-		mainPanel.add( adressTextField );
-		mainPanel.add( phoneTextField );
-		mainPanel.add( passporTextField );
-
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new FlowLayout());
-		buttonsPanel.setBounds( 40, 210, 200, 40 );
-
-		JButton okButton = new JButton( "OK" );
-		okButton.setActionCommand( "OK" );
-		okButton.addActionListener( new actionListener() );
-
-		JButton cancelButton = new JButton( "Cancel" );
-		cancelButton.setActionCommand( "Cancel" );
-		cancelButton.addActionListener( new actionListener() );
-
-		JButton editButton = new JButton( "Edit" );
-		editButton.setActionCommand( "Edit" );
+		editButton = new JButton( "Edit information" );
+		editButton.setActionCommand( "Edit information" );
 		editButton.addActionListener( new actionListener() );
 
-		buttonsPanel.add( okButton );
-		buttonsPanel.add( cancelButton );
-		buttonsPanel.add( editButton );
+		passengerButtonPanel.add( editButton );		
+		
+		JPanel passengerInfoPanel = new JPanel(new BorderLayout());
+		passengerInfoPanel.add(infoLabelsPanel, BorderLayout.WEST);
+		passengerInfoPanel.add(infoFieldsPanel, BorderLayout.CENTER);
+		passengerInfoPanel.add(passengerButtonPanel, BorderLayout.SOUTH);
+		passengerInfoPanel.setBorder( BorderFactory.createEtchedBorder() );
+		//JLabel passengerTitleLabel = new JLabel( "Passenger information" );
+		//passengerInfoPanel.add( passengerTitleLabel );
 
 		String[] columns = {"Date of reservation","Destination","Passengers"};
 
@@ -176,33 +134,35 @@ public class PassengerInformationMenu {
 		};
 
 		JTable reservationTable = new JTable(reservationsData, columns);
-		reservationTable.setBounds(40, 260, 200, 200);
+		JScrollPane scrollPane = new JScrollPane(reservationTable);
+		reservationTable.setFillsViewportHeight(true);
+		//reservationTable.setPreferredScrollableViewportSize(new Dimension(200,400));
 
-		mainPanel.add(buttonsPanel);
-		mainPanel.add(reservationTable);
+		JPanel reservationsButtonPanel = new JPanel();
+		reservationsButtonPanel.setLayout(new FlowLayout());
+
+		inspectReservationButton = new JButton( "Inspect reservation" );
+		inspectReservationButton.setActionCommand( "Inspect reservation" );
+		inspectReservationButton.addActionListener( new actionListener() );
+
+		okButton = new JButton( "OK" );
+		okButton.setActionCommand( "OK" );
+		okButton.addActionListener( new actionListener() );
+
+		reservationsButtonPanel.add( inspectReservationButton);
+		reservationsButtonPanel.add( okButton );
+
+		mainPanel.add(passengerInfoPanel);
+		mainPanel.add(scrollPane);
+		mainPanel.add(reservationsButtonPanel);
 
 		frame.add( mainPanel );
 
 	}
 
-	private void editOn()
-	{
-		for(JTextField field : infoFields)
-			field.setEditable(true);
-		isEditing = true;
-	}
-
-	private void editOff()
-	{
-		for(JTextField field : infoFields)
-			field.setEditable(false);
-		isEditing = false;
-	}
-
 	private void update()
 	{
 		frame.setVisible(true);
-
 	}
 
 }
