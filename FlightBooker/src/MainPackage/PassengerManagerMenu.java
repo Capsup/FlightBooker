@@ -20,7 +20,8 @@ public class PassengerManagerMenu
 	private JFrame frame;
 	private JPanel mainPanel;
 	private JPanel mainPassengerPanel, passengerPanel;
-	private JTextField passengerField;
+	private JTextField[] passengerField;
+	
 	//WORKS:
 	/*private DefaultListModel<String> listModel;
 	private JList<String> list;*/
@@ -30,6 +31,8 @@ public class PassengerManagerMenu
 	private JList<Person> list;
 	
 	private int passengerAmount = 5;
+	
+	private Reservation currentReservation;
 	
 	private class actionListener implements ActionListener
 	{
@@ -56,9 +59,10 @@ public class PassengerManagerMenu
         {
 			//WORKS:
 			listModel.clear();
-			if( !passengerField.getText().equals( "" ) )
-				calculateResults();
-			if( passengerField.getText().equals( "" ) )
+			JTextField currentField = (JTextField) e.getComponent();
+			if( !currentField.getText().equals( "" ) )
+				calculateResults(currentField);
+			if( currentField.getText().equals( "" ) )
 				list.setVisible( false );
 			////
 			//calculateResults();
@@ -82,7 +86,9 @@ public class PassengerManagerMenu
 			
 			if( selectedPerson != null )
 			{
-				passengerField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
+				JTextField currentField = (JTextField) e.getComponent();
+				
+				currentField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
 			}
 			
 			list.setVisible( false );
@@ -168,6 +174,8 @@ public class PassengerManagerMenu
 	{
 		this.frame = frame;
 		
+		this.currentReservation = currentReservation;
+		
 		setupFrame();
 		//setupFonts();
 		
@@ -195,14 +203,14 @@ public class PassengerManagerMenu
 
     }*/
 	
-	public void calculateResults()
+	public void calculateResults(JTextField currentField)
 	{
 		//listModel.addElement( Database.getInstance().Get( Person.class ).get( 0 ) );
 		
 		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 		for( Person person : persons )
         {
-	        if( person.getFirstName().toLowerCase().startsWith( passengerField.getText() ) )
+	        if( person.getFirstName().toLowerCase().startsWith( currentField.getText() ) )
 	        	listModel.addElement( person );
         }
 		
@@ -242,48 +250,27 @@ public class PassengerManagerMenu
 		middlePanel.add(additionalPassengerLabel);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setPreferredSize(new Dimension(100,200));
+		//scrollPane.setPreferredSize(new Dimension(100,200));
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		middlePanel.add(scrollPane);
 		
 		mainPassengerPanel = new JPanel();
 		mainPassengerPanel.setLayout(new BoxLayout(mainPassengerPanel, BoxLayout.Y_AXIS));
 		
-//		for(int i=0; i<passengerAmount; i++)
-//		{
-//			JPanel passengerPanel = new JPanel();
-//			passengerPanel.setLayout(new BoxLayout(passengerPanel,BoxLayout.X_AXIS));
-//			passengerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
-//			
-//			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
-//			JButton editButton = new JButton("Edit");
-//			editButton.setActionCommand( "edit" );
-//			editButton.addActionListener( new actionListener() );
-//			JButton deleteButton = new JButton("-");
-//			
-//			passengerPanel.add(passengerLabel);
-//			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-//			passengerPanel.add(editButton);
-//			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-//			passengerPanel.add(deleteButton);
-//			passengerPanel.add(Box.createRigidArea(new Dimension(0,30)));
-//			
-//			mainPassengerPanel.add(passengerPanel);
-//		}
-		
 		//Hver passager skal have et suggestive panel hvor man skriver navn ind og så slår den resten
 		//Jeg får parsed en reservation hvor der er x antal passagerer og de har et sæde og denne menu skal tildele de person objekter de rigtige værdier
 		
-		for( int i = 0; i < 1; i++ )
+		passengerField = new JTextField[currentReservation.getPassengers().length];
+		
+		passengerPanel = new JPanel();
+		passengerPanel.setLayout(null);
+		
+		for( int i = 0; i < currentReservation.getPassengers().length; i++ )
         {
-	        passengerPanel = new JPanel();
-	        passengerPanel.setLayout( null );
+	        passengerField[i] = new JTextField();
+	        passengerField[i].setBounds( 20, 50, 200, 25 );
+	        passengerField[i].addKeyListener( new keyListener() );
 	        
-	        passengerField = new JTextField();
-	        passengerField.setBounds( 20, 50, 200, 25 );
-	        passengerField.addKeyListener( new keyListener() );
-	        
-	        passengerPanel.add( passengerField );
+	        passengerPanel.add( passengerField[i] );
 	        
 	        //WORKS:
 			/*listModel = new DefaultListModel<>();
@@ -299,7 +286,7 @@ public class PassengerManagerMenu
 	        
 	        listModel = new PersonData();
 	        list = new JList<>(listModel);
-	        list.setBounds( passengerField.getBounds().x, passengerField.getBounds().y + passengerField.getBounds().height + 1, 200, 100 );
+	        list.setBounds( passengerField[i].getBounds().x, passengerField[i].getBounds().y + passengerField[i].getBounds().height + 1, 200, 100 );
 	        list.addMouseListener( new mouseListener() );
 	        passengerPanel.add( list );
 	        
@@ -309,6 +296,9 @@ public class PassengerManagerMenu
         }
 		
 		scrollPane.setViewportView(mainPassengerPanel);
+		//scrollPane.add(mainPassengerPanel);
+		
+		middlePanel.add(scrollPane);
 		
 		mainPanel.add(middlePanel, BorderLayout.CENTER);
 		

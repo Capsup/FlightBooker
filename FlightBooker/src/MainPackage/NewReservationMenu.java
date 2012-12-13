@@ -24,6 +24,7 @@ import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -61,14 +62,21 @@ public class NewReservationMenu
 	
 	private PlanePanel planePanel;
 	
+	private ArrayList<Flight> flights;
+	
 	//Start parameters
 	private int startSeatAmount = 0;
+	
+	private JDateChooser startDateLabel;
+	private DefaultListModel listModel;
+	private JList viewedList;
+	private JScrollPane scrollPane;
 	
 	public NewReservationMenu(JFrame frame)
 	{
 		this.frame = frame;
 		
-		ArrayList<Flight> flights = Database.getInstance().Get( Flight.class );
+		flights = Database.getInstance().Get( Flight.class );
 		
 		//Test
 		displayedFlights = new Flight[flights.size()];
@@ -129,7 +137,45 @@ public class NewReservationMenu
 		{
 			//System.out.println(evt.getPropertyName());
 			//if( evt.getPropertyName().equals( "value" ) )
-				updateReservation();
+			calculateResults();
+			updateReservation();
+		}
+	}
+	
+	private void calculateResults()
+	{
+		//flightPanels = new JPanel[flights.size()];
+		if( listModel == null )
+			return;
+		//listModel.clear();
+		//viewedList.removeAll();
+		for( int i = 0; i < flights.size(); i++ )
+		{
+			Flight currentFlight = flights.get( i );
+			boolean bSuccess = true;
+			if( currentFlight.getDate().after( startDateLabel.getCalendar() ) )
+			{
+				//TODO: Make this possible!!!!!!!!!!!!!
+				JPanel flightPanel = setupFlightPanel( currentFlight );
+				
+				JButton flightPanelButton = new JButton();
+				flightPanelButton.add(flightPanel);
+				
+				viewedList.add(flightPanelButton);
+				
+//				if( flightPanel != null )
+//				{
+//					JButton test = new JButton();
+//					test.add(flightPanel);
+//					
+//					viewedList.add(test);
+//					//listModel.addElement( test );
+//				}
+				
+				//viewedList.repaint();
+				//scrollPane.repaint();
+				mainPanel.validate();
+			}
 		}
 	}
 	
@@ -137,7 +183,7 @@ public class NewReservationMenu
 	{
 		frame.setSize(frameSize.width, frameSize.height);
 		frame.setResizable(false);
-		frame.setTitle("Passenger Manager");
+		frame.setTitle("New Reservation Menu");
 		frame.setLocationRelativeTo(null);
 	}
 	
@@ -199,7 +245,7 @@ public class NewReservationMenu
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		
 		*/
-		JDateChooser startDateLabel = new JDateChooser();
+		startDateLabel = new JDateChooser();
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		startDateLabel.setDate(Calendar.getInstance().getTime());
 		
@@ -247,7 +293,8 @@ public class NewReservationMenu
 		JPanel topRightPanel = new JPanel();
 		//topRightPanel.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		
-		JList viewedList = new JList();
+		listModel = new DefaultListModel<>();
+		viewedList = new JList<>();
 		viewedList.setLayout(new BoxLayout(viewedList, BoxLayout.Y_AXIS));
 		viewedList.setPreferredSize(new Dimension(200,1000));
 		
@@ -262,7 +309,7 @@ public class NewReservationMenu
 			}
 		}
 		
-		JScrollPane scrollPane = new JScrollPane(viewedList);
+		scrollPane = new JScrollPane(viewedList);
 		scrollPane.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		topRightPanel.add(scrollPane);
 		
@@ -308,14 +355,15 @@ public class NewReservationMenu
 		updateReservation();
 	}
 	
-	void setupFlightPanel(int index, Flight currentFlight)
+	JPanel setupFlightPanel(Flight currentFlight)
 	{
 		//Flight Panel
-		flightPanels[index] = new JPanel();
-		flightPanels[index].setLayout(new BoxLayout(flightPanels[index], BoxLayout.X_AXIS));
-		flightPanels[index].setAlignmentX(Component.LEFT_ALIGNMENT);
-		flightPanels[index].setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		flightPanels[index].setBackground(Color.WHITE);
+		JPanel newFlightPanel = new JPanel();
+		
+		newFlightPanel.setLayout(new BoxLayout(newFlightPanel, BoxLayout.X_AXIS));
+		newFlightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		newFlightPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		newFlightPanel.setBackground(Color.WHITE);
 		
 			//First Panel
 		JPanel firstPanel = new JPanel();
@@ -391,13 +439,14 @@ public class NewReservationMenu
 			//Third Panel Finished
 		
 		//Flight Panel Finish Up
-		flightPanels[index].add(firstPanel);
-		flightPanels[index].add(Box.createHorizontalGlue());
-		flightPanels[index].add(secondPanel);
-		flightPanels[index].add(Box.createHorizontalGlue());
-		flightPanels[index].add(thirdPanel);
+		newFlightPanel.add(firstPanel);
+		newFlightPanel.add(Box.createHorizontalGlue());
+		newFlightPanel.add(secondPanel);
+		newFlightPanel.add(Box.createHorizontalGlue());
+		newFlightPanel.add(thirdPanel);
 		//Flight Panel Finished
 		
+		return newFlightPanel;
 	}
 	
 	private void update()
