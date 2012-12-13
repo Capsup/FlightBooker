@@ -3,6 +3,8 @@ package MainPackage;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 
 import javax.swing.*;
@@ -25,14 +27,14 @@ public class PassengerInformationMenu {
 	public PassengerInformationMenu(JFrame frame/*, Passenger passenger */)
 	{
 		//this.passenger = passenger;
-		this.passenger = new Passenger(new Person("Jesper", "Nysteen", "male",
-				"06-04-1991", "Denmark", "Danish", "Skaffervej 15, 3 tv", "31225525","3443542624654", 1), new Seat(1, 1));
+		update();
 
 		this.frame = frame;
 		setupFrame();
 		//setupFonts();
 
 		makeContent();
+		frame.setVisible(true);
 	}
 
 	private class actionListener implements ActionListener
@@ -44,7 +46,7 @@ public class PassengerInformationMenu {
 
 			if( command == "Edit information") {
 				System.out.println("Edit information");
-				//new PassengerInformationEditor(this.passenger);
+				new PassengerInformationEditor(passenger.getPerson());
 			}
 
 			if( command == "Inspect reservation") {
@@ -60,13 +62,20 @@ public class PassengerInformationMenu {
 		}
 	}
 
+
 	private void setupFrame()
 	{
 		frame.setSize(500, 700);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 
-		update();
+		frame.addWindowListener( 
+				new WindowAdapter() { 
+					public void windowActivated(WindowEvent e) {
+						update();
+					} 
+				} 
+				);
 	}
 
 	private void makeContent()
@@ -136,25 +145,25 @@ public class PassengerInformationMenu {
 
 		//Laver reservationsTable
 		reservationsTable = new JTable(reservationsData, columns);
-		
+
 		//Sætter reservationsTable's specifikke egenskaber
 		reservationsTable.setColumnSelectionAllowed(false);
 		reservationsTable.setCellSelectionEnabled(false);
 		reservationsTable.setRowSelectionAllowed(true);
 		reservationsTable.getTableHeader().setReorderingAllowed(false);
 		reservationsTable.setFillsViewportHeight(true);
-		
+
 		//Tilføjer en sorteringsfunktion til tablen
 		reservationsTable.setAutoCreateRowSorter(true);
 
 		//Tilføjer et scrollpane til reservationsTable
 		JScrollPane reservationsScrollPane = new JScrollPane(reservationsTable);
 		reservationsScrollPane.setPreferredSize(new Dimension(mainPanel.getWidth()-10,200));
-		
+
 		//Tilføjer en border til reservationsTablen
 		TitledBorder reservationsTitleBorder = BorderFactory.createTitledBorder("Passenger reservations");
 		reservationsScrollPane.setBorder(reservationsTitleBorder);
-		
+
 		JPanel reservationsButtonPanel = new JPanel();
 		reservationsButtonPanel.setLayout(new FlowLayout());
 
@@ -174,12 +183,13 @@ public class PassengerInformationMenu {
 		mainPanel.add(reservationsButtonPanel);
 
 		frame.add( mainPanel );
-
 	}
 
 	private void update()
 	{
-		frame.setVisible(true);
+		System.out.println("Update");
+		//database passenger.getPerson() for at opdatere ændrede persondata
+		this.passenger = Database.getInstance().Get(1, Passenger.class);
 	}
 
 	private Object[][] makeReservationData()

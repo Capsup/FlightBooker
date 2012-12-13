@@ -307,9 +307,8 @@ public class Database
 			
 			ArrayList<T> object = new ArrayList<>();
 			
-			for( int i = 0; i < rSet.getMetaData().getColumnCount(); i++ )
+			while( rSet.next() )
 			{
-				rSet.next();
 				object.add( type.cast( new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject() ) );
 			}
 

@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
@@ -67,21 +68,23 @@ public class NewReservationMenu
 	{
 		this.frame = frame;
 		
-		//Test
-		displayedFlights = new Flight[5];
+		ArrayList<Flight> flights = Database.getInstance().Get( Flight.class );
 		
-		displayedFlights[0] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.MALMÖ));
+		//Test
+		displayedFlights = new Flight[flights.size()];
+		
+		/*displayedFlights[0] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.MALMÖ));
 		displayedFlights[1] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.STOCKHOLM),  new Airport(AirportType.COPENHAGEN));
 		displayedFlights[2] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.COPENHAGEN));
 		displayedFlights[3] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.RØNNE));
-		displayedFlights[4] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.STOCKHOLM));
+		displayedFlights[4] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.STOCKHOLM));*/
 		
 		flightPanels = new JPanel[displayedFlights.length];
 		
-		for (int i=0; i<displayedFlights.length; i++) 
+		/*for (int i=0; i<displayedFlights.length; i++) 
 		{
-			setupFlightPanel(i, displayedFlights[i]);
-		}
+			setupFlightPanel(i, flights.get( i ));
+		}*/
 		
 		initializeReservation();
 		
@@ -124,7 +127,9 @@ public class NewReservationMenu
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) 
 		{
-			updateReservation();
+			System.out.println(evt.getPropertyName());
+			if( evt.getPropertyName().equals( "value" ) )
+				updateReservation();
 		}
 	}
 	
@@ -248,10 +253,13 @@ public class NewReservationMenu
 		
 		for (JPanel flightPanel : flightPanels) 
 		{
-			JButton test = new JButton();
-			test.add(flightPanel);
-			
-			viewedList.add(test);
+			if( flightPanel != null )
+			{
+				JButton test = new JButton();
+				test.add(flightPanel);
+				
+				viewedList.add(test);
+			}
 		}
 		
 		JScrollPane scrollPane = new JScrollPane(viewedList);

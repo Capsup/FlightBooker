@@ -1,8 +1,9 @@
 package MainPackage;
 
 import java.awt.Dimension;
+import java.io.Serializable;
  
-public class Seat 
+public class Seat implements Serializable
 {
 	private int x;
 	private int y;

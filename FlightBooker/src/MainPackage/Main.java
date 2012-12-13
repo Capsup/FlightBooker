@@ -2,6 +2,10 @@ package MainPackage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+
+import MainPackage.Airport.AirportType;
+import MainPackage.Plane.PlaneType;
 
 public class Main
 {
@@ -15,9 +19,9 @@ public class Main
 	public static void main( String[] args )
 	{
 		new MainMenu();
-		/*int iID = Database.getInstance().Add( new Person( "Black", "Widow", "Female", "06-04-1991", "Mother Russia", "Russian", "SHIELD", "1351351345", "9285813", 123123 ) );
-		 Passenger passenger = ( Passenger ) Database.getInstance().Get( iID );
-		Object[] objects = Database.getInstance().Get( "Person" );
-		Person[] passengers = Arrays.asList( objects ).toArray( new Person[objects.length] );*/
+//		Database.getInstance().Add( new Passenger(new Person("Jesper", "Nysteen", "male",
+//				"06-04-1991", "Denmark", "Danish", "Skaffervej 15, 3 tv", "31225525","3443542624654", 5), new Seat(0, 0)) );
+		/*Passenger passenger = ( Passenger ) Database.getInstance().Get( iID );
+		Person person = Database.getInstance().Get( iID, Person.class );*/
 	}
 }

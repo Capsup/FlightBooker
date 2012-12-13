@@ -1,11 +1,12 @@
 package MainPackage;
 
 import java.awt.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import MainPackage.Plane.PlaneType;
 
-public class Airport
+public class Airport implements Serializable
 {
 	public enum AirportType
 	{

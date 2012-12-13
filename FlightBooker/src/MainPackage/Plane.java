@@ -1,6 +1,8 @@
 package MainPackage;
 
-public class Plane 
+import java.io.Serializable;
+
+public class Plane implements Serializable
 {
 	public enum PlaneType 
 	{
