@@ -102,4 +102,9 @@ public class Flight
 	{
 		return seatArray.length*seatArray[0].length;
 	}
+	
+	public void setReservations(Reservation[] reservations)
+	{
+		this.reservations = reservations;
+	}
 }

@@ -7,9 +7,9 @@ public class Reservation
 	private Person owner;
 	private Passenger[] passengerArray;
 	private Flight flight;
-    private Date reservedDate;
+    private Calendar reservedDate;
 	
-	public Reservation(Person customer, Flight flight, Date reservedDate, Passenger[] passengers)
+	public Reservation(Person customer, Flight flight, Calendar reservedDate, Passenger[] passengers)
 	{
 		owner = customer;
 		
@@ -47,6 +47,11 @@ public class Reservation
 	public Calendar getFlyDate()
 	{
 		return flight.getDate();
+	}
+	
+	public Calendar getReservationDate()
+	{
+		return reservedDate;
 	}
 	
 	public Flight getFlight()
