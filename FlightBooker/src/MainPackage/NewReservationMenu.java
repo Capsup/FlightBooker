@@ -244,7 +244,7 @@ public class NewReservationMenu
 		
 		JList viewedList = new JList();
 		viewedList.setLayout(new BoxLayout(viewedList, BoxLayout.Y_AXIS));
-		//viewedList.setPreferredSize(new Dimension(200,1000));
+		viewedList.setPreferredSize(new Dimension(200,1000));
 		
 		for (JPanel flightPanel : flightPanels) 
 		{
@@ -255,7 +255,7 @@ public class NewReservationMenu
 		}
 		
 		JScrollPane scrollPane = new JScrollPane(viewedList);
-		//scrollPane.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
+		scrollPane.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		topRightPanel.add(scrollPane);
 		
 		topPanel.add(topLeftPanel, BorderLayout.WEST);

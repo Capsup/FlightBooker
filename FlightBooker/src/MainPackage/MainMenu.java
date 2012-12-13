@@ -23,8 +23,8 @@ public class MainMenu extends JFrame {
 			switch(event.getActionCommand())
 			{
 			case "New Reservation": 	
-				new FlightInfoMenu();
-				//new NewReservationMenu(new JFrame());
+				//new FlightInfoMenu();
+				new NewReservationMenu(new JFrame());
 				//new PassengerInformationMenu(new JFrame());
 				break;
 
