@@ -1,4 +1,7 @@
 package MainPackage;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,6 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.sql.Statement;
+
+import java.sql.PreparedStatement;
+
+import javax.naming.spi.ObjectFactory;
 
 public class Database
 {
@@ -21,7 +28,7 @@ public class Database
 	{
 		if( instance != null )
 			return( instance );
-		
+
 		return( new Database() );
 	}
 
@@ -31,11 +38,10 @@ public class Database
 		{
 			// Load the driver
 			Class.forName( "com.mysql.jdbc.Driver" );
-			
+
 			// Get instance of connection
-			connection = DriverManager.getConnection( "jdbc:mysql://mysql.itu.dk/FlightBooker", "flightbooker",
-			        "flightbooking" );
-			
+			connection = DriverManager.getConnection( "jdbc:mysql://mysql.itu.dk/FlightBooker", "flightbooker", "flightbooking" );
+
 		} catch( ClassNotFoundException e )
 		{
 			System.out.println( "Driver could not be loaded. Error: " + e );
@@ -51,24 +57,23 @@ public class Database
 		{
 			if( connection == null || !connection.isValid( 1 ) )
 				connectToDatabase();
-			
+
 			Statement statement = connection.createStatement();
-			
-			//DEBUG:
-			/*if( sQuery.contains( "UPDATE" ) )
-			{
-				@SuppressWarnings( "unused" )
-				boolean t = true;
-			}*/
-			
+
+			// DEBUG:
+			/*
+			 * if( sQuery.contains( "UPDATE" ) ) {
+			 * 
+			 * @SuppressWarnings( "unused" ) boolean t = true; }
+			 */
+
 			if( sQuery.contains( "SELECT" ) )
 			{
 				boolean bSuccess = statement.execute( sQuery );
-				
+
 				if( bSuccess )
 					return statement.getResultSet();
-			}
-			else
+			} else
 			{
 				int iRowsAffected = statement.executeUpdate( sQuery );
 
@@ -76,10 +81,10 @@ public class Database
 					return( statement.getResultSet() );
 				else
 				{
-					System.out.println("Query executed, but no rows were affected.");
+					System.out.println( "Query executed, but no rows were affected." );
 					return null;
 				}
-			}			
+			}
 		} catch( SQLException e )
 		{
 			System.out.println( "Query failed to execute. Error: " + e );
@@ -97,7 +102,7 @@ public class Database
 			System.out.println( "Selection query failed." );
 			return false;
 		}
-		
+
 		int iColumnAmount = 0;
 
 		try
@@ -135,8 +140,7 @@ public class Database
 			System.out.println( "Column data retrieval failed. Error: " + e );
 		}
 
-		result = executeQuery( "INSERT INTO " + sTable + "(" + sColumnsBuilder.toString() + ")" + " VALUES("
-		        + sValuesBuilder.toString() + ")" );
+		result = executeQuery( "INSERT INTO " + sTable + "(" + sColumnsBuilder.toString() + ")" + " VALUES(" + sValuesBuilder.toString() + ")" );
 
 		try
 		{
@@ -159,23 +163,23 @@ public class Database
 		{
 			throw new InvalidParameterException( "Arguments are not in pairs." );
 		}
-		
+
 		StringBuilder sValuesBuilder = new StringBuilder();
-		
-		for( int i = 0; i < args.length; i+=2 )
-			sValuesBuilder.append( i == 0 ? "" : ", " ).append( args[i] ).append( "=" ).append( "'" ).append( args[i+1] ).append( "'" );
-		
+
+		for( int i = 0; i < args.length; i += 2 )
+			sValuesBuilder.append( i == 0 ? "" : ", " ).append( args[i] ).append( "=" ).append( "'" ).append( args[i + 1] ).append( "'" );
+
 		ResultSet result = executeQuery( "UPDATE " + sTable + " SET " + sValuesBuilder.toString() + " WHERE " + "id='" + ID + "'" );
-		
+
 		if( result != null )
 		{
-			System.out.println("Successfully updated rows.");
+			System.out.println( "Successfully updated rows." );
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean DeleteValue( String sTable, String... args )
 	{
 		if( args.length % 2 != 0 )
@@ -184,18 +188,78 @@ public class Database
 		}
 
 		String sValue = "";
-		
-		for( int i = 0; i < args.length; i+=2 )
-			sValue = (i == 0 ? "" : " AND ") + args[i] + "=" + "'" + args[i + 1] + "'";
-		
+
+		for( int i = 0; i < args.length; i += 2 )
+			sValue = ( i == 0 ? "" : " AND " ) + args[i] + "=" + "'" + args[i + 1] + "'";
+
 		ResultSet result = executeQuery( "DELETE FROM " + sTable + " WHERE " + sValue );
-		
+
 		if( result != null )
 		{
-			System.out.println("Values succesfully deleted.");
+			System.out.println( "Values succesfully deleted." );
 			return true;
 		}
-		
+
 		return false;
 	}
+
+	// /////////AMAZING CODE BELOW\\\\\\\\\\\
+	public int Add( Object object )
+	{
+		try
+		{
+			if( connection == null || !connection.isValid( 1 ) )
+				connectToDatabase();
+
+			PreparedStatement statement = connection.prepareStatement( "INSERT INTO testtable(object) VALUES(?)", Statement.RETURN_GENERATED_KEYS );
+
+			statement.setObject( 1, object );
+			statement.executeUpdate();
+
+			ResultSet rSet = statement.getGeneratedKeys();
+
+			int id = 0;
+			if( rSet.next() )
+				id = rSet.getInt( 1 );
+
+			statement.close();
+
+			return id;
+		} 
+		catch( SQLException e )
+		{
+			e.printStackTrace();
+		}
+
+		return 0;
+	}
+
+	public Object Get( int iID )
+	{
+		try
+		{
+			if( connection == null || !connection.isValid( 1 ) )
+				connectToDatabase();
+
+			PreparedStatement statement = connection.prepareStatement( "SELECT object FROM testtable WHERE id = ?" );
+			statement.setLong( 1, iID );
+
+			ResultSet rSet = statement.executeQuery();
+			Object object = null;
+
+			if( rSet.next() )
+				object = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();
+
+			statement.close();
+
+			return object;
+		} 
+		catch( SQLException | ClassNotFoundException | IOException e )
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	// //////////AMAZING CODE ABOVE\\\\\\\\\\\\
 }

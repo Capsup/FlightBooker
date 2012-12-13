@@ -1,6 +1,8 @@
 package MainPackage;
 
-public class Passenger 
+import java.io.Serializable;
+
+public class Passenger implements Serializable
 {
     private Person person;
 	private Seat seat;

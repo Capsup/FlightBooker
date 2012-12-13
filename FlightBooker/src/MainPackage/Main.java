@@ -1,10 +1,5 @@
 package MainPackage;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
-import javax.swing.JFrame;
-
 public class Main
 {
 	/**
@@ -17,5 +12,7 @@ public class Main
 	public static void main( String[] args )
 	{
 		new MainMenu();
+//		int iID = Database.getInstance().Add( new Passenger( null, null ) );
+//		Passenger passenger = ( Passenger ) Database.getInstance().Get( iID );
 	}
 }

@@ -3,6 +3,10 @@ package MainPackage;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -11,6 +15,7 @@ public class PassengerManagerMenu
 {
 	private JFrame frame;
 	private JPanel mainPanel;
+	private JPanel mainPassengerPanel, passengerPanel, resultPanel;
 	
 	private int passengerAmount = 5;
 	
@@ -24,6 +29,32 @@ public class PassengerManagerMenu
         }
 	}
 	
+	private class keyListener implements KeyListener
+	{
+
+		@Override
+        public void keyPressed( KeyEvent e )
+        {
+	        // TODO Auto-generated method stub
+	        
+        }
+
+		@Override
+        public void keyReleased( KeyEvent e )
+        {
+	        calculateResults();
+	        
+        }
+
+		@Override
+        public void keyTyped( KeyEvent e )
+        {
+	        // TODO Auto-generated method stub
+	        
+        }
+		
+	}
+	
 	public PassengerManagerMenu(JFrame frame)
 	{
 		this.frame = frame;
@@ -34,6 +65,15 @@ public class PassengerManagerMenu
 		makeContent();
 	}
 	
+
+	public void calculateResults()
+    {
+	    resultPanel.setBounds( 100, 100, 100, 100 );
+		JLabel testlLabel = new JLabel("wutwut");
+		testlLabel.setBounds( 0, 0, 100, 100 );
+		resultPanel.add( testlLabel );
+    }
+
 	private void setupFrame()
 	{
 		frame.setSize(300, 600);
@@ -71,42 +111,53 @@ public class PassengerManagerMenu
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		middlePanel.add(scrollPane);
 		
-		JPanel mainPassengerPanel = new JPanel();
+		mainPassengerPanel = new JPanel();
 		mainPassengerPanel.setLayout(new BoxLayout(mainPassengerPanel, BoxLayout.Y_AXIS));
 		
-		for(int i=0; i<passengerAmount; i++)
-		{
-			JPanel passengerPanel = new JPanel();
-			passengerPanel.setLayout(new BoxLayout(passengerPanel,BoxLayout.X_AXIS));
-			passengerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
-			
-			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
-			JButton editButton = new JButton("Edit");
-			editButton.setActionCommand( "edit" );
-			editButton.addActionListener( new actionListener() );
-			JButton deleteButton = new JButton("-");
-			
-			passengerPanel.add(passengerLabel);
-			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-			passengerPanel.add(editButton);
-			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-			passengerPanel.add(deleteButton);
-			passengerPanel.add(Box.createRigidArea(new Dimension(0,30)));
-			
-			mainPassengerPanel.add(passengerPanel);
-		}
+//		for(int i=0; i<passengerAmount; i++)
+//		{
+//			JPanel passengerPanel = new JPanel();
+//			passengerPanel.setLayout(new BoxLayout(passengerPanel,BoxLayout.X_AXIS));
+//			passengerPanel.setAlignmentX(Box.LEFT_ALIGNMENT);
+//			
+//			JLabel passengerLabel = new JLabel("Jesper den sexede demon");
+//			JButton editButton = new JButton("Edit");
+//			editButton.setActionCommand( "edit" );
+//			editButton.addActionListener( new actionListener() );
+//			JButton deleteButton = new JButton("-");
+//			
+//			passengerPanel.add(passengerLabel);
+//			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+//			passengerPanel.add(editButton);
+//			passengerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+//			passengerPanel.add(deleteButton);
+//			passengerPanel.add(Box.createRigidArea(new Dimension(0,30)));
+//			
+//			mainPassengerPanel.add(passengerPanel);
+//		}
 		
+		//Hver passager skal have et suggestive panel hvor man skriver navn ind og så slår den resten
+		//Jeg får parsed en reservation hvor der er x antal passagerer og de har et sæde og denne menu skal tildele de person objekter de rigtige værdier
 		
+		for( int i = 0; i < 1; i++ )
+        {
+	        passengerPanel = new JPanel();
+	        passengerPanel.setLayout( null );
+	        
+	        JTextField passengerField = new JTextField();
+	        passengerField.setBounds( 20, 50, 100, 25 );
+	        passengerField.addKeyListener( new keyListener() );
+	        
+	        passengerPanel.add( passengerField );
+	        
+	        mainPassengerPanel.add( passengerPanel );
+        }
 		
-//		for( int i = 0; i < 1; i++ )
-//        {
-//	        JPanel passengerPanel = new JPanel();
-//	        passengerPanel.setLayout( null );
-//	        
-//	        JTextField passengerField = new JTextField();
-//	        passengerField.setBounds( 20, 50, 100, 100 );
-//	        
-//        }
+		resultPanel = new JPanel();
+		resultPanel.setLayout( null );
+
+		
+		passengerPanel.add( resultPanel );
 		
 		scrollPane.setViewportView(mainPassengerPanel);
 		
