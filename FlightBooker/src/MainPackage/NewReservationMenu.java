@@ -1,20 +1,27 @@
 package MainPackage;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.PrintGraphics;
+import java.awt.Rectangle;
+import java.awt.SecondaryLoop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,6 +32,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.text.MaskFormatter;
 
 import com.toedter.calendar.JCalendar;
@@ -38,6 +47,9 @@ public class NewReservationMenu
 	private JFrame frame;
 	private JPanel mainPanel;
 	
+	private Flight[] displayedFlights;
+	private JPanel[] flightPanels;
+	
 	private Dimension frameSize = new Dimension(1000, 600);
 	
 	private Reservation currentReservation;
@@ -49,11 +61,27 @@ public class NewReservationMenu
 	private PlanePanel planePanel;
 	
 	//Start parameters
-	private int startSeatAmount = 2;
+	private int startSeatAmount = 0;
 	
 	public NewReservationMenu(JFrame frame)
 	{
 		this.frame = frame;
+		
+		//Test
+		displayedFlights = new Flight[5];
+		
+		displayedFlights[0] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.MALMÖ));
+		displayedFlights[1] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.STOCKHOLM),  new Airport(AirportType.COPENHAGEN));
+		displayedFlights[2] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.COPENHAGEN));
+		displayedFlights[3] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.RØNNE));
+		displayedFlights[4] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.STOCKHOLM));
+		
+		flightPanels = new JPanel[displayedFlights.length];
+		
+		for (int i=0; i<displayedFlights.length; i++) 
+		{
+			setupFlightPanel(i, displayedFlights[i]);
+		}
 		
 		initializeReservation();
 		
@@ -66,7 +94,7 @@ public class NewReservationMenu
 		
 		for(int i=0; i<currentPassengers.length; i++)
 			currentPassengers[i] = new Passenger(null, null);
-				
+		
 		updateReservation();
 	}
 	
@@ -77,9 +105,12 @@ public class NewReservationMenu
 			switch(event.getActionCommand())
 			{
 			case "Make Reservation": 	
-				frame.remove(mainPanel);
-				new PassengerManagerMenu(frame, currentReservation);
-				//new ReservationInfoMenu(frame, currentReservation);
+				if(canCommit())
+				{
+					frame.remove(mainPanel);
+					//new PassengerManagerMenu(frame, currentReservation);
+					new ReservationInfoMenu(frame, currentReservation);
+				}
 				break;
 			case "Inspect Reservation": 	
 				System.out.println("MEH!");
@@ -94,8 +125,6 @@ public class NewReservationMenu
 		public void propertyChange(PropertyChangeEvent evt) 
 		{
 			updateReservation();
-			
-			updateFlightPanel();
 		}
 	}
 	
@@ -118,7 +147,6 @@ public class NewReservationMenu
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
 		topPanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/3));
-		
 		
 		//Top Left Panel
 		JPanel topLeftPanel = new JPanel();
@@ -168,9 +196,11 @@ public class NewReservationMenu
 		*/
 		JDateChooser startDateLabel = new JDateChooser();
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
+		startDateLabel.setDate(Calendar.getInstance().getTime());
 		
 		JDateChooser endDateLabel = new JDateChooser();
 		endDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
+		endDateLabel.setDate(Calendar.getInstance().getTime());
 		
 		JPanel destinationPanel = new JPanel();
 		destinationPanel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
@@ -208,15 +238,21 @@ public class NewReservationMenu
 		topLeftPanel.add(topTitlePanel,BorderLayout.WEST);
 		topLeftPanel.add(topParameterPanel,BorderLayout.CENTER);
 		
-		
 		//Top Right
 		JPanel topRightPanel = new JPanel();
-		//middlePanel.setBorder(BorderFactory.createEtchedBorder(1));
-		topRightPanel.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
+		//topRightPanel.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		
 		JList viewedList = new JList();
+		viewedList.setLayout(new BoxLayout(viewedList, BoxLayout.Y_AXIS));
+		viewedList.setPreferredSize(new Dimension(200,1000));
 		
-		viewedList.setPreferredSize(new Dimension(frameSize.width-50,1000));
+		for (JPanel flightPanel : flightPanels) 
+		{
+			JButton test = new JButton();
+			test.add(flightPanel);
+			
+			viewedList.add(test);
+		}
 		
 		JScrollPane scrollPane = new JScrollPane(viewedList);
 		scrollPane.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
@@ -228,19 +264,10 @@ public class NewReservationMenu
 		//Bottom
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
-		//bottomPanel.setBorder(BorderFactory.createEtchedBorder(1));
 		bottomPanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/3*2));
 		
 			//Plane Panel
-		//Test
-		//testFlight = new Flight(new Date(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM));
-		
-		System.out.println(currentReservation.getFlight());
-		
 		planePanel = new PlanePanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
-		
-		//Final
-		//PlanePanel planePanel = new PlanePanel(currentFlight, new Dimension(frameSize.width, frameSize.height/2));
 		
 			//Button Panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -273,6 +300,98 @@ public class NewReservationMenu
 		updateReservation();
 	}
 	
+	void setupFlightPanel(int index, Flight currentFlight)
+	{
+		//Flight Panel
+		flightPanels[index] = new JPanel();
+		flightPanels[index].setLayout(new BoxLayout(flightPanels[index], BoxLayout.X_AXIS));
+		flightPanels[index].setAlignmentX(Component.LEFT_ALIGNMENT);
+		flightPanels[index].setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		flightPanels[index].setBackground(Color.WHITE);
+		
+			//First Panel
+		JPanel firstPanel = new JPanel();
+		firstPanel.setLayout(new BoxLayout(firstPanel, BoxLayout.Y_AXIS));
+		firstPanel.setBackground(Color.WHITE);
+		
+				//Departure Label
+		String stringToUse = "Departure: "+currentFlight.getOrigin().getName();
+		
+		JLabel departureLabel = new JLabel(stringToUse);
+				
+				//Destination Label
+		stringToUse = "Destination: "+currentFlight.getDestination().getName();
+		
+		JLabel destinationLabel = new JLabel(stringToUse);
+		
+			//First Panel Finish Up
+		firstPanel.add(departureLabel);
+		firstPanel.add(destinationLabel);
+			//First Panel Finished
+		
+			//Second Panel
+		JPanel secondPanel = new JPanel();
+		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
+		secondPanel.setBackground(Color.WHITE);
+		
+				//Date Label
+		stringToUse = ""+currentFlight.getDate().get(Calendar.DATE)+
+				"/"+(currentFlight.getDate().get(Calendar.MONTH)+1)+
+				" - "+currentFlight.getDate().get(Calendar.YEAR);
+		
+		JLabel dateLabel = new JLabel(stringToUse);
+		
+				//Time Label
+		String minute = "";
+		
+		if(currentFlight.getDate().get(Calendar.MINUTE) < 10)
+		{
+			minute = "0"+currentFlight.getDate().get(Calendar.MINUTE);
+		}
+		else 
+		{
+			minute = ""+currentFlight.getDate().get(Calendar.MINUTE);
+		}
+		
+		stringToUse = ""+currentFlight.getDate().get(Calendar.HOUR_OF_DAY)+":"+minute;
+		
+		JLabel timeLabel = new JLabel(stringToUse);
+		
+			//Second Panel Finish Up
+		secondPanel.add(dateLabel);
+		secondPanel.add(timeLabel);
+			//Second Panel Finished
+		
+			//Third Panel
+		JPanel thirdPanel = new JPanel();
+		thirdPanel.setLayout(new BoxLayout(thirdPanel, BoxLayout.Y_AXIS));
+		thirdPanel.setBackground(Color.WHITE);
+		
+				//Seat Label
+		stringToUse = "Available Seats: "+currentFlight.getSeatsLeft();
+		
+		JLabel seatLabel = new JLabel(stringToUse);
+		
+				//Price Label
+		stringToUse = "Price Per Seat: "+"100$";
+		
+		JLabel priceLabel = new JLabel(stringToUse);
+		
+			//Third Panel Finish Up
+		thirdPanel.add(seatLabel);
+		thirdPanel.add(priceLabel);
+			//Third Panel Finished
+		
+		//Flight Panel Finish Up
+		flightPanels[index].add(firstPanel);
+		flightPanels[index].add(Box.createHorizontalGlue());
+		flightPanels[index].add(secondPanel);
+		flightPanels[index].add(Box.createHorizontalGlue());
+		flightPanels[index].add(thirdPanel);
+		//Flight Panel Finished
+		
+	}
+	
 	private void update()
 	{
 		frame.setVisible(true);
@@ -285,7 +404,7 @@ public class NewReservationMenu
 						null, 
 						new Passenger[startSeatAmount]);
 		
-		currentFlight = new Flight(new Date(),  new Plane(PlaneType.BOEING737), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM));
+		currentFlight = new Flight(Calendar.getInstance(),  new Plane(PlaneType.BOEING737), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM));
 		
 		Passenger[] passengerArray = currentReservation.getPassengers();
 		
@@ -312,16 +431,51 @@ public class NewReservationMenu
 		{
 			amount = Integer.parseInt((String)seatAmountLabel.getValue());
 		}
-		
+		/*
 		if( amount == 0 )
 			return;
-		
+		*/
 		Passenger[] passengerArray = new Passenger[amount];
+		
+		Passenger[] currentPassengerArray = currentReservation.getPassengers();
 		
 		for(int i=0; i<passengerArray.length; i++)
 		{
-			if(i < currentReservation.getPassengers().length)
+			if(i<currentPassengerArray.length)
 			{
+				int index = i;
+				
+				while(currentPassengerArray[index] == null && index < currentPassengerArray.length)
+				{
+					index += 1;
+				}
+				
+				if(currentPassengerArray[index] != null)
+				{
+					passengerArray[i] = currentPassengerArray[index];
+				}
+				else 
+				{
+					passengerArray[i] = new Passenger(null, null);
+				}
+			}
+			else 
+			{
+				passengerArray[i] = new Passenger(null, null);
+			}
+			
+			/*
+			if(i < currentPassengerArray.length)
+			{
+				
+				int index = i;
+				
+				while(currentPassengerArray[index] == null && i < currentPassengerArray.length)
+				{
+					index += 1;
+				}
+				
+				
 				if(currentReservation.getPassengers()[i] != null)
 				{
 					passengerArray[i] = currentReservation.getPassengers()[i];
@@ -335,6 +489,7 @@ public class NewReservationMenu
 			{
 				passengerArray[i] = new Passenger(null, null);
 			}
+			*/
 		}
 		
 		//Skal opdateres og fixes
@@ -350,11 +505,28 @@ public class NewReservationMenu
 		}
 		
 		currentReservation.setPassengers(passengerArray);
+		
+		updateFlightPanel();
 	}
 	
 	void updateFlightPanel()
 	{
 		if(planePanel != null)
 			planePanel.updateSeats();
+	}
+	
+	boolean canCommit()
+	{
+		boolean returnBool = true;
+		
+		Passenger[] passengers = currentReservation.getPassengers();
+		
+		for (Passenger passenger : passengers) 
+		{
+			if(passenger.getSeat() == null)
+				returnBool = false;
+		}
+		
+		return returnBool;
 	}
 }

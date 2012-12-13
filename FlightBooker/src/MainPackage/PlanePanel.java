@@ -96,6 +96,8 @@ public class PlanePanel extends JPanel
 		
 		if(passengers != null)
 		{
+			int count = 0;
+			
 			for (Passenger passenger : passengers) 
 			{
 				if(passenger != null && passenger.getSeat() != null)
@@ -107,7 +109,10 @@ public class PlanePanel extends JPanel
 					
 					seatButton = InitializeSeatButton(x, y, mainPanel);
 					
-					seatButton.setBooked();
+					seatButton.setBooked(true);
+					seatButton.setMyIndex(count);
+					
+					count += 1;
 				}
 			}
 		}
@@ -132,7 +137,7 @@ public class PlanePanel extends JPanel
 					{
 						seatButton = InitializeSeatButton(x, y, mainPanel);
 						
-						seatButton.setBooked();
+						seatButton.setBooked(true);
 					}
 				}
 			}
@@ -190,6 +195,48 @@ public class PlanePanel extends JPanel
 			{
 				seatButtonArray[i][j].update();
 				seatButtonArray[i][j].setEnabled(editable);
+				
+				seatButtonArray[i][j].setBooked(false);
+			}
+		}
+		
+		Passenger[] passengers = currentReservation.getPassengers();
+		Dimension passengerSeatPosition;
+		
+		if(passengers != null)
+		{
+			for (Passenger passenger : passengers) 
+			{
+				if(passenger != null && passenger.getSeat() != null)
+				{
+					passengerSeatPosition = passenger.getSeat().getPosition();
+					
+					int x = passengerSeatPosition.width;
+					int y = passengerSeatPosition.height;
+					
+					seatButtonArray[x][y].setBooked(true);
+				}
+			}
+		}
+		
+		//Initialize seats for any reservation already booked
+		Reservation[] reservations = flight.getReservations();
+		
+		if(reservations != null)
+		{
+			for (Reservation reservation : reservations) 
+			{
+				passengers = reservation.getPassengers();
+				
+				for (Passenger passenger : passengers) 
+				{
+					passengerSeatPosition = passenger.getSeat().getPosition();
+					
+					int x = passengerSeatPosition.width;
+					int y = passengerSeatPosition.height;
+					
+					seatButtonArray[x][y].setBooked(true);
+				}
 			}
 		}
 	}
