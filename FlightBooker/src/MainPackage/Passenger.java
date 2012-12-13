@@ -30,4 +30,9 @@ public class Passenger implements Serializable
 	{
 		this.seat = seat;
 	}
+	
+	public Person getPerson()
+	{
+		return person;
+	}
 }
