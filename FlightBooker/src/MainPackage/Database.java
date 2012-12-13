@@ -12,8 +12,6 @@ import java.sql.Statement;
 
 import java.sql.PreparedStatement;
 
-import javax.naming.spi.ObjectFactory;
-
 public class Database
 {
 	private static Database instance;
@@ -211,8 +209,9 @@ public class Database
 			if( connection == null || !connection.isValid( 1 ) )
 				connectToDatabase();
 
-			PreparedStatement statement = connection.prepareStatement( "INSERT INTO testtable(object) VALUES(?)", Statement.RETURN_GENERATED_KEYS );
-
+			//PreparedStatement statement = connection.prepareStatement( "INSERT INTO testtable(object) VALUES(?)", Statement.RETURN_GENERATED_KEYS );
+			PreparedStatement statement = connection.prepareStatement( "INSERT INTO " + object.getClass().getSimpleName().toLowerCase() + "(object) VALUES(?)", Statement.RETURN_GENERATED_KEYS );
+			
 			statement.setObject( 1, object );
 			statement.executeUpdate();
 
@@ -249,6 +248,36 @@ public class Database
 
 			if( rSet.next() )
 				object = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();
+
+			statement.close();
+
+			return object;
+		} 
+		catch( SQLException | ClassNotFoundException | IOException e )
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public Object[] Get( String sType )
+	{
+		try
+		{
+			if( connection == null || !connection.isValid( 1 ) )
+				connectToDatabase();
+
+			PreparedStatement statement = connection.prepareStatement( "SELECT object FROM " + sType.toLowerCase() );
+
+			ResultSet rSet = statement.executeQuery();
+			Object[] object = new Object[rSet.getMetaData().getColumnCount()];
+			
+			for( int i = 0; i <= object.length; i++ )
+				object[i] = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();
+
+			/*while( rSet.next() )
+				object = new ObjectInputStream( rSet.getBlob( "object" ).getBinaryStream() ).readObject();*/
 
 			statement.close();
 
