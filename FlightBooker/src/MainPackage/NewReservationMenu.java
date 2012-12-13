@@ -65,12 +65,15 @@ public class NewReservationMenu
 	private ArrayList<Flight> flights;
 	
 	//Start parameters
-	private int startSeatAmount = 0;
+	private int startSeatAmount = 0; 
 	
 	private JDateChooser startDateLabel;
+	private JDateChooser endDateLabel;
 	private DefaultListModel listModel;
 	private JList viewedList;
 	private JScrollPane scrollPane;
+	private JComboBox departureList;
+	private JComboBox destinationList;
 	
 	public NewReservationMenu(JFrame frame)
 	{
@@ -142,18 +145,33 @@ public class NewReservationMenu
 		}
 	}
 	
+	class TextActionListener implements ActionListener
+	{
+		@Override
+        public void actionPerformed( ActionEvent e )
+        {
+			calculateResults();
+			updateReservation();
+        }
+	}
+	
 	private void calculateResults()
 	{
 		//flightPanels = new JPanel[flights.size()];
 		if( listModel == null )
 			return;
 		//listModel.clear();
-		//viewedList.removeAll();
+		viewedList.removeAll();
 		for( int i = 0; i < flights.size(); i++ )
 		{
 			Flight currentFlight = flights.get( i );
 			boolean bSuccess = true;
-			if( currentFlight.getDate().after( startDateLabel.getCalendar() ) )
+			/*System.out.println( "Selected: " + departureList.getSelectedItem().toString());
+			System.out.println( "Currentflight: " + currentFlight.getOrigin().getName());
+			
+			System.out.println( "Selected2: " + destinationList.getSelectedItem().toString());
+			System.out.println( "Currentflight2: " + currentFlight.getDestination().getName());*/
+			if( currentFlight.getDate().getTimeInMillis() >= startDateLabel.getCalendar().getTimeInMillis() && currentFlight.getDate().getTimeInMillis() <= endDateLabel.getCalendar().getTimeInMillis() && departureList.getSelectedItem().toString().equals( currentFlight.getOrigin().getName() ) && destinationList.getSelectedItem().toString().equals( currentFlight.getDestination().getName() ) )
 			{
 				//TODO: Make this possible!!!!!!!!!!!!!
 				JPanel flightPanel = setupFlightPanel( currentFlight );
@@ -174,9 +192,28 @@ public class NewReservationMenu
 				
 				//viewedList.repaint();
 				//scrollPane.repaint();
-				mainPanel.validate();
+				
 			}
 		}
+		
+//		for( Component component : viewedList.getComponents() )
+//			System.out.println("wat");
+		//System.out.println("VALIDATED");
+//		if( viewedList.getComponentCount() > 0 )
+//		{
+//			mainPanel.validate();
+//			viewedList.validate();
+//		}
+//		else 
+//		{
+//			mainPanel.invalidate();
+//			viewedList.invalidate();
+//		}
+		
+		mainPanel.validate();
+		mainPanel.invalidate();
+		mainPanel.repaint();
+		
 	}
 	
 	private void setupFrame()
@@ -245,13 +282,18 @@ public class NewReservationMenu
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		
 		*/
+		
+		TextListener textListener = new TextListener();
+		
 		startDateLabel = new JDateChooser();
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		startDateLabel.setDate(Calendar.getInstance().getTime());
+		startDateLabel.addPropertyChangeListener( textListener );
 		
-		JDateChooser endDateLabel = new JDateChooser();
+		endDateLabel = new JDateChooser();
 		endDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		endDateLabel.setDate(Calendar.getInstance().getTime());
+		endDateLabel.addPropertyChangeListener( textListener );
 		
 		JPanel destinationPanel = new JPanel();
 		destinationPanel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
@@ -259,8 +301,12 @@ public class NewReservationMenu
 		
 		String[] availableAirports = Airport.getDestinations();
 		
-		JComboBox departureList = new JComboBox(availableAirports);
-		JComboBox destinationList = new JComboBox(availableAirports);
+		departureList = new JComboBox(availableAirports);
+		//departureList.addPropertyChangeListener( textListener );
+		departureList.addActionListener( new TextActionListener() );
+		destinationList = new JComboBox(availableAirports);
+		//destinationList.addPropertyChangeListener( textListener );
+		destinationList.addActionListener( new TextActionListener() );
 		
 		destinationPanel.add(departureList);
 		destinationPanel.add(destinationList);
@@ -276,7 +322,7 @@ public class NewReservationMenu
 			System.out.println("Parsing error");
 		}
 		
-		seatAmountLabel.addPropertyChangeListener(new TextListener());
+		seatAmountLabel.addPropertyChangeListener(textListener);
 		seatAmountLabel.setText(""+startSeatAmount);
 		
 		seatAmountLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
