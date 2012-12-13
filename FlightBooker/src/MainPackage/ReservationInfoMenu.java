@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -45,15 +47,24 @@ public class ReservationInfoMenu
 			switch(event.getActionCommand())
 			{
 			case "Edit Reservation":
+				System.out.println("Edit Reservation");
 				if(canCommit())
 				{
 					planePanel.setEditable();
 					planePanel.updateSeats();
 				}
 				break;
-			case "Inspect Reservation": 	
-				System.out.println("MEH!");
-				break;			
+				
+			case "OK":
+				System.out.println("OK - Commit changes");
+				frame.dispose();
+				//Commit changes
+				break;
+				
+			case "Cancel":
+				System.out.println("Cancel");
+				frame.dispose();
+				break;
 			}
 		}
 	}
@@ -62,6 +73,7 @@ public class ReservationInfoMenu
 	{
 		frame.setSize(450, 600);
 		frame.setResizable(false);
+		frame.setTitle("Reservation Info");
 		
 		frame.setLocationRelativeTo(null);
 		
@@ -169,24 +181,26 @@ public class ReservationInfoMenu
 		
 			//Button Panel
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setLayout(new FlowLayout());
 		
+		ButtonListener listener = new ButtonListener();
 				//Edit Reservation Button
 		JButton editReservationButton = new JButton("Edit Reservation");
 		editReservationButton.setActionCommand("Edit Reservation");
-		
-				//Email Reservation Button
-		JButton eMailReservationButton = new JButton("E-Mail Reservation");
+		editReservationButton.addActionListener(listener);
 		
 				//Ok Button
 		JButton okButton = new JButton("OK");
+		okButton.setActionCommand("OK");
+		okButton.addActionListener(listener);
 		
 				//Cancel Button
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setActionCommand("Cancel");
+		cancelButton.addActionListener(listener);
 		
 			//Button Panel Finishup
 		buttonPanel.add(editReservationButton);
-		buttonPanel.add(eMailReservationButton);
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
 			//Button Panel Finished
@@ -200,11 +214,6 @@ public class ReservationInfoMenu
 		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 		
 		contentPane.add(mainPanel);
-		
-		//Listeners
-		ButtonListener listener = new ButtonListener();
-		
-		editReservationButton.addActionListener(listener);
 		
 	}
 	

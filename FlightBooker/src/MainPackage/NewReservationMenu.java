@@ -127,8 +127,8 @@ public class NewReservationMenu
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) 
 		{
-			System.out.println(evt.getPropertyName());
-			if( evt.getPropertyName().equals( "value" ) )
+			//System.out.println(evt.getPropertyName());
+			//if( evt.getPropertyName().equals( "value" ) )
 				updateReservation();
 		}
 	}

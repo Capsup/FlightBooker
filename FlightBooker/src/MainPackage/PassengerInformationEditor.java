@@ -53,6 +53,7 @@ public class PassengerInformationEditor extends JFrame
 	{
 		this.setSize( 300, 320 );
 		this.setResizable( false );
+		this.setTitle("Edit Passenger Information");
 
 		this.setLocationRelativeTo( null );
 
@@ -102,14 +103,16 @@ public class PassengerInformationEditor extends JFrame
 		TitledBorder passengerTitleBorder = BorderFactory.createTitledBorder("Passenger details");
 		passengerInfoPanel.setBorder(passengerTitleBorder);
 
+		ActionListener listener = new actionListener();
+		
 		JButton okButton = new JButton( "OK" );
 		okButton.setActionCommand( "OK" );
-		okButton.addActionListener( new actionListener() );
+		okButton.addActionListener(listener);
 
 		JButton cancelButton = new JButton( "Cancel" );
 		cancelButton.setBounds( 135, 263, 85, 25 );
 		cancelButton.setActionCommand( "Cancel" );
-		cancelButton.addActionListener( new actionListener() );
+		cancelButton.addActionListener(listener);
 
 		JPanel buttonsPanel = new JPanel(new FlowLayout());
 		buttonsPanel.add(okButton);
