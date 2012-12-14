@@ -69,7 +69,7 @@ public class ReservationInfoMenu
 				
 				if(isNew)
 				{
-					//Database.getInstance().Add(currentReservation);
+					Database.getInstance().Add(currentReservation);
 				}
 				else 
 				{	
