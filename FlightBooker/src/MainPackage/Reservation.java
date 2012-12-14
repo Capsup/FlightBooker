@@ -76,6 +76,11 @@ public class Reservation implements Serializable, Uploadable
 		return reservedDate;
 	}
 	
+	public void setReservedDate(Calendar newDate)
+	{
+		reservedDate = newDate;
+	}
+	
 	public Flight getFlight()
 	{
 		if(flight != null)

@@ -85,33 +85,15 @@ public class NewReservationMenu
 		
 		flights = Database.getInstance().Get( Flight.class );
 		
-		//Test
 		displayedFlights = new Flight[flights.size()];
 		
-		/*displayedFlights[0] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.MALMÖ));
-		displayedFlights[1] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.STOCKHOLM),  new Airport(AirportType.COPENHAGEN));
-		displayedFlights[2] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.COPENHAGEN));
-		displayedFlights[3] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.RØNNE));
-		displayedFlights[4] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.RØNNE),  new Airport(AirportType.STOCKHOLM));*/
-		
 		flightPanels = new JPanel[displayedFlights.length];
-		
-		/*for (int i=0; i<displayedFlights.length; i++) 
-		{
-			setupFlightPanel(i, flights.get( i ));
-		}*/
 		
 		initializeReservation();
 		
 		setupFrame();
 		
 		makeContent();
-		
-		//Test
-		currentPassengers = new Passenger[10];
-		
-		for(int i=0; i<currentPassengers.length; i++)
-			currentPassengers[i] = new Passenger(null, null);
 		
 		calculateResults();
 		updateReservation();

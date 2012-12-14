@@ -69,6 +69,13 @@ public class ReservationInfoMenu
 				
 				if(isNew)
 				{
+					//Set the current date
+					Calendar newCalendar = Calendar.getInstance();
+					currentReservation.setReservedDate(newCalendar);
+					
+					//Set the id of the database instance
+					currentReservation.setID(0);
+					
 					Database.getInstance().Add(currentReservation);
 				}
 				else 
