@@ -122,8 +122,8 @@ public class NewReservationMenu
 				if(canCommit())
 				{
 					frame.remove(mainPanel);
-					//new PassengerManagerMenu(frame, currentReservation);
-					new ReservationInfoMenu(frame, currentReservation);
+					new PassengerManagerMenu(frame, currentReservation);
+					//new ReservationInfoMenu(frame, currentReservation);
 				}
 				break;
 			case "Inspect Reservation": 	
