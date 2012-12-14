@@ -74,14 +74,15 @@ public class ReservationInfoMenu
 					currentReservation.setReservedDate(newCalendar);
 					
 					//Set the id of the database instance
-					currentReservation.setID(0);
+					currentReservation.setID(Database.getInstance().GetID(Reservation.class));
 					
 					Database.getInstance().Add(currentReservation);
 				}
 				else 
 				{	
-					
+					Database.getInstance().Replace(currentReservation.getID(), currentReservation);
 				}
+				
 				//Commit changes
 				break;
 				
