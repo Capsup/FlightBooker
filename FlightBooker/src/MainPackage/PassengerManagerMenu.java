@@ -21,6 +21,7 @@ public class PassengerManagerMenu
 	private JPanel mainPanel;
 	private JPanel mainPassengerPanel, passengerPanel;
 	private JTextField[] passengerField;
+	private JTextField currentField;
 	
 	//WORKS:
 	/*private DefaultListModel<String> listModel;
@@ -33,6 +34,7 @@ public class PassengerManagerMenu
 	private int passengerAmount = 5;
 	
 	private Reservation currentReservation;
+	private Person selectedPerson;
 	
 	private class actionListener implements ActionListener
 	{
@@ -40,7 +42,7 @@ public class PassengerManagerMenu
         public void actionPerformed( ActionEvent e )
         {
 	        if( e.getActionCommand() == "edit" )
-	        	new PassengerInformationEditor();
+	        	new PassengerInformationEditor( selectedPerson );
         }
 	}
 	
@@ -50,8 +52,7 @@ public class PassengerManagerMenu
 		@Override
         public void keyPressed( KeyEvent e )
         {
-	        // TODO Auto-generated method stub
-	        
+
         }
 
 		@Override
@@ -59,7 +60,7 @@ public class PassengerManagerMenu
         {
 			//WORKS:
 			listModel.clear();
-			JTextField currentField = (JTextField) e.getComponent();
+			currentField = (JTextField) e.getComponent();
 			if( !currentField.getText().equals( "" ) )
 				calculateResults(currentField);
 			if( currentField.getText().equals( "" ) )
@@ -71,8 +72,7 @@ public class PassengerManagerMenu
 		@Override
         public void keyTyped( KeyEvent e )
         {
-	        // TODO Auto-generated method stub
-	        
+
         }
 	}
 	
@@ -82,11 +82,11 @@ public class PassengerManagerMenu
 		@Override
         public void mouseClicked( MouseEvent e )
         {
-			Person selectedPerson = listModel.listPersons.get( list.getSelectedIndex() );
+			selectedPerson = listModel.listPersons.get( list.getSelectedIndex() );
 			
 			if( selectedPerson != null )
 			{
-				JTextField currentField = (JTextField) e.getComponent();
+				//JTextField currentField = (JTextField) e.getComponent();
 				
 				currentField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
 			}
@@ -99,15 +99,13 @@ public class PassengerManagerMenu
 		@Override
         public void mouseEntered( MouseEvent e )
         {
-	        // TODO Auto-generated method stub
-	        
+
         }
 
 		@Override
         public void mouseExited( MouseEvent e )
         {
-	        // TODO Auto-generated method stub
-	        
+
         }
 
 		@Override
@@ -119,8 +117,7 @@ public class PassengerManagerMenu
 		@Override
         public void mouseReleased( MouseEvent e )
         {
-	        // TODO Auto-generated method stub
-	        
+			
         }
 		
 	}
@@ -213,7 +210,8 @@ public class PassengerManagerMenu
 	        if( person.getFirstName().toLowerCase().startsWith( currentField.getText() ) )
 	        	listModel.addElement( person );
         }
-		
+		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, 200, 100 );
+		//passengerPanel.setComponentZOrder( list, 5 );
 		list.setVisible( true );
 	}
 
@@ -266,11 +264,25 @@ public class PassengerManagerMenu
 		
 		for( int i = 0; i < currentReservation.getPassengers().length; i++ )
         {
+	        listModel = new PersonData();
+	        list = new JList<>(listModel);
+	        //list.setBounds( passengerField[i].getBounds().x, passengerField[i].getBounds().y + passengerField[i].getBounds().height + 1, 200, 100 );
+	        list.addMouseListener( new mouseListener() );
+	        passengerPanel.add( list );
+	        passengerPanel.setComponentZOrder( list, 0 );
+	        list.setVisible( false );
+	        
 	        passengerField[i] = new JTextField();
-	        passengerField[i].setBounds( 20, 50, 200, 25 );
+	        passengerField[i].setBounds( 20, (i+1) * 50, 200, 25 );
 	        passengerField[i].addKeyListener( new keyListener() );
 	        
 	        passengerPanel.add( passengerField[i] );
+	        
+	        JButton editButton = new JButton("edit");
+	        editButton.setBounds( 240, ( i + 1 ) * 50, 50, 25 );
+	        editButton.setActionCommand( "edit" );
+	        editButton.addActionListener( new actionListener() );
+	        passengerPanel.add( editButton );
 	        
 	        //WORKS:
 			/*listModel = new DefaultListModel<>();
@@ -284,13 +296,10 @@ public class PassengerManagerMenu
 	        
 	        //listModel = new DefaultListModel<>();
 	        
-	        listModel = new PersonData();
-	        list = new JList<>(listModel);
-	        list.setBounds( passengerField[i].getBounds().x, passengerField[i].getBounds().y + passengerField[i].getBounds().height + 1, 200, 100 );
-	        list.addMouseListener( new mouseListener() );
-	        passengerPanel.add( list );
+
+	        //passengerPanel.setComponentZOrder( list, 5 );
 	        
-	        list.setVisible( false );
+	        
 	        
 	        mainPassengerPanel.add( passengerPanel );
         }
