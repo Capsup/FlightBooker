@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -37,6 +38,7 @@ public class JespersFindDialog extends JFrame {
 	private JTextField textField3;
 
 	private JTable table;
+	private String[] columns;
 	private Object[][] tableData;
 	private DefaultTableModel tableModel;
 	private JScrollPane tableScrollPane;
@@ -78,6 +80,33 @@ public class JespersFindDialog extends JFrame {
 				}
 			}
 		}
+	}
+	
+	class ReservationTableModel extends AbstractTableModel
+	{
+
+		@Override
+		public int getColumnCount() {
+			return columns.length;
+		}
+
+		@Override
+		public int getRowCount() {
+			return tableData.length;
+		}
+
+		@Override
+		public Object getValueAt( int rowIndex, int columnIndex ) {
+			return tableData[rowIndex][columnIndex];
+		}
+		
+		@Override
+		public void setValueAt(Object object, int row, int col)
+		{
+			tableData[row][col] = object;
+	        fireTableCellUpdated(row, col);
+		}
+		
 	}
 
 	private void setupFrame()
@@ -148,7 +177,19 @@ public class JespersFindDialog extends JFrame {
 		TitledBorder criteriaTitleBorder = BorderFactory.createTitledBorder("Enter search criteria: ");
 		criteriaPanel.setBorder(criteriaTitleBorder);
 
-		makeTable("None");
+		//calculateResults("Person");
+		
+		columns = new String[]{"Columns"};
+		tableData = new Object[][]{{}};
+		tableModel = new DefaultTableModel(tableData,columns);
+		table = new JTable(tableModel);
+		
+		tableScrollPane = new JScrollPane(table);
+		tableScrollPane.setPreferredSize(new Dimension(600,400));
+		tableScrollPane.setViewportView(table);
+		tableModel.removeRow(0);
+		//tableModel.addRow(new Object[]{"LOL"});
+		//makeTable("None");
 
 		reservationsTablePanel = new JPanel();
 		reservationsTablePanel.add(tableScrollPane);
@@ -190,112 +231,92 @@ public class JespersFindDialog extends JFrame {
 	{
 
 		//Resetter tabellen
+		tableModel.setRowCount(0);
+		
 		System.out.println(listItems);
 
-		if(tableToSearch.equals("None") || listItems == null){
+		if(tableToSearch.equals("None") || listItems.size() == 0){
 			System.out.println("Empty listItems");
-			String[] columns = {"Search..."};
+			columns = new String[] {"Search..."};
+			tableModel.setColumnIdentifiers(columns);
 			tableData = new Object[][]{{"No results"}};
-			table = new JTable(new DefaultTableModel(tableData, columns));
+			tableModel.addRow(tableData[0]);
 		}
 		else {
 
 			if(tableToSearch.equals("Person")) {						
-				String[] columns = {"First name","Surname","Phone","Country"};
+				columns = new String[]{"First name","Surname","Phone","Country"};
+				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
-				for (Object object : listItems) {
+				for (int i = 0; i < listItems.size(); i++) {
+					Object object = listItems.get(i);
 					Person person = (Person) object;{
-						for (int i = 0; i < listItems.size(); i++) {
-							for (int j = 0; j < columns.length; j++) {
-								if(j%columns.length == 0)
-									tableData[i][j] = person.getFirstName();							
-								if(j%columns.length == 1)
-									tableData[i][j] = person.getSurName();	
-								if(j%columns.length == 2)
-									tableData[i][j] = person.getPhone();
-								if(j%columns.length == 3)
-									tableData[i][j] = person.getCountry();
-							}
-							System.out.println(tableData[0]);
-							table = new JTable(new DefaultTableModel(tableData, columns));
-						}			
-					}
-				}
-			}
-
-			if(tableToSearch.equals("Reservation")) {
-				String[] columns = {"Reservation maker","Destination","Time of depature", "Number of passengers","Time of creation"};
-				tableData = new Object[listItems.size()][columns.length];
-				for (Object object : listItems) {
-					Reservation reservation = (Reservation) object;
-					for (int i = 0; i < listItems.size(); i++) {
 						for (int j = 0; j < columns.length; j++) {
 							if(j%columns.length == 0)
-								tableData[i][j] = reservation.getOwner();
+								tableData[i][j] = person.getFirstName();							
 							if(j%columns.length == 1)
-								tableData[i][j] = reservation.getFlight().getDestination();
+								tableData[i][j] = person.getSurName();	
 							if(j%columns.length == 2)
-								tableData[i][j] = reservation.getFlight().getDate();
+								tableData[i][j] = person.getPhone();
 							if(j%columns.length == 3)
-								tableData[i][j] = reservation.getPassengers().length;
-							if(j%columns.length == 4)
-								tableData[i][j] = reservation.getReservationDate();
+								tableData[i][j] = person.getCountry();
 						}
-					}			
+					}
+					tableModel.addRow(tableData[i]);
+				}	
+				System.out.println(tableData[0]);
+				
+			}
+			
+			if(tableToSearch.equals("Reservation")) {
+				columns = new String[] {"Reservation maker","Destination","Time of depature", "Number of passengers","Time of creation"};
+				tableModel.setColumnIdentifiers(columns);
+				tableData = new Object[listItems.size()][columns.length];
+				for (int i = 0; i < listItems.size(); i++) {
+					Object object = listItems.get(i);
+					Reservation reservation = (Reservation) object;
+					for (int j = 0; j < columns.length; j++) {
+						if(j%columns.length == 0)
+							tableData[i][j] = reservation.getOwner();
+						if(j%columns.length == 1)
+							tableData[i][j] = reservation.getFlight().getDestination();
+						if(j%columns.length == 2)
+							tableData[i][j] = reservation.getFlight().getDate().getTime();
+						if(j%columns.length == 3)
+							tableData[i][j] = reservation.getPassengers().length;
+						if(j%columns.length == 4)
+							tableData[i][j] = reservation.getReservationDate();
+					}
+					tableModel.addRow(tableData[i]);
 				}
-				table = new JTable(new DefaultTableModel(tableData, columns));
 			}
 
 			if(tableToSearch.equals("Flight")) {
-				String[] columns = {"Destination","Date of depature","Available seats"};
+				columns = new String[] {"Destination","Date of depature","Available seats"};
+				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
-				for (Object object : listItems) {
+				for (int i = 0; i < listItems.size(); i++) {
+					Object object = listItems.get(i);
 					Flight flight = (Flight) object;
-					for (int row = 0; row < listItems.size(); row++) {
-						for (int col = 0; col < columns.length; col++) {
-							if(col%columns.length == 0)
-								tableData[row][col] = flight.getDestination().getName();
-							if(col%columns.length == 1)
-								tableData[row][col] = flight.getDate();	
-							if(col%columns.length == 2)
-								tableData[row][col] = flight.getSeatsLeft();
+						for (int j = 0; j < columns.length; j++) {
+							if(j%columns.length == 0)
+								tableData[i][j] = flight.getDestination().getName();
+							if(j%columns.length == 1)
+								tableData[i][j] = flight.getDate().getTime();
+							if(j%columns.length == 2)
+								tableData[i][j] = flight.getSeatsLeft();
 						}
-					}	
-				}
-				table = new JTable(new DefaultTableModel(tableData, columns));
+						tableModel.addRow(tableData[i]);
+					}
 			}
+
+			table.setColumnSelectionAllowed(false);
+			table.setCellSelectionEnabled(false);
+			table.setRowSelectionAllowed(true);
+			table.setEnabled(false);
+			table.getTableHeader().setReorderingAllowed(false);
+			table.setFillsViewportHeight(true);
+			table.setAutoCreateRowSorter(true);
 		}
-
-		table.setColumnSelectionAllowed(false);
-		table.setCellSelectionEnabled(false);
-		table.setRowSelectionAllowed(true);
-		table.getTableHeader().setReorderingAllowed(false);
-		table.setFillsViewportHeight(true);
-		table.setAutoCreateRowSorter(true);
-
-		tableScrollPane = new JScrollPane(table);
-		tableScrollPane.setPreferredSize(new Dimension(200,300));
-		tableModel = (DefaultTableModel) table.getModel();
-
-		updateTable();	
-	}
-
-	private void updateTable()
-	{
-		this.tableScrollPane.setViewportView(table);
-		this.tableScrollPane.validate();
-	}
-	
-	private void makeTestData()
-	{
-		listItems = new ArrayList<>();
-		Person person1 = new Person("Jesper", "Nysteen", "Male", "06-04-1991", "Denmark"
-				, "Danish", "Skaffervej 15, 3 tv", "31225525", "234234324234", 1);
-		
-		Passenger passenger1 = new Passenger(person1, new Seat(2, 2));
-		
-		Object passenger1Object = ( Object ) passenger1;
-		
-		//listItems.add(passenger1Object);
 	}
 }
