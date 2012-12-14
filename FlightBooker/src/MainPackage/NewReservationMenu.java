@@ -132,10 +132,10 @@ public class NewReservationMenu
 				if(canCommit())
 				{
 					frame.remove(mainPanel);
-					//new PassengerManagerMenu(frame, currentReservation);
+					new PassengerManagerMenu(frame, currentReservation);
 					
 					System.out.println(currentReservation.getFlight().getPlane().getPlaneTypeString());
-					new ReservationInfoMenu(frame, currentReservation);
+					//new ReservationInfoMenu(frame, currentReservation);
 				}
 				break;
 			case "Inspect Reservation": 	
