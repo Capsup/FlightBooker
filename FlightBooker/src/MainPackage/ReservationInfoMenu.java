@@ -87,8 +87,12 @@ public class ReservationInfoMenu
 					Database.getInstance().Replace(currentReservation.getID(), currentReservation);
 				}
 				
-				currentReservation.getFlight().addReservation(currentReservation);
-				Database.getInstance().Replace(currentReservation.getFlight().getID() ,currentReservation.getFlight());
+				//currentReservation.getFlight().addReservation(currentReservation);
+				
+				Flight flightInstance = Database.getInstance().Get(currentReservation.getFlight().getID(), Flight.class);
+				flightInstance.addReservation(currentReservation);
+				
+				Database.getInstance().Replace(flightInstance.getID(), flightInstance);
 				
 				//Commit changes
 				break;
