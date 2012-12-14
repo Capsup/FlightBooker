@@ -70,7 +70,20 @@ public class PlanePanel extends JPanel
 		
 		mainPanel.setLayout(null);
 		
+		String stringToUse = flight.getOrigin().getName()+" - "+flight.getDestination().getName();
 		
+		JLabel routeLabel = new JLabel(stringToUse);
+		routeLabel.setBounds(panelSize.width/20, panelSize.height/20, 250, 25);
+		
+		stringToUse = flight.getPlane().getPlaneTypeString();
+		
+		JLabel planeTypeLabel = new JLabel(stringToUse);
+		planeTypeLabel.setBounds((panelSize.width/20)*19-100, panelSize.height/20, 250, 25);
+		
+		
+		mainPanel.add(routeLabel);
+		mainPanel.add(planeTypeLabel);
+				
 		/*
 		Insets insets = getInsets();
 		Dimension size;

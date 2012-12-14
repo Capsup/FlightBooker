@@ -55,8 +55,12 @@ public class ReservationInfoMenu
 				System.out.println("Edit Reservation");
 				if(canCommit())
 				{
-					planePanel.setEditable();
-					planePanel.updateSeats();
+					frame.remove( mainPanel );
+			        
+			        new NewReservationMenu( frame, currentReservation, isNew);
+					
+					//planePanel.setEditable();
+					//planePanel.updateSeats();
 					
 					//mainPanel.revalidate();
 					//mainPanel.repaint();

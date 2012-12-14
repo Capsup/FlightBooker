@@ -24,8 +24,9 @@ public class Reservation implements Serializable, Uploadable
 	    id = iID;
 	}
 	
-	public Reservation(Person customer, Flight flight, Calendar reservedDate, Passenger[] passengers, int ID)
+	public Reservation()
 	{
+		/*
 		owner = customer;
 		
 		passengerArray = passengers;
@@ -33,7 +34,7 @@ public class Reservation implements Serializable, Uploadable
 		this.flight = flight;
 		this.reservedDate = reservedDate;
 		
-		this.id = ID;
+		this.id = ID;*/
 	}
 	
 	//Returns the owner of the reservation.

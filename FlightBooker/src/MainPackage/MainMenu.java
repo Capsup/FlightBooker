@@ -28,7 +28,7 @@ public class MainMenu extends JFrame {
 			{
 			case "New Reservation": 	
 				//new FlightInfoMenu(new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM)));
-				new NewReservationMenu(new JFrame());
+				new NewReservationMenu(new JFrame(), null, true);
 				//new PassengerInformationMenu(new JFrame());
 				//new ReservationInfoMenu(new JFrame());
 				break;

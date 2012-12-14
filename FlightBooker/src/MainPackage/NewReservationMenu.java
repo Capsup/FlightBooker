@@ -79,9 +79,13 @@ public class NewReservationMenu
 	
 	private JPanel bottomPanel;
 	
-	public NewReservationMenu(JFrame frame)
+	private boolean isNew;
+	
+	public NewReservationMenu(JFrame frame, Reservation reservation, boolean isNew)
 	{
 		this.frame = frame;
+		this.currentReservation = reservation;
+		this.isNew = isNew;
 		
 		flights = Database.getInstance().Get( Flight.class );
 		
@@ -89,14 +93,24 @@ public class NewReservationMenu
 		
 		flightPanels = new JPanel[displayedFlights.length];
 		
-		initializeReservation();
+		if(currentReservation == null)
+		{
+			startSeatAmount = 0;
+			
+			initializeReservation();
+		}
+		else 
+		{
+			startSeatAmount = currentReservation.getPassengers().length;
+			
+		}
 		
 		setupFrame();
 		
 		makeContent();
 		
 		calculateResults();
-		updateReservation();
+		//updateReservation();
 		
 	}
 	
@@ -117,7 +131,7 @@ public class NewReservationMenu
 				if(canCommit())
 				{
 					frame.remove(mainPanel);
-					new PassengerManagerMenu(frame, currentReservation);
+					new PassengerManagerMenu(frame, currentReservation, isNew);
 					
 					System.out.println(currentReservation.getFlight().getPlane().getPlaneTypeString());
 					//new ReservationInfoMenu(frame, currentReservation);
@@ -380,8 +394,9 @@ public class NewReservationMenu
 			System.out.println("Parsing error");
 		}
 		
-		seatAmountLabel.addPropertyChangeListener(textListener);
 		seatAmountLabel.setText(""+startSeatAmount);
+		
+		seatAmountLabel.addPropertyChangeListener(textListener);
 		
 		seatAmountLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		
@@ -441,6 +456,8 @@ public class NewReservationMenu
 		
 		//bottomPanel.add(planePanel, BorderLayout.CENTER);
 		bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
+		bottomPanel.add(planePanel);
+		
 		
 		//Finish up
 		mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -456,7 +473,7 @@ public class NewReservationMenu
 		inspectReservationButton.addActionListener(listener);
 		
 		update();
-		updateReservation();
+		//updateReservation();
 	}
 	
 	JPanel setupFlightPanel(Flight currentFlight)
@@ -560,13 +577,18 @@ public class NewReservationMenu
 	
 	private void initializeReservation()
 	{
+		/*
 		currentReservation = new Reservation(null,  
 						null, 
 						null, 
 						new Passenger[startSeatAmount],
-						0);
+						0);*/
 		
-		currentFlight = new Flight(Calendar.getInstance(),  new Plane(PlaneType.BOEING737), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM), 0);
+		currentReservation = new Reservation();
+		
+		currentReservation.setPassengers(new Passenger[startSeatAmount]);
+		
+		currentFlight = flights.get(0);
 		
 		Passenger[] passengerArray = currentReservation.getPassengers();
 		
@@ -594,83 +616,53 @@ public class NewReservationMenu
 		if(seatAmountLabel.getValue() != null)
 		{
 			amount = Integer.parseInt((String)seatAmountLabel.getValue());
-		}
-		/*
-		if( amount == 0 )
-			return;
-		*/
-		Passenger[] passengerArray = new Passenger[amount];
 		
-		Passenger[] currentPassengerArray = currentReservation.getPassengers();
-		
-		for(int i=0; i<passengerArray.length; i++)
-		{
-			if(i<currentPassengerArray.length)
+			Passenger[] passengerArray = new Passenger[amount];
+			
+			Passenger[] currentPassengerArray = currentReservation.getPassengers();
+			
+			for(int i=0; i<passengerArray.length; i++)
 			{
-				int index = i;
-				
-				while(currentPassengerArray[index] == null && index < currentPassengerArray.length)
+				if(i<currentPassengerArray.length)
 				{
-					index += 1;
-				}
-				
-				if(currentPassengerArray[index] != null)
-				{
-					passengerArray[i] = currentPassengerArray[index];
+					int index = i;
+					
+					while(currentPassengerArray[index] == null && index < currentPassengerArray.length)
+					{
+						index += 1;
+					}
+					
+					if(currentPassengerArray[index] != null)
+					{
+						passengerArray[i] = currentPassengerArray[index];
+					}
+					else 
+					{
+						passengerArray[i] = new Passenger(null, null);
+					}
 				}
 				else 
 				{
 					passengerArray[i] = new Passenger(null, null);
 				}
 			}
-			else 
+			
+			//Skal opdateres og fixes
+			if(currentReservation.getPassengers().length > passengerArray.length)
 			{
-				passengerArray[i] = new Passenger(null, null);
+				int start = passengerArray.length;
+				
+				for(int i=start; i < currentReservation.getPassengers().length; i++)
+				{	
+					if(currentReservation.getPassengers()[i].getSeat() != null)
+						currentReservation.getPassengers()[i].getSeat().changeBookingStatus(false);
+				}
 			}
 			
-			/*
-			if(i < currentPassengerArray.length)
-			{
-				
-				int index = i;
-				
-				while(currentPassengerArray[index] == null && i < currentPassengerArray.length)
-				{
-					index += 1;
-				}
-				
-				
-				if(currentReservation.getPassengers()[i] != null)
-				{
-					passengerArray[i] = currentReservation.getPassengers()[i];
-				}
-				else
-				{
-					passengerArray[i] = new Passenger(null, null);
-				}
-			}
-			else 
-			{
-				passengerArray[i] = new Passenger(null, null);
-			}
-			*/
-		}
-		
-		//Skal opdateres og fixes
-		if(currentReservation.getPassengers().length > passengerArray.length)
-		{
-			int start = passengerArray.length;
+			currentReservation.setPassengers(passengerArray);
 			
-			for(int i=start; i < currentReservation.getPassengers().length; i++)
-			{	
-				if(currentReservation.getPassengers()[i].getSeat() != null)
-					currentReservation.getPassengers()[i].getSeat().changeBookingStatus(false);
-			}
+			updateFlightPanel();
 		}
-		
-		currentReservation.setPassengers(passengerArray);
-		
-		updateFlightPanel();
 	}
 	
 	void wipePassengers()
@@ -692,7 +684,6 @@ public class NewReservationMenu
 	boolean canCommit()
 	{
 		boolean returnBool = true;
-		
 		
 		Passenger[] passengers = currentReservation.getPassengers();
 		

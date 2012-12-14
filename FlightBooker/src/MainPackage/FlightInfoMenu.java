@@ -24,7 +24,7 @@ public class FlightInfoMenu extends JFrame
 		
 		//Test
 		currentFlight.setReservations(new Reservation[0]);
-		currentReservation = new Reservation(null, flight, null, null, 0);
+		//currentReservation = new Reservation(null, flight, null, null, 0);
 		
 		setupFrame();
 		

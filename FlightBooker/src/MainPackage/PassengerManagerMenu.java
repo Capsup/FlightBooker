@@ -24,6 +24,8 @@ public class PassengerManagerMenu
 	private JTextFieldUpgraded[] passengerField;
 	private JTextFieldUpgraded currentField;
 	
+	private boolean isNew;
+	
 	//WORKS:
 	/*private DefaultListModel<String> listModel;
 	private JList<String> list;*/
@@ -95,7 +97,7 @@ public class PassengerManagerMenu
 	        	
 		        frame.remove( mainPanel );
 		        
-		        new ReservationInfoMenu( frame, currentReservation, true);
+		        new ReservationInfoMenu( frame, currentReservation, isNew);
 	        }
         }
 		
@@ -226,11 +228,12 @@ public class PassengerManagerMenu
 		
 	}
 	
-	public PassengerManagerMenu(JFrame frame, Reservation currentReservation)
+	public PassengerManagerMenu(JFrame frame, Reservation currentReservation, boolean isNew)
 	{
 		this.frame = frame;
 		
 		this.currentReservation = currentReservation;
+		this.isNew = isNew;
 		
 		setupFrame();
 		//setupFonts();
@@ -347,6 +350,10 @@ public class PassengerManagerMenu
 	        list.setVisible( false );
 	        
 	        passengerField[i] = new JTextFieldUpgraded();
+	        
+	        if(currentReservation.getPassengers()[i].getPerson() != null)
+	        	passengerField[i].setPerson(currentReservation.getPassengers()[i].getPerson());
+	        
 	        passengerField[i].setBounds( 20, (i+1) * 50, 200, 25 );
 	        passengerField[i].addKeyListener( new keyListener() );
 	        
