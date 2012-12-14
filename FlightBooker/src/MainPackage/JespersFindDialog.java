@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,6 +24,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
@@ -46,6 +51,10 @@ public class JespersFindDialog extends JFrame {
 
 	private ArrayList<?> listItems;
 
+	private JButton searchButton;
+	private JButton inspectReservationButton;
+	private JButton closeButton;
+
 	public JespersFindDialog()
 	{
 		setupFrame();
@@ -63,50 +72,63 @@ public class JespersFindDialog extends JFrame {
 		{
 			int key = e.getKeyChar();
 			if(key == KeyEvent.VK_ENTER){
-				if(flightRadioButton.isSelected())
-				{
-					calculateResults("Flight");
-					System.out.println("Flight search");
-				}
-				if(reservationRadioButton.isSelected())
-				{
-					calculateResults("Reservation");
-					System.out.println("Reservation search");
-				}
-				if(customerRadioButton.isSelected())
-				{
-					calculateResults("Person");
-					System.out.println("Customer search");
-				}
+				String selectedAction = radioButtons.getSelection().getActionCommand();
+				System.out.println(selectedAction);
+				makeTableData(selectedAction);
 			}
 		}
+
 	}
-	
-	class ReservationTableModel extends AbstractTableModel
+
+	private class ButtonActionListener implements ActionListener
 	{
-
 		@Override
-		public int getColumnCount() {
-			return columns.length;
-		}
-
-		@Override
-		public int getRowCount() {
-			return tableData.length;
-		}
-
-		@Override
-		public Object getValueAt( int rowIndex, int columnIndex ) {
-			return tableData[rowIndex][columnIndex];
-		}
-		
-		@Override
-		public void setValueAt(Object object, int row, int col)
+		public void actionPerformed( ActionEvent e )
 		{
-			tableData[row][col] = object;
-	        fireTableCellUpdated(row, col);
+			String command = e.getActionCommand();
+
+			if( command == "Search" || command == "Flight" || command == "Reservation" || command == "Person") {
+				String selectedAction = radioButtons.getSelection().getActionCommand();
+				makeTableData(selectedAction);
+			}
+
+			if( command == "Inspect") {
+				System.out.println("Inspect");
+				int chosenObjectIncorrectRow = table.getSelectionModel().getAnchorSelectionIndex();
+				
+				if(chosenObjectIncorrectRow >= 0){
+					int chosenObjectActualRow = table.convertRowIndexToModel(chosenObjectIncorrectRow);
+					int chosenObjectID = (int) tableModel.getValueAt(chosenObjectActualRow, 0);
+					System.out.println(chosenObjectID);
+					
+					String selectedAction = radioButtons.getSelection().getActionCommand();
+					if(selectedAction == "Flight")
+					{
+						Flight flight = Database.getInstance().Get(chosenObjectID, Flight.class);
+						new FlightInfoMenu(flight);
+					}
+					
+					if(selectedAction == "Reservation")
+					{
+						Reservation reservation = Database.getInstance().Get(chosenObjectID, Reservation.class); 
+						new ReservationInfoMenu(new JFrame(), reservation, false);
+					}
+					
+					if(selectedAction == "Person")
+					{
+					
+						Person person = Database.getInstance().Get(chosenObjectID, Person.class);
+						System.out.println(person);						
+						new PassengerInformationMenu(new JFrame(), person);
+					}
+				}
+			}
+
+			if( command == "Close") {
+				System.out.println("Close");
+				dispose();
+			}
 		}
-		
 	}
 
 	private void setupFrame()
@@ -121,20 +143,23 @@ public class JespersFindDialog extends JFrame {
 	{
 		Container contentPane = this.getContentPane();
 		//contentPane.setLayout( new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
-		contentPane.setLayout( new FlowLayout());
+		contentPane.setLayout( new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 
 		flightRadioButton = new JRadioButton("Flight",false);
 		flightRadioButton.setActionCommand("Flight");
 		flightRadioButton.setSelected(true);
 		flightRadioButton.addKeyListener(new EnterListener());
+		flightRadioButton.addActionListener(new ButtonActionListener());
 
 		reservationRadioButton = new JRadioButton("Reservation",false);
 		reservationRadioButton.setActionCommand("Reservation");
 		reservationRadioButton.addKeyListener(new EnterListener());
+		reservationRadioButton.addActionListener(new ButtonActionListener());
 
-		customerRadioButton = new JRadioButton("Customer",false);
-		customerRadioButton.setActionCommand("Customer");
+		customerRadioButton = new JRadioButton("Person",false);
+		customerRadioButton.setActionCommand("Person");
 		customerRadioButton.addKeyListener(new EnterListener());
+		customerRadioButton.addActionListener(new ButtonActionListener());
 
 		radioButtons = new ButtonGroup();
 		radioButtons.add(flightRadioButton);
@@ -177,75 +202,58 @@ public class JespersFindDialog extends JFrame {
 		TitledBorder criteriaTitleBorder = BorderFactory.createTitledBorder("Enter search criteria: ");
 		criteriaPanel.setBorder(criteriaTitleBorder);
 
-		//calculateResults("Person");
-		
 		columns = new String[]{"Columns"};
 		tableData = new Object[][]{{}};
 		tableModel = new DefaultTableModel(tableData,columns);
 		table = new JTable(tableModel);
-		
+
 		tableScrollPane = new JScrollPane(table);
 		tableScrollPane.setPreferredSize(new Dimension(600,400));
 		tableScrollPane.setViewportView(table);
 		tableModel.removeRow(0);
-		//tableModel.addRow(new Object[]{"LOL"});
-		//makeTable("None");
+
+		makeTableData("None");
 
 		reservationsTablePanel = new JPanel();
 		reservationsTablePanel.add(tableScrollPane);
+
+		searchButton = new JButton("Search");
+		searchButton.setActionCommand("Search");
+		searchButton.addActionListener(new ButtonActionListener());
+
+		inspectReservationButton = new JButton("Inspect");
+		inspectReservationButton.setActionCommand("Inspect");
+		inspectReservationButton.addActionListener(new ButtonActionListener());
+
+		closeButton = new JButton("Close");
+		closeButton.setActionCommand("Close");
+		closeButton.addActionListener(new ButtonActionListener());
+
+		JPanel bottomsButtonPanel = new JPanel(new FlowLayout());
+		bottomsButtonPanel.add(searchButton);
+		bottomsButtonPanel.add(inspectReservationButton);
+		bottomsButtonPanel.add(closeButton);
 
 		this.addKeyListener(new EnterListener());
 
 		contentPane.add(buttonPanel);
 		contentPane.add(criteriaPanel);
 		contentPane.add(reservationsTablePanel);
+		contentPane.add(bottomsButtonPanel);
 	}
 
-	private void calculateResults(String tableToSearch)
-	{
-		System.out.println("Calculate results");
-		//ResultSet results = Database.getInstance().executeQuery( "SELECT * FROM " + tableToSearch );
-		try {
-			listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		//ArrayList<Object>
-		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
+	private void makeTableData(String tableToSearch)
+	{	
+		//Hvis metoden bliver kaldt med noget at søge efter
+		if(tableToSearch != "None") {
+			try {
+				listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
 
-		//		try {
-		//			System.out.println("Try");
-		//			for(Object object : listItems)
-		//			{
-		//				
-		//			}
-		//			
-		//		} catch (SQLException e) {
-		//			e.printStackTrace();
-		//		}
-
-		makeTable(tableToSearch);
-	}
-
-	private void makeTable(String tableToSearch)
-	{
-
-		//Resetter tabellen
-		tableModel.setRowCount(0);
-		
-		System.out.println(listItems);
-
-		if(tableToSearch.equals("None") || listItems.size() == 0){
-			System.out.println("Empty listItems");
-			columns = new String[] {"Search..."};
-			tableModel.setColumnIdentifiers(columns);
-			tableData = new Object[][]{{"No results"}};
-			tableModel.addRow(tableData[0]);
-		}
-		else {
-
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 			if(tableToSearch.equals("Person")) {						
-				columns = new String[]{"First name","Surname","Phone","Country"};
+				columns = new String[]{"Person ID","First name","Surname","Phone","Country"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
 				for (int i = 0; i < listItems.size(); i++) {
@@ -253,23 +261,22 @@ public class JespersFindDialog extends JFrame {
 					Person person = (Person) object;{
 						for (int j = 0; j < columns.length; j++) {
 							if(j%columns.length == 0)
-								tableData[i][j] = person.getFirstName();							
+								tableData[i][j] = person.getID();
 							if(j%columns.length == 1)
-								tableData[i][j] = person.getSurName();	
+								tableData[i][j] = person.getFirstName();							
 							if(j%columns.length == 2)
-								tableData[i][j] = person.getPhone();
+								tableData[i][j] = person.getSurName();	
 							if(j%columns.length == 3)
+								tableData[i][j] = person.getPhone();
+							if(j%columns.length == 4)
 								tableData[i][j] = person.getCountry();
 						}
 					}
-					tableModel.addRow(tableData[i]);
 				}	
-				System.out.println(tableData[0]);
-				
 			}
-			
+
 			if(tableToSearch.equals("Reservation")) {
-				columns = new String[] {"Reservation maker","Destination","Time of depature", "Number of passengers","Time of creation"};
+				columns = new String[] {"Reservation ID", "Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
 				for (int i = 0; i < listItems.size(); i++) {
@@ -277,46 +284,86 @@ public class JespersFindDialog extends JFrame {
 					Reservation reservation = (Reservation) object;
 					for (int j = 0; j < columns.length; j++) {
 						if(j%columns.length == 0)
-							tableData[i][j] = reservation.getOwner();
+							tableData[i][j] = reservation.getID();
 						if(j%columns.length == 1)
-							tableData[i][j] = reservation.getFlight().getDestination();
+							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
 						if(j%columns.length == 2)
-							tableData[i][j] = reservation.getFlight().getDate().getTime();
+							tableData[i][j] = reservation.getFlight().getOrigin().getName();
 						if(j%columns.length == 3)
-							tableData[i][j] = reservation.getPassengers().length;
+							tableData[i][j] = reservation.getFlight().getDestination().getName();
 						if(j%columns.length == 4)
-							tableData[i][j] = reservation.getReservationDate();
+							tableData[i][j] = reservation.getFlight().getDate().getTime();
+						if(j%columns.length == 5)
+							tableData[i][j] = reservation.getPassengers().length;
+						if(j%columns.length == 6)
+							tableData[i][j] = reservation.getReservationDate().getTime();
 					}
-					tableModel.addRow(tableData[i]);
 				}
 			}
 
 			if(tableToSearch.equals("Flight")) {
-				columns = new String[] {"Destination","Date of depature","Available seats"};
+				columns = new String[] {"Flight ID", "Destination","Date of depature","Available seats"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
 				for (int i = 0; i < listItems.size(); i++) {
 					Object object = listItems.get(i);
 					Flight flight = (Flight) object;
-						for (int j = 0; j < columns.length; j++) {
-							if(j%columns.length == 0)
-								tableData[i][j] = flight.getDestination().getName();
-							if(j%columns.length == 1)
-								tableData[i][j] = flight.getDate().getTime();
-							if(j%columns.length == 2)
-								tableData[i][j] = flight.getSeatsLeft();
-						}
-						tableModel.addRow(tableData[i]);
+					for (int j = 0; j < columns.length; j++) {
+						if(j%columns.length == 0)
+							tableData[i][j] = flight.getID();
+						if(j%columns.length == 1)
+							tableData[i][j] = flight.getDestination().getName();
+						if(j%columns.length == 2)
+							tableData[i][j] = flight.getDate().getTime();
+						if(j%columns.length == 3)
+							tableData[i][j] = flight.getSeatsLeft();
 					}
+				}
+			}
+			calculateResults();
+
+		}
+
+		//Hvis metoden ikke får noget at søge efter
+		else {
+			noSearchResults();
+		}
+
+		table.setColumnSelectionAllowed(false);
+		table.setCellSelectionEnabled(false);
+		table.setRowSelectionAllowed(true);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setFillsViewportHeight(true);
+		table.setAutoCreateRowSorter(true);
+
+	}
+
+	private void calculateResults()
+	{
+		//Resetter tabellens indhold
+		tableModel.setRowCount(0);
+
+		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
+
+		for (int i = 0; i < tableData.length; i++) {
+			for (int j = 0; j < columns.length; j++) {
+				if(tableData[i][j].toString().toLowerCase().contains( sCriterias[0] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[1] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[2] ))
+				{
+					tableModel.addRow(tableData[i]);
+					j = columns.length;
+				}
 			}
 
-			table.setColumnSelectionAllowed(false);
-			table.setCellSelectionEnabled(false);
-			table.setRowSelectionAllowed(true);
-			table.setEnabled(false);
-			table.getTableHeader().setReorderingAllowed(false);
-			table.setFillsViewportHeight(true);
-			table.setAutoCreateRowSorter(true);
 		}
+		if(tableModel.getRowCount() == 0)
+			noSearchResults();
+	}
+
+	private void noSearchResults()
+	{
+		tableModel.setColumnIdentifiers(columns);
+		tableData = new Object[][]{{"No results"}};
+		tableModel.addRow(tableData[0]);
 	}
 }
