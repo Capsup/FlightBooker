@@ -46,7 +46,8 @@ public class PassengerInformationMenu {
 
 			if( command == "Edit information") {
 				System.out.println("Edit information");
-				new PassengerInformationEditor(passenger.getPerson());
+				//TODO: fix
+				//new PassengerInformationEditor();
 			}
 
 			if( command == "Inspect reservation") {

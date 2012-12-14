@@ -3,12 +3,26 @@ package MainPackage;
 import java.awt.Dimension;
 import java.io.Serializable;
  
-public class Seat implements Serializable
+public class Seat implements Serializable, Uploadable
 {
 	private int x;
 	private int y;
 	
 	private boolean booked;
+	
+	private int id;
+	
+	@Override
+    public int getID()
+    {
+	    return id;
+    }
+
+	@Override
+    public void setID( int iID )
+    {
+	    id = iID;
+    }
 	
 	public Seat(int x, int y)
 	{

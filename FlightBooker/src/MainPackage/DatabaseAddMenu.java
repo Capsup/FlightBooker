@@ -72,7 +72,8 @@ public class DatabaseAddMenu extends JFrame
 				Database.getInstance().Add(new Flight(calendarToUse,
 						new Plane(Plane.planeTypes()[random.nextInt(Plane.planeTypes().length)]),
 						airport1,
-						airport2));
+						airport2,
+						random.nextInt()));
 				System.out.println("Flight Added");
 				break;
 				

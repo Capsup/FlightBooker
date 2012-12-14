@@ -13,7 +13,11 @@ import javax.swing.border.TitledBorder;
 public class PassengerInformationEditor extends JFrame
 {
 
+	//private JTextFieldUpgraded fieldUpgraded;
+	
 	private Person person;
+	
+	private JTextField nameTextField, genderTextField, birthTextField, countryTextField, nationaTextField, adressTextField, phoneTextField, passporTextField;
 
 	private class actionListener implements ActionListener
 	{
@@ -23,6 +27,9 @@ public class PassengerInformationEditor extends JFrame
 			if( e.getActionCommand() == "OK" ){
 				System.out.println( "OK - Commit changes" );
 				//if anything has changed, commit changes
+				//fieldUpgraded.setPerson( new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), fieldUpgraded.getPerson().getCustomerID() ) );
+//				Database.
+				Database.getInstance().Replace( person.getCustomerID(), new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getCustomerID() ) );
 				getInstance().dispose();
 			}
 
@@ -44,6 +51,7 @@ public class PassengerInformationEditor extends JFrame
 
 	public PassengerInformationEditor(Person person)
 	{
+		//this.fieldUpgraded = fieldUpgraded;
 		this.person = person;
 		setupFrame();
 		makeContent();
@@ -80,14 +88,15 @@ public class PassengerInformationEditor extends JFrame
 		for(JLabel label : labels)
 			infoLabelsPanel.add(label);
 
-		JTextField nameTextField = new JTextField(person.getFirstName());
-		JTextField genderTextField = new JTextField(person.getSurName());
-		JTextField birthTextField = new JTextField(person.getDateOfBirth());
-		JTextField countryTextField = new JTextField(person.getCountry());
-		JTextField nationaTextField = new JTextField(person.getNationality());
-		JTextField adressTextField = new JTextField(person.getAdress());
-		JTextField phoneTextField = new JTextField(person.getPhone());
-		JTextField passporTextField = new JTextField(person.getPassportNumber());
+		
+		nameTextField = new JTextField(person.getFirstName() + " " + person.getSurName());
+		genderTextField = new JTextField(person.getGender());
+		birthTextField = new JTextField(person.getDateOfBirth());
+		countryTextField = new JTextField(person.getCountry());
+		nationaTextField = new JTextField(person.getNationality());
+		adressTextField = new JTextField(person.getAdress());
+		phoneTextField = new JTextField(person.getPhone());
+		passporTextField = new JTextField(person.getPassportNumber());
 
 		JTextField[] infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
 				nationaTextField, adressTextField, phoneTextField, passporTextField};

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import MainPackage.Plane.PlaneType;
 
-public class Airport implements Serializable
+public class Airport implements Serializable, Uploadable
 {
 	public enum AirportType
 	{
@@ -14,6 +14,20 @@ public class Airport implements Serializable
 	}
 	
 	private String airportName;
+	
+	private int id;
+	
+	@Override
+    public int getID()
+    {
+	    return id;
+    }
+
+	@Override
+    public void setID( int iID )
+    {
+	    id = iID;
+    }
 	
 	public Airport(AirportType airport)
 	{

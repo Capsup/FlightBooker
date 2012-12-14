@@ -2,10 +2,24 @@ package MainPackage;
 
 import java.io.Serializable;
 
-public class Passenger implements Serializable
+public class Passenger implements Serializable, Uploadable
 {
     private Person person;
 	private Seat seat;
+	
+	private int id;
+	
+	@Override
+    public int getID()
+    {
+	    return id;
+    }
+
+	@Override
+    public void setID( int iID )
+    {
+	    id = iID;
+    }
 	
 	public Passenger(Person person, Seat seat)
 	{

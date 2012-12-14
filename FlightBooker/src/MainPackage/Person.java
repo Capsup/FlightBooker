@@ -2,7 +2,7 @@ package MainPackage;
 
 import java.io.Serializable;
 
-public class Person implements Serializable
+public class Person implements Serializable, Uploadable
 {
 	private String firstName;
 	private String surName;
@@ -16,6 +16,20 @@ public class Person implements Serializable
 	private int customerID;
 	
 	private Reservation[] reservations;
+	
+	private int id;
+	
+	@Override
+    public int getID()
+    {
+	    return id;
+    }
+
+	@Override
+    public void setID( int iID )
+    {
+	    id = iID;
+    }
 
 	/*
 	 * Opretter en ny Person og initialiserer alle dets felter.
@@ -32,7 +46,8 @@ public class Person implements Serializable
 		this.adress = adress;
 		this.phone = phone;
 		this.passportNumber = passportNumber;
-		this.customerID = customerID;			
+		this.customerID = customerID;	
+		this.id = customerID;
 	}
 
 	public String getFirstName()

@@ -3,7 +3,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Flight implements Serializable
+public class Flight implements Serializable, Uploadable
 {
 	private Calendar flyDate;
 	private Plane plane;
@@ -14,7 +14,21 @@ public class Flight implements Serializable
 	
 	private Reservation[] reservations;
 	
-	public Flight(Calendar flyDate, Plane plane, Airport origin, Airport destination)
+	private int id;
+	
+	@Override
+    public int getID()
+    {
+	    return id;
+    }
+
+	@Override
+    public void setID( int iID )
+    {
+	    id = iID;
+    }
+	
+	public Flight(Calendar flyDate, Plane plane, Airport origin, Airport destination, int ID)
 	{
 		this.flyDate = flyDate;
 		
@@ -25,6 +39,8 @@ public class Flight implements Serializable
 		this.origin = origin;
 		
 		this.destination = destination;
+		
+		this.id = ID;
 	}
 	
 	public boolean checkSeatReservation(int x, int y)
