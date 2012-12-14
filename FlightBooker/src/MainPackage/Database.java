@@ -278,6 +278,7 @@ public class Database
 		return false;
 	}
 
+	@Deprecated
 	public Object Get( int iID )
 	{
 		try

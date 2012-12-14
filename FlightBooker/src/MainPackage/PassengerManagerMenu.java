@@ -393,7 +393,7 @@ public class PassengerManagerMenu
 		
 		mainPanel.add(middlePanel, BorderLayout.CENTER);
 		
-		JButton button = new JButton("test");
+		JButton button = new JButton("OK");
 		button.addActionListener( new okListener() );
 		
 		mainPanel.add( button, BorderLayout.SOUTH );
