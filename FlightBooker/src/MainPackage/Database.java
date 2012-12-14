@@ -363,5 +363,28 @@ public class Database
 
 		return null;
 	}
+	
+	public int GetID( Class<?> type )
+	{
+		try
+        {
+	        if( connection == null || !connection.isValid( 1 ) )
+	        	connectToDatabase();
+	        
+	        ResultSet rSet = executeQuery( "SELECT id FROM " + type.getSimpleName().toLowerCase() );
+	        
+	        int iRowCount = 0;
+	        while( rSet.next() )
+	        	iRowCount++;
+	        
+	        return iRowCount+1;
+        } 
+		catch( Exception e )
+        {
+	        e.printStackTrace();
+        }
+		
+		return -1;
+	}
 	// //////////AMAZING CODE ABOVE\\\\\\\\\\\\
 }
