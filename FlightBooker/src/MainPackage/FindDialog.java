@@ -2,6 +2,7 @@ package MainPackage;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings( "serial" )
@@ -39,8 +41,9 @@ class FindDialog extends JFrame
 	private JTable table;
 	private Object[][] tableData;
 	private JScrollPane scrollPane;
-	private ArrayList<?> listItems;
 	private Container pane;
+	private DefaultTableModel tableModel;
+	private ArrayList<?> listItems;
 
 	class EnterListener extends KeyAdapter
 	{
@@ -79,7 +82,7 @@ class FindDialog extends JFrame
 		pane = getContentPane();
 		SpringLayout layout = new SpringLayout();
 		float fScale = ( dScreenSize.width / dScreenSize.height ) / ( 4 / 3 );
-
+		
 		pane.setLayout( layout );
 
 		//this.setLocation( (int) ( dScreenSize.width * 0.5f - ( iSizeX * 0.5f )), (int) (dScreenSize.height * 0.5f - ( iSizeY * 0.5f )) );
@@ -148,12 +151,23 @@ class FindDialog extends JFrame
 		buttonPanel.add(reservationRadioButton);	
 		buttonPanel.add(customerRadioButton);
 		
-		String[] columns = {" "};
-		tableData = new Object[][]{{"No info found"}};
-		table = new JTable(tableData, columns);
+		table = new JTable();
 		
-		scrollPane = new JScrollPane();
-		scrollPane.getViewport().add( table );
+		table.setColumnSelectionAllowed(false);
+		table.setCellSelectionEnabled(false);
+		table.setRowSelectionAllowed(true);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setFillsViewportHeight(true);
+		
+		//Tilføjer en sorteringsfunktion til tablen
+		table.setAutoCreateRowSorter(true);
+		tableModel = (DefaultTableModel) table.getModel();
+		
+		scrollPane = new JScrollPane( table );
+
+		
+		scrollPane = new JScrollPane(table);
+		scrollPane.setPreferredSize(new Dimension(pane.getWidth()-10,400));
 		pane.add( scrollPane );
 
 		pane.add(buttonPanel);    	
@@ -180,8 +194,6 @@ class FindDialog extends JFrame
 		}
 		//ArrayList<Object>
 		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
-		if(listItems != null)
-			listItems.clear();
 		
 //		try {
 //			System.out.println("Try");
@@ -224,32 +236,37 @@ class FindDialog extends JFrame
 
 	private void makeTable(String tableToSearch)
 	{
+		tableModel.setRowCount(0);	
+		
 		//Resetter tabellen
-		//DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		//tableModel.setRowCount(0);		
+		System.out.println(listItems);
 		
 		if(tableToSearch.equals("Person")) {
 			String[] columns = {"First name","Surname","Phone","Country"};
+			tableData = new Object[listItems.size()][columns.length];
+			Object[] rowData = new Object[columns.length];
+
+			table.setTableHeader(new JTableHeader());
 			for (Object object : listItems) {
-				Person person = (Person) object;
-				for (int i = 0; i < listItems.size(); i++) {
+				Person person = (Person) object;{
 					for (int j = 0; j < columns.length; j++) {
 						if(j%columns.length == 0)
-							tableData[i][j] = person.getFirstName();
+							rowData[j] = person.getFirstName();							
 						if(j%columns.length == 1)
-							tableData[i][j] = person.getSurName();	
+							rowData[j] = person.getSurName();	
 						if(j%columns.length == 2)
-							tableData[i][j] = person.getPhone();
+							rowData[j] = person.getPhone();
 						if(j%columns.length == 3)
-							tableData[i][j] = person.getCountry();
+							rowData[j] = person.getCountry();
 					}
+					tableModel.addRow(rowData);
 				}			
 			}
-			table = new JTable(tableData, columns);
 		}
 
 		if(tableToSearch.equals("Reservation")) {
 			String[] columns = {"Reservation maker","Destination","Time of depature", "Number of passengers","Time of creation"};
+			tableData = new Object[listItems.size()][columns.length];
 			for (Object object : listItems) {
 				Reservation reservation = (Reservation) object;
 				for (int i = 0; i < listItems.size(); i++) {
@@ -272,35 +289,34 @@ class FindDialog extends JFrame
 
 		if(tableToSearch.equals("Flight")) {
 			String[] columns = {"Destination","Date of depature","Available seats"};
+			tableData = new Object[listItems.size()][columns.length];
 			for (Object object : listItems) {
 				Flight flight = (Flight) object;
-				for (int i = 0; i < listItems.size(); i++) {
-					for (int j = 0; j < columns.length; j++) {
-						if(j%columns.length == 0)
-							tableData[i][j] = flight.getDestination().getName();
-						if(j%columns.length == 1)
-							tableData[i][j] = flight.getDate();	
-						if(j%columns.length == 2)
-							tableData[i][j] = flight.getSeatsLeft();
+				for (int row = 0; row < listItems.size(); row++) {
+					for (int col = 0; col < columns.length; col++) {
+						if(col%columns.length == 0)
+							tableData[row][col] = flight.getDestination().getName();
+						if(col%columns.length == 1)
+							tableData[row][col] = flight.getDate();	
+						if(col%columns.length == 2)
+							tableData[row][col] = flight.getSeatsLeft();
 					}
 				}	
 			}
 			table = new JTable(tableData, columns);
 		}
 		
-		if(tableData == null)
-			System.out.println("No table data");
-
-		//System.out.println(table.getRowCount());
+		if(tableToSearch.equals("None")){
+			
+		}
+			
 		
-		table.setColumnSelectionAllowed(false);
-		table.setCellSelectionEnabled(false);
-		table.setRowSelectionAllowed(true);
-		table.getTableHeader().setReorderingAllowed(false);
-		table.setFillsViewportHeight(true);
-
-		//Tilføjer en sorteringsfunktion til tablen
-		//table.setAutoCreateRowSorter(true);
+		System.out.println(tableModel.getValueAt(0, 0));
 		
+		pane.revalidate();
+		pane.invalidate();
+		pane.validate();
+		pane.repaint();
+
 	}	
 }
