@@ -108,6 +108,7 @@ public class ReservationInfoMenu
 		frame.setTitle("Reservation Info");
 		
 		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 		
 	}
 	

@@ -16,7 +16,7 @@ public class PassengerInformationMenu {
 	private JFrame frame;
 	private JPanel mainPanel;
 
-	private Passenger passenger;	
+	private Person person;	
 
 	private JButton editButton;
 	private JButton inspectReservationButton;
@@ -24,9 +24,9 @@ public class PassengerInformationMenu {
 
 	private JTable reservationsTable;
 
-	public PassengerInformationMenu(JFrame frame/*, Passenger passenger */)
+	public PassengerInformationMenu(JFrame frame, Person person )
 	{
-		//this.passenger = passenger;
+		this.person = person;
 		update();
 
 		this.frame = frame;
@@ -105,14 +105,14 @@ public class PassengerInformationMenu {
 		for(JLabel label : labels)
 			infoLabelsPanel.add(label);
 
-		JTextField nameTextField = new JTextField(passenger.getPerson().getFirstName());
-		JTextField genderTextField = new JTextField(passenger.getPerson().getSurName());
-		JTextField birthTextField = new JTextField(passenger.getPerson().getDateOfBirth());
-		JTextField countryTextField = new JTextField(passenger.getPerson().getCountry());
-		JTextField nationaTextField = new JTextField(passenger.getPerson().getNationality());
-		JTextField adressTextField = new JTextField(passenger.getPerson().getAdress());
-		JTextField phoneTextField = new JTextField(passenger.getPerson().getPhone());
-		JTextField passporTextField = new JTextField(passenger.getPerson().getPassportNumber());
+		JTextField nameTextField = new JTextField(person.getFirstName());
+		JTextField genderTextField = new JTextField(person.getSurName());
+		JTextField birthTextField = new JTextField(person.getDateOfBirth());
+		JTextField countryTextField = new JTextField(person.getCountry());
+		JTextField nationaTextField = new JTextField(person.getNationality());
+		JTextField adressTextField = new JTextField(person.getAdress());
+		JTextField phoneTextField = new JTextField(person.getPhone());
+		JTextField passporTextField = new JTextField(person.getPassportNumber());
 
 		JTextField[] infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
 				nationaTextField, adressTextField, phoneTextField, passporTextField};
@@ -154,6 +154,7 @@ public class PassengerInformationMenu {
 		reservationsTable.setColumnSelectionAllowed(false);
 		reservationsTable.setCellSelectionEnabled(false);
 		reservationsTable.setRowSelectionAllowed(true);
+		reservationsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		reservationsTable.getTableHeader().setReorderingAllowed(false);
 		reservationsTable.setFillsViewportHeight(true);
 
@@ -192,8 +193,7 @@ public class PassengerInformationMenu {
 	private void update()
 	{
 		System.out.println("Update");
-		//database passenger.getPerson() for at opdatere ændrede persondata
-		this.passenger = Database.getInstance().Get(3, Passenger.class);
+		//this.person. = Database.getInstance().Get(3, Passenger.class);
 	}
 
 	private Object[][] makeReservationData()
