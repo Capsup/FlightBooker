@@ -289,7 +289,8 @@ public class PassengerManagerMenu
 		
 		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, currentField.getWidth(), 100 );
 		//passengerPanel.setComponentZOrder( list, 5 );
-		list.setVisible( true );
+		if( listModel.getSize() > 0 )
+			list.setVisible( true );
 	}
 
 	private void setupFrame()
