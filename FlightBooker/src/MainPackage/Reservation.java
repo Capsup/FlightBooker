@@ -1,15 +1,30 @@
 package MainPackage;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Reservation 
+public class Reservation implements Serializable, Uploadable
 {
 	private Person owner;
 	private Passenger[] passengerArray;
 	private Flight flight;
     private Calendar reservedDate;
+    
+	private int id;
+		
+	@Override
+	public int getID()
+	{
+	    return id;
+	}
 	
-	public Reservation(Person customer, Flight flight, Calendar reservedDate, Passenger[] passengers)
+	@Override
+	public void setID( int iID )
+	{
+	    id = iID;
+	}
+	
+	public Reservation(Person customer, Flight flight, Calendar reservedDate, Passenger[] passengers, int ID)
 	{
 		owner = customer;
 		
@@ -17,6 +32,8 @@ public class Reservation
 		
 		this.flight = flight;
 		this.reservedDate = reservedDate;
+		
+		this.id = ID;
 	}
 	
 	//Returns the owner of the reservation.

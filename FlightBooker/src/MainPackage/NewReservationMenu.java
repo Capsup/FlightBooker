@@ -581,7 +581,8 @@ public class NewReservationMenu
 		currentReservation = new Reservation(null,  
 						null, 
 						null, 
-						new Passenger[startSeatAmount]);
+						new Passenger[startSeatAmount],
+						0);
 		
 		currentFlight = new Flight(Calendar.getInstance(),  new Plane(PlaneType.BOEING737), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM), 0);
 		
