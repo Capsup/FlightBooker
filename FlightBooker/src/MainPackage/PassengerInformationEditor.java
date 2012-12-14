@@ -13,7 +13,7 @@ import javax.swing.border.TitledBorder;
 public class PassengerInformationEditor extends JFrame
 {
 
-	//private JTextFieldUpgraded fieldUpgraded;
+	private JTextFieldUpgraded fieldUpgraded;
 	
 	private Person person;
 	
@@ -25,11 +25,15 @@ public class PassengerInformationEditor extends JFrame
 		public void actionPerformed( ActionEvent e )
 		{
 			if( e.getActionCommand() == "OK" ){
-				System.out.println( "OK - Commit changes" );
+				//System.out.println( "OK - Commit changes" );
 				//if anything has changed, commit changes
 				//fieldUpgraded.setPerson( new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), fieldUpgraded.getPerson().getCustomerID() ) );
 //				Database.
-				Database.getInstance().Replace( person.getCustomerID(), new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getCustomerID() ) );
+				
+				Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
+				if( fieldUpgraded != null )
+					fieldUpgraded.setPerson( updatedPerson );
+				Database.getInstance().Replace( person.getCustomerID(), updatedPerson );
 				getInstance().dispose();
 			}
 
@@ -52,6 +56,14 @@ public class PassengerInformationEditor extends JFrame
 	public PassengerInformationEditor(Person person)
 	{
 		//this.fieldUpgraded = fieldUpgraded;
+		this.person = person;
+		setupFrame();
+		makeContent();
+	}
+	
+	public PassengerInformationEditor(Person person, JTextFieldUpgraded fieldUpgraded)
+	{
+		this.fieldUpgraded = fieldUpgraded;
 		this.person = person;
 		setupFrame();
 		makeContent();

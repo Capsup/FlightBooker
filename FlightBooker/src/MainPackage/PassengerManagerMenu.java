@@ -11,6 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -62,9 +63,42 @@ public class PassengerManagerMenu
 	        		System.out.println("ERMAHGERD, did you change the data in the JTextField of the passengers!?!?!?!? actionListener does not like you anymore (fix)");
 	        		return;
 	        	}*/
-	        	new PassengerInformationEditor( textField.getPerson() );
+	        	new PassengerInformationEditor( textField.getPerson(), textField );
 	        }
         }
+	}
+	
+	private class okListener implements ActionListener
+	{
+
+		@Override
+        public void actionPerformed( ActionEvent e )
+        {
+			boolean bSuccess = true;
+	        for( JTextFieldUpgraded textFieldUpgraded : passengerField )
+	        {
+	        	if( textFieldUpgraded.getText().equals( "" ) )
+	        		bSuccess = false;
+	        	
+	        	
+	        }
+	        if( bSuccess )
+	        {
+	        	Passenger[] passengers = currentReservation.getPassengers();
+	        	
+	        	for( int i = 0; i < passengerField.length; i++ )
+	        	{
+	        		passengers[i].setPerson( passengerField[i].getPerson() );
+	        	}
+	        	
+	        	currentReservation.setOwner( passengerField[0].getPerson() );
+	        }
+	        
+	        frame.remove( mainPanel );
+	        
+	        new ReservationInfoMenu( frame, currentReservation );
+        }
+		
 	}
 	
 	private class keyListener implements KeyListener
@@ -235,6 +269,17 @@ public class PassengerManagerMenu
 	        if( person.getFirstName().toLowerCase().startsWith( currentField.getText() ) )
 	        	listModel.addElement( person );
         }
+		
+		if( listModel.getSize() == 0 )
+			for( Person person : persons )
+				if( person.getSurName().toLowerCase().startsWith( currentField.getText() ) )
+					listModel.addElement( person );
+		
+		if( listModel.getSize() == 0 )
+			for( Person person : persons )
+				if( person.getPhone().toLowerCase().startsWith( currentField.getText() ) )
+					listModel.addElement( person );
+		
 		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, 200, 100 );
 		//passengerPanel.setComponentZOrder( list, 5 );
 		list.setVisible( true );
@@ -335,6 +380,11 @@ public class PassengerManagerMenu
 		middlePanel.add(scrollPane);
 		
 		mainPanel.add(middlePanel, BorderLayout.CENTER);
+		
+		JButton button = new JButton("test");
+		button.addActionListener( new okListener() );
+		
+		mainPanel.add( button, BorderLayout.SOUTH );
 		
 		contentPane.add(mainPanel);
 		

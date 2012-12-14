@@ -25,6 +25,11 @@ public class Reservation
 		return owner;
 	}
 	
+	public void setOwner( Person person )
+	{
+		this.owner = person;
+	}
+	
 	//Returns an array of Persons containing the passengers of the reservation.
 	public Passenger[] getPassengers()
 	{

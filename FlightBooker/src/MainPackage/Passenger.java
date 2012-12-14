@@ -49,4 +49,9 @@ public class Passenger implements Serializable, Uploadable
 	{
 		return person;
 	}
+	
+	public void setPerson( Person person )
+	{
+		this.person = person;
+	}
 }
