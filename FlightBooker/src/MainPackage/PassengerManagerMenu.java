@@ -20,8 +20,8 @@ public class PassengerManagerMenu
 	private JFrame frame;
 	private JPanel mainPanel;
 	private JPanel mainPassengerPanel, passengerPanel;
-	private JTextField[] passengerField;
-	private JTextField currentField;
+	private JTextFieldUpgraded[] passengerField;
+	private JTextFieldUpgraded currentField;
 	
 	//WORKS:
 	/*private DefaultListModel<String> listModel;
@@ -34,15 +34,36 @@ public class PassengerManagerMenu
 	private int passengerAmount = 5;
 	
 	private Reservation currentReservation;
-	private Person selectedPerson;
 	
 	private class actionListener implements ActionListener
-	{
+	{		
+		JTextFieldUpgraded textField;
+		
+		public actionListener( JTextFieldUpgraded textField )
+		{
+			this.textField = textField;
+		}
+		
 		@Override
         public void actionPerformed( ActionEvent e )
         {
 	        if( e.getActionCommand() == "edit" )
-	        	new PassengerInformationEditor( selectedPerson );
+	        {
+	        	/*Person myPerson = null;
+	        	String[] info = textField.getText().split( " " );
+	        	for( Person person : listModel.listPersons )
+	        	{
+	        		if( person.getFirstName().equals( info[0] ) && person.getSurName().equals( info[1] ) && person.getPhone().equals( info[3] ) )
+	        			myPerson = person;
+	        	}
+	        	
+	        	if( myPerson == null )
+	        	{
+	        		System.out.println("ERMAHGERD, did you change the data in the JTextField of the passengers!?!?!?!? actionListener does not like you anymore (fix)");
+	        		return;
+	        	}*/
+	        	new PassengerInformationEditor( textField.getPerson() );
+	        }
         }
 	}
 	
@@ -60,7 +81,7 @@ public class PassengerManagerMenu
         {
 			//WORKS:
 			listModel.clear();
-			currentField = (JTextField) e.getComponent();
+			currentField = (JTextFieldUpgraded) e.getComponent();
 			if( !currentField.getText().equals( "" ) )
 				calculateResults(currentField);
 			if( currentField.getText().equals( "" ) )
@@ -82,13 +103,17 @@ public class PassengerManagerMenu
 		@Override
         public void mouseClicked( MouseEvent e )
         {
-			selectedPerson = listModel.listPersons.get( list.getSelectedIndex() );
+			if( list.getSelectedIndex() == -1 )
+				return;
+						
+			Person selectedPerson = listModel.listPersons.get( list.getSelectedIndex() );
 			
 			if( selectedPerson != null )
 			{
 				//JTextField currentField = (JTextField) e.getComponent();
 				
-				currentField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
+				//currentField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
+				currentField.setPerson( selectedPerson );
 			}
 			
 			list.setVisible( false );
@@ -257,7 +282,7 @@ public class PassengerManagerMenu
 		//Hver passager skal have et suggestive panel hvor man skriver navn ind og så slår den resten
 		//Jeg får parsed en reservation hvor der er x antal passagerer og de har et sæde og denne menu skal tildele de person objekter de rigtige værdier
 		
-		passengerField = new JTextField[currentReservation.getPassengers().length];
+		passengerField = new JTextFieldUpgraded[currentReservation.getPassengers().length];
 		
 		passengerPanel = new JPanel();
 		passengerPanel.setLayout(null);
@@ -272,7 +297,7 @@ public class PassengerManagerMenu
 	        passengerPanel.setComponentZOrder( list, 0 );
 	        list.setVisible( false );
 	        
-	        passengerField[i] = new JTextField();
+	        passengerField[i] = new JTextFieldUpgraded();
 	        passengerField[i].setBounds( 20, (i+1) * 50, 200, 25 );
 	        passengerField[i].addKeyListener( new keyListener() );
 	        
@@ -281,7 +306,7 @@ public class PassengerManagerMenu
 	        JButton editButton = new JButton("edit");
 	        editButton.setBounds( 240, ( i + 1 ) * 50, 50, 25 );
 	        editButton.setActionCommand( "edit" );
-	        editButton.addActionListener( new actionListener() );
+	        editButton.addActionListener( new actionListener(passengerField[i]) );
 	        passengerPanel.add( editButton );
 	        
 	        //WORKS:

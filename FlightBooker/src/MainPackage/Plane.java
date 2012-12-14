@@ -2,7 +2,7 @@ package MainPackage;
 
 import java.io.Serializable;
 
-public class Plane implements Serializable
+public class Plane implements Serializable, Uploadable
 {
 	public enum PlaneType 
 	{
@@ -12,6 +12,20 @@ public class Plane implements Serializable
     private int planeID;
 	private Seat[][] seatArray;
 	private String planeTypeString;
+	
+	private int id;
+	
+	@Override
+    public int getID()
+    {
+	    return id;
+    }
+
+	@Override
+    public void setID( int iID )
+    {
+	    id = iID;
+    }
 	
 	public Plane(PlaneType planeType)
 	{

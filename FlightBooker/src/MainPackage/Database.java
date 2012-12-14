@@ -207,7 +207,7 @@ public class Database
 	}
 
 	// /////////AMAZING CODE BELOW\\\\\\\\\\\
-	public int Add( Object object )
+	public int Add( Uploadable uploadable )
 	{
 		try
 		{
@@ -215,9 +215,12 @@ public class Database
 				connectToDatabase();
 
 			//PreparedStatement statement = connection.prepareStatement( "INSERT INTO testtable(object) VALUES(?)", Statement.RETURN_GENERATED_KEYS );
-			PreparedStatement statement = connection.prepareStatement( "INSERT INTO " + object.getClass().getSimpleName().toLowerCase() + "(object) VALUES(?)", Statement.RETURN_GENERATED_KEYS );
+			PreparedStatement statement = connection.prepareStatement( "INSERT INTO " + uploadable.getClass().getSimpleName().toLowerCase() + "(id, object) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS );
 			
-			statement.setObject( 1, object );
+			//if( object instanceof Person )
+			//	statement.setLong( 1, ((Person) object).getCustomerID() );
+			statement.setLong( 1, uploadable.getID() );
+			statement.setObject( 2, uploadable );
 			statement.executeUpdate();
 
 			ResultSet rSet = statement.getGeneratedKeys();
@@ -225,6 +228,8 @@ public class Database
 			int id = 0;
 			if( rSet.next() )
 				id = rSet.getInt( 1 );
+			
+			//statement.setObject( 1, x )
 
 			statement.close();
 
@@ -236,6 +241,41 @@ public class Database
 		}
 
 		return 0;
+	}
+	
+	public boolean Replace( int iID, Object object )
+	{
+		try
+        {
+			if( connection == null || !connection.isValid( 1 ) )
+				connectToDatabase();
+			
+			PreparedStatement statement = connection.prepareStatement( "UPDATE " + object.getClass().getSimpleName().toLowerCase() + " SET object = ? WHERE id = ?" );
+			statement.setObject( 1, object );
+			statement.setLong( 2, iID );
+		
+			int iRowsAffected = statement.executeUpdate();
+			if( iRowsAffected > 1 )
+			{
+				System.out.println("Query executed, however more than one row was updated?");
+				return true;
+			}
+			else if(iRowsAffected == 1) 
+			{
+				return true;
+			}
+			else 
+			{
+				System.out.println("Query executed but no values were updated.");
+				return false;
+			}
+        } 
+		catch( Exception e )
+        {
+			e.printStackTrace();
+        }
+		
+		return false;
 	}
 
 	public Object Get( int iID )

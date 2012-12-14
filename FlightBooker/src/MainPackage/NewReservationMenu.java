@@ -132,10 +132,10 @@ public class NewReservationMenu
 				if(canCommit())
 				{
 					frame.remove(mainPanel);
-					//new PassengerManagerMenu(frame, currentReservation);
+					new PassengerManagerMenu(frame, currentReservation);
 					
 					System.out.println(currentReservation.getFlight().getPlane().getPlaneTypeString());
-					new ReservationInfoMenu(frame, currentReservation);
+					//new ReservationInfoMenu(frame, currentReservation);
 				}
 				break;
 			case "Inspect Reservation": 	
@@ -538,7 +538,7 @@ public class NewReservationMenu
 						null, 
 						new Passenger[startSeatAmount]);
 		
-		currentFlight = new Flight(Calendar.getInstance(),  new Plane(PlaneType.BOEING737), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM));
+		currentFlight = new Flight(Calendar.getInstance(),  new Plane(PlaneType.BOEING737), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM), 0);
 		
 		Passenger[] passengerArray = currentReservation.getPassengers();
 		

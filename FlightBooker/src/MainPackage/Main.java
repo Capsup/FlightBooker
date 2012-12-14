@@ -19,7 +19,6 @@ public class Main
 		//		"03-21-1967", "Afghanistan", "Afghan", "N/A", "N/A","N/A", 3), new Seat(0, 0)) );
 		/*Passenger passenger = ( Passenger ) Database.getInstance().Get( iID );
 		Person person = Database.getInstance().Get( iID, Person.class );*/
-		
 		/*Flight[] displayedFlights = new Flight[5];
 		
 		displayedFlights[0] = new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN),  new Airport(AirportType.MALMÖ));
