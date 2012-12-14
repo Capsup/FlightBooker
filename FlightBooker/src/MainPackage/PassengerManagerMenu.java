@@ -96,7 +96,7 @@ public class PassengerManagerMenu
 	        
 	        frame.remove( mainPanel );
 	        
-	        new ReservationInfoMenu( frame, currentReservation );
+	        new ReservationInfoMenu( frame, currentReservation, true);
         }
 		
 	}

@@ -1,6 +1,7 @@
 package MainPackage;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -17,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import MainPackage.NewReservationMenu.ButtonListener;
 import MainPackage.Plane.PlaneType;
@@ -30,9 +32,12 @@ public class ReservationInfoMenu
 
 	private PlanePanel planePanel;
 	
-	public ReservationInfoMenu(JFrame frame, Reservation reservation)
+	private boolean isNew;
+	
+	public ReservationInfoMenu(JFrame frame, Reservation reservation, boolean isNew)
 	{
 		this.frame = frame;
+		this.isNew = isNew;
 		currentReservation = reservation;
 		
 		setupFrame();
@@ -52,12 +57,24 @@ public class ReservationInfoMenu
 				{
 					planePanel.setEditable();
 					planePanel.updateSeats();
+					
+					//mainPanel.revalidate();
+					//mainPanel.repaint();
 				}
 				break;
 				
 			case "OK":
 				System.out.println("OK - Commit changes");
 				frame.dispose();
+				
+				if(isNew)
+				{
+					//Database.getInstance().Add(currentReservation);
+				}
+				else 
+				{	
+					
+				}
 				//Commit changes
 				break;
 				
@@ -109,10 +126,12 @@ public class ReservationInfoMenu
 		
 		JLabel customerLabel = new JLabel(personString);
 		
+				//Customer Panel Finish Up
 		customerPanel.add(customerTitleLabel);
 		customerPanel.add(customerLabel);
 				//Customer Panel Finished
-
+		
+		
 				//Flight Panel
 		JPanel flightPanel = new JPanel();
 		flightPanel.setLayout(new BoxLayout(flightPanel, BoxLayout.X_AXIS));
@@ -134,25 +153,35 @@ public class ReservationInfoMenu
 		flightPanel.add(flightLabel);
 				//Flight Panel Finished
 		
+				//Passenger Panel
+		JPanel passengerPanel = new JPanel();
+		
+					//Passenger Label
+		JLabel passengerLabel = new JLabel("Passengers");
+		
+					//Passenger Table
+		String[] columns = {"Passengers", "Seats"};
+		
+		Object[][] passengerData = makePassengerData();
+		
+		JTable passengerTable = new JTable(passengerData, columns);
+		passengerTable.setEnabled(false);
+		passengerTable.setBackground(Color.WHITE);
+		
+		JScrollPane scrollPane = new JScrollPane(passengerTable);
+		scrollPane.setPreferredSize(new Dimension(450, 200));
+		
+				//Passenger Panel Finished
+		passengerPanel.add(passengerLabel);
+		passengerPanel.add(scrollPane);
+				//Passenger Panel Finished
+		
+		
 			//Info Panel finishup
 		infoPanel.add(customerPanel);
 		infoPanel.add(flightPanel);
+		infoPanel.add(passengerPanel);
 			//Info Panel Finished
-		
-			//Passenger Panel
-		JPanel passengerPanel = new JPanel();
-		
-				//Passenger Scrollview
-		JList viewedList = new JList();
-		
-		JScrollPane scrollPane = new JScrollPane(viewedList);
-		
-				//NEEDS SCROLLPANE THINGS
-		
-			//Passenger Panel Finished
-		passengerPanel.add(scrollPane);
-			//Passenger Panel Finished
-		
 		
 		//Top Panel Finishup
 		topPanel.add(infoPanel);
@@ -215,6 +244,28 @@ public class ReservationInfoMenu
 		
 		contentPane.add(mainPanel);
 		
+	}
+	
+	Object[][] makePassengerData()
+	{
+		Object[][] returnArray;
+		
+		returnArray = new Object[currentReservation.getPassengers().length][];
+		
+		Passenger[] passengers = currentReservation.getPassengers();
+		
+		if(passengers != null)
+		{
+			for(int i=0; i<passengers.length; i++)
+			{
+				String firstData = passengers[i].getPerson().getFirstName()+" "+passengers[i].getPerson().getSurName();
+				String secondData = "("+passengers[i].getSeat().getPosition().width+","+passengers[i].getSeat().getPosition().height+")";
+				
+				returnArray[i] = new Object[]{firstData, secondData};
+			}
+		}
+		
+		return returnArray;
 	}
 	
 	boolean canCommit()
