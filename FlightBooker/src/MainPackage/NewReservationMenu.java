@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
@@ -112,7 +113,9 @@ public class NewReservationMenu
 		for(int i=0; i<currentPassengers.length; i++)
 			currentPassengers[i] = new Passenger(null, null);
 		
+		calculateResults();
 		updateReservation();
+		
 	}
 	
 	class ButtonListener implements ActionListener
@@ -132,10 +135,10 @@ public class NewReservationMenu
 				if(canCommit())
 				{
 					frame.remove(mainPanel);
-					//new PassengerManagerMenu(frame, currentReservation);
+					new PassengerManagerMenu(frame, currentReservation);
 					
 					System.out.println(currentReservation.getFlight().getPlane().getPlaneTypeString());
-					new ReservationInfoMenu(frame, currentReservation);
+					//new ReservationInfoMenu(frame, currentReservation);
 				}
 				break;
 			case "Inspect Reservation": 	
@@ -187,6 +190,7 @@ public class NewReservationMenu
 		//flightPanels = new JPanel[flights.size()];
 		if( listModel == null )
 			return;
+		
 		//listModel.clear();
 		viewedList.removeAll();
 		for( int i = 0; i < flights.size(); i++ )
@@ -198,9 +202,39 @@ public class NewReservationMenu
 			
 			System.out.println( "Selected2: " + destinationList.getSelectedItem().toString());
 			System.out.println( "Currentflight2: " + currentFlight.getDestination().getName());*/
-			if( currentFlight.getDate().getTimeInMillis() >= startDateLabel.getCalendar().getTimeInMillis() && currentFlight.getDate().getTimeInMillis() <= endDateLabel.getCalendar().getTimeInMillis() && departureList.getSelectedItem().toString().equals( currentFlight.getOrigin().getName() ) && destinationList.getSelectedItem().toString().equals( currentFlight.getDestination().getName() ) )
+			
+			boolean bounce = true;
+			
+			//Check if the startDate time is smaller than the actual flight time.
+			if(!(currentFlight.getDate().getTimeInMillis() >= startDateLabel.getCalendar().getTimeInMillis()))
 			{
-				//TODO: Make this possible!!!!!!!!!!!!!
+				bounce = false;
+			}
+			
+			//Check if the endDate time is greater than the actual flight time.
+			if(!(currentFlight.getDate().getTimeInMillis() <= endDateLabel.getCalendar().getTimeInMillis()))
+			{
+				bounce = false;
+			}
+			
+			//Check if the departure selected is the same as the actual flight.
+			if(departureList.getSelectedIndex() > 0 && !departureList.getSelectedItem().toString().equals( currentFlight.getOrigin().getName()))
+			{
+				bounce = false;
+			}
+			
+			//Check if the destination selected is the same as the actual flight.
+			if(destinationList.getSelectedIndex() > 0 && !destinationList.getSelectedItem().toString().equals( currentFlight.getDestination().getName()))
+			{
+				bounce = false;
+			}
+			
+			
+			//Martins lange satan
+			//currentFlight.getDate().getTimeInMillis() >= startDateLabel.getCalendar().getTimeInMillis() && currentFlight.getDate().getTimeInMillis() <= endDateLabel.getCalendar().getTimeInMillis() && departureList.getSelectedItem().toString().equals( currentFlight.getOrigin().getName() ) && destinationList.getSelectedItem().toString().equals( currentFlight.getDestination().getName() ) 
+			
+			if(bounce)
+			{
 				JPanel flightPanel = setupFlightPanel( currentFlight );
 				
 				JButton flightPanelButton = new JButton();
@@ -241,8 +275,8 @@ public class NewReservationMenu
 //			viewedList.invalidate();
 //		}
 		
-		mainPanel.validate();
 		mainPanel.invalidate();
+		mainPanel.validate();
 		mainPanel.repaint();
 		
 	}
@@ -316,22 +350,33 @@ public class NewReservationMenu
 		
 		TextListener textListener = new TextListener();
 		
+		Calendar calendarToUse = Calendar.getInstance();
+		
 		startDateLabel = new JDateChooser();
 		startDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
-		startDateLabel.setDate(Calendar.getInstance().getTime());
+		calendarToUse.set(2012, 0, 1);
+		startDateLabel.setDate(calendarToUse.getTime());
 		startDateLabel.addPropertyChangeListener( textListener );
 		
 		endDateLabel = new JDateChooser();
 		endDateLabel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
-		endDateLabel.setDate(Calendar.getInstance().getTime());
+		calendarToUse.set(2012, 11, 31);
+		endDateLabel.setDate(calendarToUse.getTime());
 		endDateLabel.addPropertyChangeListener( textListener );
 		
 		JPanel destinationPanel = new JPanel();
 		destinationPanel.setPreferredSize(new Dimension(frameSize.width/8,((frameSize.height/6)/4)));
 		destinationPanel.setLayout(new BoxLayout(destinationPanel, BoxLayout.X_AXIS));
 		
-		String[] availableAirports = Airport.getDestinations();
+		String[] availableAirports = new String[Airport.getDestinations().length+1];
 		
+		availableAirports[0] = "- Unknown -";
+		
+		for(int i=1; i<Airport.getDestinations().length+1; i++)
+		{
+			availableAirports[i] = Airport.getDestinations()[i-1];
+		}
+			
 		departureList = new JComboBox(availableAirports);
 		//departureList.addPropertyChangeListener( textListener );
 		departureList.addActionListener( new TextActionListener() );
