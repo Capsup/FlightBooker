@@ -137,7 +137,7 @@ public class ReservationInfoMenu
 		String personString = "";
 		
 		if(currentReservation.getOwner() != null)
-			personString = currentReservation.getOwner().getFirstName()+currentReservation.getOwner().getSurName()+", "+currentReservation.getOwner().getPhone();
+			personString = currentReservation.getOwner().getFirstName()+" "+currentReservation.getOwner().getSurName()+", "+currentReservation.getOwner().getPhone();
 		
 		JLabel customerLabel = new JLabel(personString);
 		
