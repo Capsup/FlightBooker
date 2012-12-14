@@ -28,13 +28,16 @@ public class MainMenu extends JFrame {
 			{
 			case "New Reservation": 	
 				//new FlightInfoMenu(new Flight(Calendar.getInstance(), new Plane(PlaneType.BOEING747), new Airport(AirportType.COPENHAGEN), new Airport(AirportType.STOCKHOLM)));
-				//new NewReservationMenu(new JFrame());
-				new PassengerInformationMenu(new JFrame());
+				new NewReservationMenu(new JFrame());
+				//new PassengerInformationMenu(new JFrame());
 				//new ReservationInfoMenu(new JFrame());
 				break;
 
 			case "Find":
 				new FindDialog();
+				break;
+			case "Database":
+				new DatabaseAddMenu();
 				break;
 			}
 		}
@@ -90,12 +93,19 @@ public class MainMenu extends JFrame {
 		findButton.setActionCommand("Find");
 		findButton.setPreferredSize(buttonSize);
 		findButton.setAlignmentX(CENTER_ALIGNMENT);
+		
+		//Find Button
+		JButton databaseButton = new JButton("Database");
+		databaseButton.setActionCommand("Database");
+		databaseButton.setPreferredSize(buttonSize);
+		databaseButton.setAlignmentX(CENTER_ALIGNMENT);
 
 		//Adds a button listener to every single button
 		ButtonListener listener = new ButtonListener();
 
 		newReservationButton.addActionListener(listener);
 		findButton.addActionListener(listener);
+		databaseButton.addActionListener(listener);
 
 		//Add buttons
 		buttonPanel.add(Box.createRigidArea(new Dimension(0,10)));
@@ -103,6 +113,8 @@ public class MainMenu extends JFrame {
 		buttonPanel.add(newReservationButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(0,50)));
 		buttonPanel.add(findButton);
+		buttonPanel.add(Box.createVerticalGlue());
+		buttonPanel.add(databaseButton);
 		buttonPanel.add(Box.createVerticalGlue());
 		buttonPanel.add(Box.createRigidArea(new Dimension(0,10)));
 

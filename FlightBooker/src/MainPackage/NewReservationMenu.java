@@ -34,6 +34,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.RepaintManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.MaskFormatter;
@@ -75,6 +76,8 @@ public class NewReservationMenu
 	private JComboBox departureList;
 	private JComboBox destinationList;
 	
+	private JPanel bottomPanel;
+	
 	public NewReservationMenu(JFrame frame)
 	{
 		this.frame = frame;
@@ -114,6 +117,13 @@ public class NewReservationMenu
 	
 	class ButtonListener implements ActionListener
 	{
+		int index;
+		
+		public ButtonListener(int i)
+		{
+			index = i;
+		}
+		
 		public void actionPerformed(ActionEvent event)
 		{
 			switch(event.getActionCommand())
@@ -123,12 +133,29 @@ public class NewReservationMenu
 				{
 					frame.remove(mainPanel);
 					//new PassengerManagerMenu(frame, currentReservation);
+					
+					System.out.println(currentReservation.getFlight().getPlane().getPlaneTypeString());
 					new ReservationInfoMenu(frame, currentReservation);
 				}
 				break;
 			case "Inspect Reservation": 	
 				System.out.println("MEH!");
-				break;			
+				break;		
+			case "Flight Panel":
+				bottomPanel.remove(planePanel);
+				wipePassengers();
+				
+				currentReservation.setFlight(flights.get(index));
+				planePanel = new PlanePanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
+				
+				bottomPanel.add(planePanel); 
+				
+				updateFlightPanel();
+				
+				mainPanel.invalidate();
+				mainPanel.validate();
+				mainPanel.repaint();
+				break;
 			}
 		}
 	}
@@ -177,7 +204,11 @@ public class NewReservationMenu
 				JPanel flightPanel = setupFlightPanel( currentFlight );
 				
 				JButton flightPanelButton = new JButton();
+				flightPanelButton.setActionCommand("Flight Panel");
+				
 				flightPanelButton.add(flightPanel);
+				
+				flightPanelButton.addActionListener(new ButtonListener(i));
 				
 				viewedList.add(flightPanelButton);
 				
@@ -363,7 +394,7 @@ public class NewReservationMenu
 		topPanel.add(topRightPanel, BorderLayout.CENTER);
 		
 		//Bottom
-		JPanel bottomPanel = new JPanel();
+		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
 		bottomPanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/3*2));
 		
@@ -381,7 +412,7 @@ public class NewReservationMenu
 		buttonPanel.add(makeReservationButton);
 		buttonPanel.add(inspectReservationButton);
 		
-		bottomPanel.add(planePanel, BorderLayout.CENTER);
+		//bottomPanel.add(planePanel, BorderLayout.CENTER);
 		bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
 		
 		//Finish up
@@ -392,7 +423,7 @@ public class NewReservationMenu
 		contentPane.add(mainPanel);
 		
 		//Listeners
-		ButtonListener listener = new ButtonListener();
+		ButtonListener listener = new ButtonListener(0);
 		
 		makeReservationButton.addActionListener(listener);
 		inspectReservationButton.addActionListener(listener);
@@ -517,11 +548,13 @@ public class NewReservationMenu
 		}
 		
 		currentReservation.setPassengers(passengerArray);
+		currentReservation.setFlight(currentFlight);
+		
 	}
 	
 	private void updateReservation()
 	{
-		currentReservation.setFlight(currentFlight);
+		//currentReservation.setFlight(currentFlight);
 		
 		updatePassengers();
 	}
@@ -612,6 +645,16 @@ public class NewReservationMenu
 		updateFlightPanel();
 	}
 	
+	void wipePassengers()
+	{
+		Passenger[] passengers = currentReservation.getPassengers();
+		
+		for (Passenger passenger : passengers) 
+		{
+			passenger.setSeat(null);
+		}
+	}
+	
 	void updateFlightPanel()
 	{
 		if(planePanel != null)
@@ -622,14 +665,22 @@ public class NewReservationMenu
 	{
 		boolean returnBool = true;
 		
+		
 		Passenger[] passengers = currentReservation.getPassengers();
 		
-		for (Passenger passenger : passengers) 
+		if(passengers.length > 0)
 		{
-			if(passenger.getSeat() == null)
-				returnBool = false;
+			for (Passenger passenger : passengers) 
+			{
+				if(passenger.getSeat() == null)
+					returnBool = false;
+			}
 		}
-		
+		else 
+		{
+			returnBool = false;
+		}
+			
 		return returnBool;
 	}
 }

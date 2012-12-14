@@ -52,6 +52,11 @@ public class Airport implements Serializable
 		return airportName;
 	}
 	
+	public static AirportType[] getAirportTypes()
+	{
+		return AirportType.values();
+	}
+	
 	public static String[] getDestinations()
 	{
 		ArrayList<String> stringArray = new ArrayList<String>();

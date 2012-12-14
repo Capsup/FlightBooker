@@ -57,6 +57,11 @@ public class Plane implements Serializable
 		return count;
 	}
 	
+	public static PlaneType[] planeTypes()
+	{
+		return PlaneType.values();
+	}
+	
 	public String getPlaneTypeString()
 	{
 		return planeTypeString;
