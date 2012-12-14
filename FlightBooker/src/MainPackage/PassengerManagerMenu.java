@@ -92,11 +92,11 @@ public class PassengerManagerMenu
 	        	}
 	        	
 	        	currentReservation.setOwner( passengerField[0].getPerson() );
+	        	
+		        frame.remove( mainPanel );
+		        
+		        new ReservationInfoMenu( frame, currentReservation, true);
 	        }
-	        
-	        frame.remove( mainPanel );
-	        
-	        new ReservationInfoMenu( frame, currentReservation, true);
         }
 		
 	}
@@ -215,7 +215,7 @@ public class PassengerManagerMenu
 		@Override
         public Object getElementAt( int index )
         {
-	        return( listPersons.get( index ).getFirstName() + " " + listPersons.get( index ).getSurName() );
+	        return( listPersons.get( index ).getFirstName() + " " + listPersons.get( index ).getSurName() + " -  " + listPersons.get(index).getPhone() );
         }
 
 		@Override
@@ -266,19 +266,23 @@ public class PassengerManagerMenu
 		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 		for( Person person : persons )
         {
-	        if( person.getFirstName().toLowerCase().startsWith( currentField.getText() ) )
+	        if( person.getFirstName().toLowerCase().startsWith( currentField.getText() )
+	        		|| person.getSurName().toLowerCase().startsWith( currentField.getText() )
+	        		|| person.getPhone().toLowerCase().startsWith( currentField.getText()) 
+	        		|| (person.getFirstName() + " " + person.getSurName() ).toLowerCase().startsWith( currentField.getText()))
 	        	listModel.addElement( person );
         }
-		
-		if( listModel.getSize() == 0 )
+		/*
+		//if( listModel.getSize() == 0 )
 			for( Person person : persons )
-				if( person.getSurName().toLowerCase().startsWith( currentField.getText() ) )
+				if( person.getSurName().toLowerCase().startsWith( currentField.getText() ) && !listModel.listPersons.contains(person))
 					listModel.addElement( person );
 		
-		if( listModel.getSize() == 0 )
+		//if( listModel.getSize() == 0 )
 			for( Person person : persons )
-				if( person.getPhone().toLowerCase().startsWith( currentField.getText() ) )
+				if( person.getPhone().toLowerCase().startsWith( currentField.getText() ) && !listModel.listPersons.contains(person))
 					listModel.addElement( person );
+		*/
 		
 		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, 200, 100 );
 		//passengerPanel.setComponentZOrder( list, 5 );

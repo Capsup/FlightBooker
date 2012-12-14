@@ -14,6 +14,8 @@ public class SeatButton extends JButton
 	
 	private int myIndex = -1;
 	
+	private boolean isEnabled = true;
+	
 	class ButtonListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent event)
@@ -112,19 +114,33 @@ public class SeatButton extends JButton
 		
 		if(seat.isBooked())
 		{
-			if(isMySeat == true)
+			if(isMySeat)
+			{
 				setBackground(Color.GREEN);
+				setEnabled(isEnabled);
+			}
 			else
+			{
 				setBackground(Color.RED);
+				setEnabled(false);
+			}
 		}
 		else
 		{
 			setBackground(null);
+			setEnabled(isEnabled);
 		}
+		
 	}
 	
 	void setMyIndex(int count)
 	{
 		myIndex = count;
 	}
+	
+	public void setButtonEnabled(boolean status)
+	{
+		isEnabled = status;
+	}
 }
+

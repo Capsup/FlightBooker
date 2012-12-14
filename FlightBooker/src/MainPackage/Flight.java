@@ -124,4 +124,31 @@ public class Flight implements Serializable, Uploadable
 	{
 		this.reservations = reservations;
 	}
+	
+	public void addReservation(Reservation reservation)
+	{
+		Reservation[] newReservations;
+		
+		if(reservations != null)
+		{
+			newReservations = new Reservation[reservations.length+1];
+			
+			for (int i = 0; i < reservations.length; i++) 
+			{
+				newReservations[i] = reservations[i];
+			}
+			
+			newReservations[reservations.length] = reservation;
+			
+		}
+		else 
+		{
+			newReservations = new Reservation[1];	
+			
+			newReservations[0] = reservation;
+		}
+		
+		
+		reservations = newReservations;
+	}
 }

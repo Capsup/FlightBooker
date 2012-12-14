@@ -193,8 +193,9 @@ public class PlanePanel extends JPanel
 		{
 			for(int j=0; j<seatButtonArray[i].length; j++)
 			{
+				seatButtonArray[i][j].setButtonEnabled(editable);
+				
 				seatButtonArray[i][j].update();
-				seatButtonArray[i][j].setEnabled(editable);
 				
 				seatButtonArray[i][j].setBooked(false);
 			}

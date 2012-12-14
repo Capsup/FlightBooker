@@ -48,7 +48,7 @@ public class DatabaseAddMenu extends JFrame
 			switch(event.getActionCommand())
 			{
 			case "Add Person": 	
-				Database.getInstance().Add(new Person((String)(rand(firstNames)), (String)(rand(surNames)), (String)(rand(gender)), "", (String)(rand(countries)), (String)(rand(nationalities)), (String)(rand(adress)), ""+(random.nextInt(80000000)+10000000), ""+random.nextInt(), random.nextInt()));
+				Database.getInstance().Add(new Person((String)(rand(firstNames)), (String)(rand(surNames)), (String)(rand(gender)), "", (String)(rand(countries)), (String)(rand(nationalities)), (String)(rand(adress)), ""+(random.nextInt(80000000)+10000000), ""+random.nextInt(), Database.getInstance().GetID(Person.class)));
 				System.out.println("Person Added");
 				break;
 
@@ -73,7 +73,7 @@ public class DatabaseAddMenu extends JFrame
 						new Plane(Plane.planeTypes()[random.nextInt(Plane.planeTypes().length)]),
 						airport1,
 						airport2,
-						random.nextInt()));
+						Database.getInstance().GetID(Flight.class)));
 				System.out.println("Flight Added");
 				break;
 				
@@ -81,6 +81,8 @@ public class DatabaseAddMenu extends JFrame
 				Database.getInstance().executeQuery("DELETE FROM person");
 				Database.getInstance().executeQuery("DELETE FROM passenger");
 				Database.getInstance().executeQuery("DELETE FROM flight");
+				Database.getInstance().executeQuery("DELETE FROM reservation");
+
 				System.out.println("Database Deleted!");
 				break;
 			}
