@@ -115,6 +115,11 @@ public class Flight implements Serializable, Uploadable
 		return seatsLeft;
 	}
 	
+	public Seat[][] getSeats()
+	{
+		return seatArray;
+	}
+	
 	public int getSeatAmount()
 	{
 		return seatArray.length*seatArray[0].length;

@@ -109,8 +109,11 @@ public class JespersFindDialog extends JFrame {
 					
 					if(selectedAction == "Reservation")
 					{
-						Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID-1]; 
-						reservation.setFlight( Database.getInstance().Get( reservation.getFlight().getID(), Flight.class )  );
+						int chosenObjectID2 = (int) tableModel.getValueAt(chosenObjectActualRow, 1);
+						
+						//Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID-1]; 
+						Reservation reservation = Database.getInstance().Get(chosenObjectID, Flight.class).getReservations()[chosenObjectID2]; 
+						//reservation.setFlight( Database.getInstance().Get( reservation.getFlight().getID(), Flight.class ));
 						//Database.getInstance().Replace( reservation.getFlight().getID(), reservation.getFlight() );
 						new ReservationInfoMenu(new JFrame(), reservation, false);
 					}
@@ -298,7 +301,7 @@ public class JespersFindDialog extends JFrame {
 			}
 
 			if(tableToSearch.equals("Reservation")) {
-				columns = new String[] {"Reservation ID", "Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
+				columns = new String[] {"Flight ID", "Reservation ID","Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
 				for (int i = 0; i < listItems.size(); i++) {
@@ -306,18 +309,20 @@ public class JespersFindDialog extends JFrame {
 					Reservation reservation = (Reservation) object;
 					for (int j = 0; j < columns.length; j++) {
 						if(j%columns.length == 0)
-							tableData[i][j] = reservation.getID();
+							tableData[i][j] = reservation.getFlight().getID();
 						if(j%columns.length == 1)
-							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
+							tableData[i][j] = reservation.getCurrentFlightReservationIndex();
 						if(j%columns.length == 2)
-							tableData[i][j] = reservation.getFlight().getOrigin().getName();
+							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
 						if(j%columns.length == 3)
-							tableData[i][j] = reservation.getFlight().getDestination().getName();
+							tableData[i][j] = reservation.getFlight().getOrigin().getName();
 						if(j%columns.length == 4)
-							tableData[i][j] = reservation.getFlight().getDate().getTime();
+							tableData[i][j] = reservation.getFlight().getDestination().getName();
 						if(j%columns.length == 5)
-							tableData[i][j] = reservation.getPassengers().length;
+							tableData[i][j] = reservation.getFlight().getDate().getTime();
 						if(j%columns.length == 6)
+							tableData[i][j] = reservation.getPassengers().length;
+						if(j%columns.length == 7)
 							tableData[i][j] = reservation.getReservationDate().getTime();
 					}
 				}

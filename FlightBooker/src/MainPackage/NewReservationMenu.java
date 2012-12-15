@@ -190,6 +190,8 @@ public class NewReservationMenu
 		if( listModel == null )
 			return;
 		
+		int height = 0;
+		
 		//listModel.clear();
 		viewedList.removeAll();
 		for( int i = 0; i < flights.size(); i++ )
@@ -253,6 +255,8 @@ public class NewReservationMenu
 				
 				flightPanelButton.addActionListener(new ButtonListener(i));
 				
+				height += flightPanelButton.getPreferredSize().height;
+				
 				viewedList.add(flightPanelButton);
 				
 //				if( flightPanel != null )
@@ -266,23 +270,13 @@ public class NewReservationMenu
 				
 				//viewedList.repaint();
 				//scrollPane.repaint();
-				
 			}
 		}
 		
-//		for( Component component : viewedList.getComponents() )
-//			System.out.println("wat");
-		//System.out.println("VALIDATED");
-//		if( viewedList.getComponentCount() > 0 )
-//		{
-//			mainPanel.validate();
-//			viewedList.validate();
-//		}
-//		else 
-//		{
-//			mainPanel.invalidate();
-//			viewedList.invalidate();
-//		}
+		height += 5;
+		
+		viewedList.setPreferredSize(new Dimension(200,height));
+		
 		
 		mainPanel.invalidate();
 		mainPanel.validate();
@@ -426,7 +420,7 @@ public class NewReservationMenu
 		//topRightPanel.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));
 		
 		listModel = new DefaultListModel<>();
-		viewedList = new JList<>();
+		viewedList = new JList<>(listModel);
 		viewedList.setLayout(new BoxLayout(viewedList, BoxLayout.Y_AXIS));
 		viewedList.setPreferredSize(new Dimension(200,1000));
 		

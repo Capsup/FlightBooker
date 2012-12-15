@@ -1,6 +1,7 @@
 package MainPackage;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,9 +31,6 @@ public class DatabaseAddMenu extends JFrame
 	String[] countries = new String[]{"Denmark", "Somalia", "Germany", "USA", "Japan", "Uganda", "Uranus", "Alderaan"};
 	String[] nationalities = new String[]{"Denmark", "Somalia", "Germany", "USA", "Japan", "Uganda", "Uranus", "Alderaan"};
 	String[] adress = new String[]{"Rådhuspladsen nr. 1, 9000 København", "Nederenvej 1337, 2650 Hvidovre", "Platanvej 42, 1650 Vesterbronx", "Gadenavn n, 0000 place"};
-	
-	
-	
 	
 	public DatabaseAddMenu()
 	{
@@ -69,11 +67,72 @@ public class DatabaseAddMenu extends JFrame
 				
 				int airport2Index = random.nextInt(Airport.getAirportTypes().length);
 				
-				Database.getInstance().Add(new Flight(calendarToUse,
+				Flight newFlight = new Flight(calendarToUse,
 						new Plane(Plane.planeTypes()[random.nextInt(Plane.planeTypes().length)]),
 						airport1,
 						airport2,
-						Database.getInstance().GetID(Flight.class)));
+						Database.getInstance().GetID(Flight.class));
+				
+				int randReservationAmount = random.nextInt(5);
+				
+				ArrayList<Seat> availableSeats = new ArrayList<>();
+				
+				Seat[][] seatArray = newFlight.getSeats();
+				
+				for(int i=0; i < seatArray.length; i++)
+				{
+					for(int j=0; j<seatArray[i].length; j++)
+					{
+						availableSeats.add(seatArray[i][j]);
+					}
+				}
+				
+				for(int i=0; i<randReservationAmount; i++)
+				{
+					Reservation reservation = new Reservation();
+					
+					int randPassengerAmount = random.nextInt(4)+1;
+					
+					Passenger[] newPassengers = new Passenger[randPassengerAmount];
+					
+					for(int j=0; j<randPassengerAmount; j++)
+					{
+						//Random Person
+						int personRand = random.nextInt(Database.getInstance().GetID(Person.class)-1)+1;
+						
+						System.out.println(personRand);
+						
+						Person person = Database.getInstance().Get(personRand, Person.class);
+						
+						System.out.println(person);
+						
+						//Skal være random
+						int seatRand = random.nextInt(availableSeats.size());
+						
+						Seat seat = availableSeats.get(seatRand);
+						
+						availableSeats.remove(seatRand);
+						
+						Passenger passenger = new Passenger(person, seat);
+						
+						if(j == 0)
+							reservation.setOwner(person);
+							
+						newPassengers[j] = passenger;
+					}
+					
+					reservation.setPassengers(newPassengers);
+					
+					reservation.setFlight(newFlight);
+					
+					reservation.setReservedDate(calendarToUse);
+					
+					reservation.setCurrentFlightReservationIndex(i);
+					
+					newFlight.addReservation(reservation);
+				}
+				
+				Database.getInstance().Add(newFlight);
 				System.out.println("Flight Added");
 				break;
 				
