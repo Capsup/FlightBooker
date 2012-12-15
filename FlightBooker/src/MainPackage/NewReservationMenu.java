@@ -629,6 +629,7 @@ public class NewReservationMenu
 		
 		if(seatAmountLabel.getValue() != null)
 		{
+			
 			amount = Integer.parseInt((String)seatAmountLabel.getValue());
 		
 			Passenger[] passengerArray = new Passenger[amount];

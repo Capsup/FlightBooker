@@ -12,7 +12,7 @@ public class Reservation implements Serializable, Uploadable
     
 	private int id;
 	
-	private int currentFlightReservationIndex;
+	private int currentFlightReservationIndex = -1;
 	
 	@Override
 	public int getID()

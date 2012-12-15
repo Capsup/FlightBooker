@@ -249,29 +249,61 @@ public class JespersFindDialog extends JFrame {
 	private void makeTableData(String tableToSearch)
 	{	
 		//Hvis metoden bliver kaldt med noget at søge efter
-		if(tableToSearch != "None") {
-			try {
-				listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
-
-			} catch (ClassNotFoundException e) {
+		if(tableToSearch != "None") 
+		{
+			try 
+			{
+				if(!tableToSearch.equals("Reservation"))
+				{
+					listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
+				}
+				else 
+				{
+					ArrayList<Flight> flights = Database.getInstance().Get(Flight.class);
+					ArrayList<Reservation> reservations = new ArrayList<>();
+					
+					for (Flight flight : flights) 
+					{
+						if(flight.getReservations() != null)
+						{
+							Reservation[] innerReservations = flight.getReservations();
+							
+							for (Reservation reservation : innerReservations) {
+								reservations.add(reservation);
+							}
+						}
+					}
+					
+					listItems = reservations;
+				}
+			} catch (ClassNotFoundException e) 
+			{
 				e.printStackTrace();
 			}
+			
 			if(tableToSearch.equals("Person")) {						
 				columns = new String[]{"Person ID","First name","Surname","Phone","Country"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
-				for (int i = 0; i < listItems.size(); i++) {
+				for (int i = 0; i < listItems.size(); i++) 
+				{
 					Object object = listItems.get(i);
-					Person person = (Person) object;{
-						for (int j = 0; j < columns.length; j++) {
+					Person person = (Person) object;
+					{
+						for (int j = 0; j < columns.length; j++) 
+						{
 							if(j%columns.length == 0)
 								tableData[i][j] = person.getID();
+							
 							if(j%columns.length == 1)
-								tableData[i][j] = person.getFirstName();							
+								tableData[i][j] = person.getFirstName();
+							
 							if(j%columns.length == 2)
 								tableData[i][j] = person.getSurName();	
+							
 							if(j%columns.length == 3)
 								tableData[i][j] = person.getPhone();
+							
 							if(j%columns.length == 4)
 								tableData[i][j] = person.getCountry();
 						}
@@ -279,28 +311,39 @@ public class JespersFindDialog extends JFrame {
 				}	
 			}
 
-			if(tableToSearch.equals("Reservation")) {
+			if(tableToSearch.equals("Reservation")) 
+			{
 				columns = new String[] {"Reservation ID", "Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.size()][columns.length];
-				for (int i = 0; i < listItems.size(); i++) {
+				
+				for (int i = 0; i < listItems.size(); i++) 
+				{
 					Object object = listItems.get(i);
 					Reservation reservation = (Reservation) object;
-					for (int j = 0; j < columns.length; j++) {
+					for (int j = 0; j < columns.length; j++) 
+					{
 						if(j%columns.length == 0)
 							tableData[i][j] = reservation.getID();
+						
 						if(j%columns.length == 1)
 							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
+						
 						if(j%columns.length == 2)
 							tableData[i][j] = reservation.getFlight().getOrigin().getName();
+						
 						if(j%columns.length == 3)
 							tableData[i][j] = reservation.getFlight().getDestination().getName();
+						
 						if(j%columns.length == 4)
 							tableData[i][j] = reservation.getFlight().getDate().getTime();
+						
 						if(j%columns.length == 5)
 							tableData[i][j] = reservation.getPassengers().length;
+						
 						if(j%columns.length == 6)
 							tableData[i][j] = reservation.getReservationDate().getTime();
+						
 					}
 				}
 			}
