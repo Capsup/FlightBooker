@@ -4,10 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class FlightInfoMenu extends JFrame
 {
@@ -18,17 +26,32 @@ public class FlightInfoMenu extends JFrame
 	Flight currentFlight;
 	Reservation currentReservation;
 	
+	JTable reservationTable;
+	
 	public FlightInfoMenu(Flight flight)
 	{
 		currentFlight = flight;
 		
 		//Test
-		currentFlight.setReservations(new Reservation[0]);
-		//currentReservation = new Reservation(null, flight, null, null, 0);
+		//currentFlight.setReservations(new Reservation[0]);
+		//currentReservation = currentFlight.getReservations()[0];
 		
 		setupFrame();
 		
+		
 		makeContent();
+	}
+	
+	private class TableListener implements FocusListener
+	{
+		public void focusGained(FocusEvent e)
+		{
+			System.out.println("UIDGI");
+		}
+		public void focusLost(FocusEvent e)
+		{
+			
+		}
 	}
 	
 	void setupFrame()
@@ -60,9 +83,15 @@ public class FlightInfoMenu extends JFrame
 		
 		Object[][] reservationData = makeReservationData();
 		
-		JTable reservationTable = new JTable(reservationData, columns);
+		TableModel reservationTableModel = new DefaultTableModel(reservationData,columns);
+		reservationTable = new JTable(reservationTableModel);
 		reservationLabel.setPreferredSize(new Dimension(400, 200));
 		reservationLabel.setBackground(Color.WHITE);
+		
+		TableListener listener = new TableListener();
+		
+		//reservationTableModel.addTableModelListener(listener);
+		reservationTable.addFocusListener(listener);
 		
 			//Top Panel Finish Up
 		topPanel.add(reservationLabel);
@@ -163,20 +192,29 @@ public class FlightInfoMenu extends JFrame
 	{
 		Object[][] returnArray;
 		
-		returnArray = new Object[currentFlight.getReservations().length][];
-		
-		Reservation[] reservations = currentFlight.getReservations();
-		
-		if(reservations != null)
+		if(currentFlight.getReservations() != null)
 		{
-			for(int i=0; i<reservations.length; i++)
+			returnArray = new Object[currentFlight.getReservations().length][];
+			
+			Reservation[] reservations = currentFlight.getReservations();
+			
+			if(reservations != null)
 			{
-				String firstData = reservations[i].getOwner().getFirstName()+" "+reservations[i].getOwner().getSurName();
-				String secondData = ""+reservations[i].getPassengers().length;
-				String thirdData = ""+reservations[i].getReservationDate();
-				
-				returnArray[i] = new Object[]{firstData, secondData};
+				for(int i=0; i<reservations.length; i++)
+				{
+					String firstData = reservations[i].getOwner().getFirstName()+" "+reservations[i].getOwner().getSurName();
+					String secondData = ""+reservations[i].getPassengers().length;
+					String thirdData = ""+reservations[i].getReservationDate();
+					
+					returnArray[i] = new Object[]{firstData, secondData, thirdData};
+				}
 			}
+			
+			return returnArray;
+		}
+		else 
+		{
+			returnArray = new Object[0][0];
 		}
 		
 		return returnArray;

@@ -97,17 +97,20 @@ public class SeatButton extends JButton
 	
 	void update()
 	{
-		Passenger[] passengerArray = currentReservation.getPassengers();
-		
-		isMySeat = false;
-		
-		if(currentReservation.getPassengers() != null)
+		if(currentReservation != null)
 		{
-			for(int i = 0; i < passengerArray.length; i++)
+			Passenger[] passengerArray = currentReservation.getPassengers();
+			
+			isMySeat = false;
+			
+			if(currentReservation.getPassengers() != null)
 			{
-				if(passengerArray[i].getSeat() != null && passengerArray[i].getSeat().getPosition().equals(seat.getPosition()))
+				for(int i = 0; i < passengerArray.length; i++)
 				{
-					isMySeat = true;
+					if(passengerArray[i].getSeat() != null && passengerArray[i].getSeat().getPosition().equals(seat.getPosition()))
+					{
+						isMySeat = true;
+					}
 				}
 			}
 		}
