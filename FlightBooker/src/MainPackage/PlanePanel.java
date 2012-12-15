@@ -143,10 +143,8 @@ public class PlanePanel extends JPanel
 		
 		if(reservations != null)
 		{
-			for (Reservation reservation : reservations) 
+			for(int i=0; i<reservations.length; i++)
 			{
-				passengers = reservation.getPassengers();
-				
 				for (Passenger passenger : passengers) 
 				{
 					passengerSeatPosition = passenger.getSeat().getPosition();
@@ -216,14 +214,38 @@ public class PlanePanel extends JPanel
 			{
 				seatButtonArray[i][j].setButtonEnabled(editable);
 				
-				seatButtonArray[i][j].update();
-				
 				seatButtonArray[i][j].setBooked(false);
 			}
 		}
 		
 		Passenger[] passengers = currentReservation.getPassengers();
 		Dimension passengerSeatPosition;
+		
+		//Initialize seats for any reservation already booked
+		Reservation[] reservations = flight.getReservations();
+		
+		if(reservations != null)
+		{
+			for(int i=0; i<reservations.length; i++)
+			{
+				if(currentReservation.getCurrentFlightReservationIndex() != i)
+				{
+					passengers = reservations[i].getPassengers();
+					
+					for (Passenger passenger : passengers) 
+					{
+						passengerSeatPosition = passenger.getSeat().getPosition();
+						
+						int x = passengerSeatPosition.width;
+						int y = passengerSeatPosition.height;
+						
+						seatButtonArray[x][y].setBooked(true);
+					}
+				}
+			}
+		}
+		
+		passengers = currentReservation.getPassengers();
 		
 		if(passengers != null)
 		{
@@ -241,24 +263,11 @@ public class PlanePanel extends JPanel
 			}
 		}
 		
-		//Initialize seats for any reservation already booked
-		Reservation[] reservations = flight.getReservations();
-		
-		if(reservations != null)
+		for(int i=0; i<seatButtonArray.length; i++)
 		{
-			for (Reservation reservation : reservations) 
+			for(int j=0; j<seatButtonArray[i].length; j++)
 			{
-				passengers = reservation.getPassengers();
-				
-				for (Passenger passenger : passengers) 
-				{
-					passengerSeatPosition = passenger.getSeat().getPosition();
-					
-					int x = passengerSeatPosition.width;
-					int y = passengerSeatPosition.height;
-					
-					seatButtonArray[x][y].setBooked(true);
-				}
+				seatButtonArray[i][j].update();
 			}
 		}
 	}

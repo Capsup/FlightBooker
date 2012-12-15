@@ -11,7 +11,9 @@ public class Reservation implements Serializable, Uploadable
     private Calendar reservedDate;
     
 	private int id;
-		
+	
+	private int currentFlightReservationIndex = -1;
+	
 	@Override
 	public int getID()
 	{
@@ -95,4 +97,13 @@ public class Reservation implements Serializable, Uploadable
 		this.flight = flight;
 	}
 	
+	public void setCurrentFlightReservationIndex(int index)
+	{
+		currentFlightReservationIndex = index;
+	}
+	
+	public int getCurrentFlightReservationIndex()
+	{
+		return currentFlightReservationIndex;
+	}
 }
