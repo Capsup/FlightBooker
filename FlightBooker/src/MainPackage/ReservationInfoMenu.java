@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import MainPackage.NewReservationMenu.ButtonListener;
+import MainPackage.FlightManagerMenu.ButtonListener;
 import MainPackage.Plane.PlaneType;
 
 public class ReservationInfoMenu 
@@ -32,7 +32,7 @@ public class ReservationInfoMenu
 	
 	private Reservation currentReservation;
 
-	private PlanePanel planePanel;
+	private FlightPanel planePanel;
 	
 	private boolean isNew;
 	
@@ -62,7 +62,7 @@ public class ReservationInfoMenu
 			        
 					//currentReservation.getFlight().removeReservation(currentReservation.getCurrentFlightReservationIndex());
 					
-			        new NewReservationMenu( frame, currentReservation, isNew);
+			        new FlightManagerMenu( frame, currentReservation, isNew);
 					
 					//planePanel.setEditable();
 					//planePanel.updateSeats();
@@ -268,7 +268,7 @@ public class ReservationInfoMenu
 			//Flight Panel
 		//Flight testFlight = new Flight(new Date(), new Plane(PlaneType.BOEING747));
 		
-		planePanel = new PlanePanel(currentReservation.getFlight(), currentReservation, new Dimension(400,200),false);
+		planePanel = new FlightPanel(currentReservation.getFlight(), currentReservation, new Dimension(400,200),false);
 		
 		
 		//Center Panel Finishup

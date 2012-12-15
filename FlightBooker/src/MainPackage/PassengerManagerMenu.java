@@ -65,7 +65,7 @@ public class PassengerManagerMenu
 	        		System.out.println("ERMAHGERD, did you change the data in the JTextField of the passengers!?!?!?!? actionListener does not like you anymore (fix)");
 	        		return;
 	        	}*/
-	        	new PassengerInformationEditor( textField.getPerson(), textField );
+	        	new PersonInfoEditorMenu( textField.getPerson(), textField );
 	        }
         }
 	}

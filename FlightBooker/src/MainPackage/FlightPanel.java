@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-public class PlanePanel extends JPanel 
+public class FlightPanel extends JPanel 
 {
 	private Flight flight;
 	private Plane plane;
@@ -34,7 +34,7 @@ public class PlanePanel extends JPanel
 	//Other
 	private boolean editable;
 	
-	public PlanePanel(Flight flight, Reservation reservation, Dimension size, boolean editable)
+	public FlightPanel(Flight flight, Reservation reservation, Dimension size, boolean editable)
 	{
 		this.flight = flight;
 		plane = flight.getPlane();

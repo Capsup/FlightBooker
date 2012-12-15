@@ -23,7 +23,7 @@ import javax.swing.table.*;
  * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
-public class PassengerInformationMenu {
+public class PersonInfoMenu {
 
 	private JFrame frame;
 	private JPanel mainPanel;
@@ -58,7 +58,7 @@ public class PassengerInformationMenu {
 	 * @param frame The JFrame to be used
 	 * @param person The person to show details of.
 	 */
-	public PassengerInformationMenu(JFrame frame, Person person )
+	public PersonInfoMenu(JFrame frame, Person person )
 	{
 		this.person = person;
 		this.frame = frame;
@@ -81,7 +81,7 @@ public class PassengerInformationMenu {
 
 			if( command == "Edit information") {
 				System.out.println("Edit information");
-				new PassengerInformationEditor(person);
+				new PersonInfoEditorMenu(person);
 			}
 
 			if( command == "Inspect reservation") {

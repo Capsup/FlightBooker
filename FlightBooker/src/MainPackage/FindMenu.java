@@ -34,7 +34,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
-public class FindDialog extends JFrame {
+public class FindMenu extends JFrame {
 
 	private JRadioButton flightRadioButton;
 	private JRadioButton reservationRadioButton;
@@ -62,7 +62,7 @@ public class FindDialog extends JFrame {
 	/**
 	 * Creates a new MainMenu
 	 */
-	public FindDialog()
+	public FindMenu()
 	{
 		makeContent();
 		setupFrame();
@@ -135,7 +135,7 @@ public class FindDialog extends JFrame {
 					{
 					
 						Person person = Database.getInstance().Get(chosenObjectID, Person.class);
-						new PassengerInformationMenu(new JFrame(), person);
+						new PersonInfoMenu(new JFrame(), person);
 					}
 				}
 			}

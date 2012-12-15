@@ -47,7 +47,7 @@ import com.toedter.calendar.JDateChooser;
 import MainPackage.Airport.AirportType;
 import MainPackage.Plane.PlaneType;
 
-public class NewReservationMenu
+public class FlightManagerMenu
 {
 	private JFrame frame;
 	private JPanel mainPanel;
@@ -63,7 +63,7 @@ public class NewReservationMenu
 	
 	private JFormattedTextField seatAmountLabel;
 	
-	private PlanePanel planePanel;
+	private FlightPanel planePanel;
 	
 	private ArrayList<Flight> flights;
 	
@@ -84,7 +84,7 @@ public class NewReservationMenu
 	
 	private int firstPlaneIndex;
 	
-	public NewReservationMenu(JFrame frame, Reservation reservation, boolean isNew)
+	public FlightManagerMenu(JFrame frame, Reservation reservation, boolean isNew)
 	{
 		this.frame = frame;
 		this.currentReservation = reservation;
@@ -151,7 +151,7 @@ public class NewReservationMenu
 				wipePassengers();
 				
 				currentReservation.setFlight(flights.get(index));
-				planePanel = new PlanePanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
+				planePanel = new FlightPanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
 				
 				bottomPanel.add(planePanel); 
 				
@@ -468,7 +468,7 @@ public class NewReservationMenu
 		bottomPanel.setPreferredSize(new Dimension(frameSize.width, frameSize.height/3*2));
 		
 			//Plane Panel
-		planePanel = new PlanePanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
+		planePanel = new FlightPanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
 		
 			//Button Panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));

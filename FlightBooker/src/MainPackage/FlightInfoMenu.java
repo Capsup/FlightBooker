@@ -22,7 +22,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import MainPackage.NewReservationMenu.ButtonListener;
+import MainPackage.FlightManagerMenu.ButtonListener;
 
 public class FlightInfoMenu extends JFrame
 {
@@ -32,7 +32,7 @@ public class FlightInfoMenu extends JFrame
 	
 	Flight currentFlight;
 	Reservation currentReservation;
-	PlanePanel planePanel;
+	FlightPanel planePanel;
 	
 	JTable reservationTable;
 	
@@ -170,7 +170,7 @@ public class FlightInfoMenu extends JFrame
 		JPanel centerPanel = new JPanel();
 		
 				//Flight Panel
-		planePanel = new PlanePanel(currentFlight, currentReservation, new Dimension(400,200), false);
+		planePanel = new FlightPanel(currentFlight, currentReservation, new Dimension(400,200), false);
 		
 			//Center Panel Finish Up
 		centerPanel.add(planePanel);

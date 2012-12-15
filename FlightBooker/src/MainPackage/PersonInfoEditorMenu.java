@@ -16,7 +16,7 @@ import javax.swing.border.TitledBorder;
  * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
-public class PassengerInformationEditor extends JFrame
+public class PersonInfoEditorMenu extends JFrame
 {
 
 	private JTextFieldUpgraded fieldUpgraded;
@@ -61,7 +61,7 @@ public class PassengerInformationEditor extends JFrame
 		}
 	}
 
-	public PassengerInformationEditor getInstance()
+	public PersonInfoEditorMenu getInstance()
 	{
 		return this;
 	}
@@ -69,7 +69,7 @@ public class PassengerInformationEditor extends JFrame
 	/**
 	 * 
 	 */
-	public PassengerInformationEditor()
+	public PersonInfoEditorMenu()
 	{
 		setupFrame();
 		makeContent();
@@ -79,7 +79,7 @@ public class PassengerInformationEditor extends JFrame
 	 * 
 	 * @param person
 	 */
-	public PassengerInformationEditor(Person person)
+	public PersonInfoEditorMenu(Person person)
 	{
 		//this.fieldUpgraded = fieldUpgraded;
 		this.person = person;
@@ -92,7 +92,7 @@ public class PassengerInformationEditor extends JFrame
 	 * @param person
 	 * @param fieldUpgraded
 	 */
-	public PassengerInformationEditor(Person person, JTextFieldUpgraded fieldUpgraded)
+	public PersonInfoEditorMenu(Person person, JTextFieldUpgraded fieldUpgraded)
 	{
 		this.fieldUpgraded = fieldUpgraded;
 		if( person != null )
