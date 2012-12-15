@@ -12,6 +12,17 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.*;
 
+/**
+ * PassengerInformationMenu presents an overview of a persons details and reservations.
+ * The user can click one of three buttons found in the menu.
+ * 
+ * Clicking "Edit" opens a new menu, through which the user change a persons details.
+ * Clicking "Inspect" opens a new menu, through which the user can inspect the details of the chosen reservation.
+ * Clicking "Close" closes the menu.
+ * 
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ *
+ */
 public class PassengerInformationMenu {
 
 	private JFrame frame;
@@ -41,6 +52,12 @@ public class PassengerInformationMenu {
 
 	private Reservation[] listItems;
 
+	/**
+	 * Creates a new PassengerInformationMenu
+	 * 
+	 * @param frame The JFrame to be used
+	 * @param person The person to show details of.
+	 */
 	public PassengerInformationMenu(JFrame frame, Person person )
 	{
 		this.person = person;
@@ -49,6 +66,10 @@ public class PassengerInformationMenu {
 		makeContent();
 	}
 
+	/**
+	 * actionListener makes it possible to do something, when a button is clicked.
+	 * It is notified when a button with an added actionListener is clicked, and the button's ActionCommand decides what action to take.
+	 */
 	private class actionListener implements ActionListener
 	{
 		@Override
@@ -86,7 +107,6 @@ public class PassengerInformationMenu {
 
 		}
 	}
-
 
 	private void setupFrame()
 	{
@@ -213,6 +233,9 @@ public class PassengerInformationMenu {
 		frame.add( mainPanel );
 	}
 
+	/**
+	 * Updates the current persons details
+	 */
 	private void updatePersonTextFields()
 	{
 		System.out.println("updatePersonTextFields");
@@ -226,6 +249,9 @@ public class PassengerInformationMenu {
 		passporTextField.setText(person.getPassportNumber());
 	}
 
+	/**
+	 * Updates the person, by getting the same person from the database again
+	 */
 	private void updatePerson()
 	{
 		person = Database.getInstance().Get(person.getCustomerID(), Person.class);

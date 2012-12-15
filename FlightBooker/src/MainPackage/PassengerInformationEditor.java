@@ -10,6 +10,12 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
+/**
+ * This editor enables the user to edit a persons details.
+ * 
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ *
+ */
 public class PassengerInformationEditor extends JFrame
 {
 
@@ -60,12 +66,19 @@ public class PassengerInformationEditor extends JFrame
 		return this;
 	}
 
+	/**
+	 * 
+	 */
 	public PassengerInformationEditor()
 	{
 		setupFrame();
 		makeContent();
 	}
 
+	/**
+	 * 
+	 * @param person
+	 */
 	public PassengerInformationEditor(Person person)
 	{
 		//this.fieldUpgraded = fieldUpgraded;
@@ -74,6 +87,11 @@ public class PassengerInformationEditor extends JFrame
 		makeContent();
 	}
 	
+	/**
+	 * 
+	 * @param person
+	 * @param fieldUpgraded
+	 */
 	public PassengerInformationEditor(Person person, JTextFieldUpgraded fieldUpgraded)
 	{
 		this.fieldUpgraded = fieldUpgraded;
@@ -176,6 +194,9 @@ public class PassengerInformationEditor extends JFrame
 
 	}
 	
+	/**
+	 * 
+	 */
 	private void showErrorDialog()
 	{
 		JOptionPane.showMessageDialog(this,

@@ -29,9 +29,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * FindDialog enables the user to search the database for reservations, persons and flights.
- * 
- * 
+ * Enables the user to search the database for reservations, persons and flights.
+ 
  * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
@@ -60,6 +59,9 @@ public class JespersFindDialog extends JFrame {
 	private JButton inspectReservationButton;
 	private JButton closeButton;
 
+	/**
+	 * Creates a new MainMenu
+	 */
 	public JespersFindDialog()
 	{
 		makeContent();
@@ -136,12 +138,7 @@ public class JespersFindDialog extends JFrame {
 			}
 		}
 	}
-	
-	/**
-	 * setupFrame sets the frames properties: 
-	 * The size of the frame, the title of the frame and where on the screen, the frame should appear
-	 * 
-	 */
+
 	private void setupFrame()
 	{
 		this.setMinimumSize(new Dimension(500,300));
@@ -152,10 +149,6 @@ public class JespersFindDialog extends JFrame {
 		this.setLocationRelativeTo( null );
 	}
 
-	/**
-	 * makeContent creates and places all of the menu's content.
-	 * 
-	 */
 	private void makeContent()
 	{
 		Container contentPane = this.getContentPane();
@@ -261,6 +254,14 @@ public class JespersFindDialog extends JFrame {
 		contentPane.add(bottomsButtonPanel);
 	}
 
+	/**
+	 * Generates a list of unfiltered data from a certain database table.
+	 * The method uses the Database-class to generate an unsorted list of all the objects in the specified database table.
+	 * When the method has finished and the list of data isn't empty, it calls the calculateResults method to filter the list.
+	 * Otherwise, it calls the noSearchResults method.
+	 * 
+	 * @param tableToSearch Which table in the database to search
+	 */
 	private void makeTableData(String tableToSearch)
 	{	
 		//Hvis metoden bliver kaldt med noget at søge efter
@@ -377,6 +378,10 @@ public class JespersFindDialog extends JFrame {
 
 	}
 
+	/**
+	 * Filters the search results according to the criterias given in the textfields, and adds the results to the table.
+	 * If no results is added to the table, the noSearchResults method is called.
+	 */
 	private void calculateResults()
 	{
 		//Resetter tabellens indhold
@@ -398,6 +403,9 @@ public class JespersFindDialog extends JFrame {
 			noSearchResults();
 	}
 
+	/**
+	 * noSearchResults changes the table to have no results shown.
+	 */
 	private void noSearchResults()
 	{
 		tableModel.setColumnIdentifiers(columns);

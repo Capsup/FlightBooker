@@ -2,6 +2,11 @@ package MainPackage;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ *
+ */
 public class Person implements Serializable, Uploadable
 {
 	private String firstName;
