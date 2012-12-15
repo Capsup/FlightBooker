@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.acl.Owner;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -92,21 +93,24 @@ public class ReservationInfoMenu
 					//Set the id of the database instance
 					currentReservation.setID(Database.getInstance().GetID(Reservation.class));
 					
+					
+					currentReservation.getPassengers()[0].getPerson().updateReservations();
+					
 					Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
 					
 					if( newReservations == null )
 						newReservations = new Reservation[1];
 						else {
-							Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+							newReservations = Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
 						}
-					
 					
 					newReservations[ newReservations.length - 1 ] = currentReservation;
 					
 					currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
 					
-					Database.getInstance().Add(currentReservation);
 					Database.getInstance().Replace(currentReservation.getPassengers()[0].getPerson().getID(), currentReservation.getPassengers()[0].getPerson());
+					
+					Database.getInstance().Add(currentReservation);
 				}
 				else 
 				{
@@ -367,8 +371,19 @@ public class ReservationInfoMenu
 	{
 		currentReservation.getFlight().removeReservationAt(currentReservation.getCurrentFlightReservationIndex());
 		
-		System.out.println(currentReservation.getFlight().getReservations().length);
+		int count = 0;
 		
+		for (Reservation reservation : currentReservation.getOwner().getReservations()) 
+		{
+			if(reservation.getID() == currentReservation.getID())
+			{
+				currentReservation.getOwner().removeReservationAt(count);
+			}
+			
+			count += 1;
+		}
+		
+		Database.getInstance().Replace(currentReservation.getOwner().getID(), currentReservation.getOwner());
 		Database.getInstance().Replace(currentReservation.getFlight().getID(), currentReservation.getFlight());
 		
 		frame.dispose();

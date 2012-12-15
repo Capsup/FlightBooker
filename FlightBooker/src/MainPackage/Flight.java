@@ -176,6 +176,7 @@ public class Flight implements Serializable, Uploadable
 	{
 		Reservation[] modifiedReservations = getReservations();
 		
+		//Flight Reservations
 		for(int i=index; i<modifiedReservations.length-1; i++)
 		{
 			modifiedReservations[i] = modifiedReservations[i+1];
@@ -188,7 +189,6 @@ public class Flight implements Serializable, Uploadable
 			newReservations[j] = modifiedReservations[j];
 			newReservations[j].setCurrentFlightReservationIndex(j);
 		}
-		
 		
 		setReservations(newReservations);
 	}

@@ -47,6 +47,8 @@ public class PassengerInformationMenu {
 		this.frame = frame;
 		setupFrame();
 		makeContent();
+		
+		//System.out.println("FUCKING SHIT"+person.getReservations().length);
 	}
 
 	private class actionListener implements ActionListener
@@ -73,7 +75,21 @@ public class PassengerInformationMenu {
 							int chosenObjectActualRow = reservationsTable.convertRowIndexToModel(chosenObjectIncorrectRow);
 							int chosenObjectID = (int) reservationsTable.getValueAt(chosenObjectActualRow, 0);
 							System.out.println(chosenObjectID);
-							Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID];
+							
+							Reservation reservationToFind = Database.getInstance().Get(chosenObjectID, Reservation.class);
+							
+							Reservation[] reservations = Database.getInstance().Get(reservationToFind.getFlight().getID(), Flight.class).getReservations();
+							
+							for(int i=0; i<reservations.length; i++)
+							{
+								if(reservations[i].getID() == reservationToFind.getID())
+								{
+									reservationToFind = reservations[i];
+								}
+							}
+							
+							//Reservation reservation = Database.getInstance().Get(reservationToFind.getFlight().getID(), Flight.class ).getReservations()[reservationToFind.getCurrentFlightReservationIndex()];
+							Reservation reservation = reservationToFind;
 							new ReservationInfoMenu(new JFrame(), reservation, false);
 						}
 					}
