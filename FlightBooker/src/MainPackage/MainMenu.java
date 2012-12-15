@@ -43,7 +43,7 @@ public class MainMenu extends JFrame {
 				break;
 
 			case "Find":
-				new JespersFindDialog();
+				new FindDialog();
 				break;
 				
 			case "Database":

@@ -1,55 +1,78 @@
 package MainPackage;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Panel;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
+import javax.swing.ButtonModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
 
-@SuppressWarnings( "serial" )
-class FindDialog extends JFrame
-{
-	public static int LABELOFFSET = 100;
+/**
+ * Enables the user to search the database for reservations, persons and flights.
+ 
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ *
+ */
+public class FindDialog extends JFrame {
 
+	private JRadioButton flightRadioButton;
+	private JRadioButton reservationRadioButton;
+	private JRadioButton customerRadioButton;
+	private ButtonGroup radioButtons;
 	private JPanel buttonPanel;
-	private ButtonGroup radioButtons;  
-	private JRadioButton flightRadioButton, reservationRadioButton, customerRadioButton;
-	private JLabel criteriaLabel1, criteriaLabel2, criteriaLabel3;
-	private JTextField textField1, textField2, textField3;
+
+	private JTextField textField1;
+	private JTextField textField2;
+	private JTextField textField3;
+
 	private JTable table;
+	private String[] columns;
 	private Object[][] tableData;
-	private JScrollPane scrollPane;
-	private Container pane;
 	private DefaultTableModel tableModel;
+	private JScrollPane tableScrollPane;
+	private JPanel reservationsTablePanel;
+
 	private ArrayList<?> listItems;
+
+	private JButton searchButton;
+	private JButton inspectReservationButton;
+	private JButton closeButton;
+
+	/**
+	 * Creates a new MainMenu
+	 */
+	public FindDialog()
+	{
+		makeContent();
+		setupFrame();
+
+	}
 
 	class EnterListener extends KeyAdapter
 	{
 		private EnterListener()
 		{
-
 		}
 
 		@Override
@@ -57,89 +80,103 @@ class FindDialog extends JFrame
 		{
 			int key = e.getKeyChar();
 			if(key == KeyEvent.VK_ENTER){
-				if(flightRadioButton.isSelected())
-				{
-					CalculateResults("Flight");
-					System.out.println("Flight search");
+				String selectedAction = radioButtons.getSelection().getActionCommand();
+				System.out.println(selectedAction);
+				makeTableData(selectedAction);
+			}
+		}
+
+	}
+
+	private class ButtonActionListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed( ActionEvent e )
+		{
+			String command = e.getActionCommand();
+			String selectedAction = radioButtons.getSelection().getActionCommand();
+			
+			if( command == "Search" || command == "Flight" || command == "Reservation" || command == "Person") {
+				makeTableData(selectedAction);
+			}
+
+			if( command == "Inspect") {
+				System.out.println("Inspect");
+				int chosenObjectIncorrectRow = table.getSelectionModel().getAnchorSelectionIndex();
+				
+				if(chosenObjectIncorrectRow >= 0 && listItems != null){
+					int chosenObjectActualRow = table.convertRowIndexToModel(chosenObjectIncorrectRow);
+					int chosenObjectID = (int) tableModel.getValueAt(chosenObjectActualRow, 0);
+					System.out.println(chosenObjectID);
+					
+					if(selectedAction == "Flight")
+					{
+						Flight flight = Database.getInstance().Get(chosenObjectID, Flight.class);
+						new FlightInfoMenu(flight);
+					}
+					
+					if(selectedAction == "Reservation")
+					{
+						int chosenObjectID2 = (int) tableModel.getValueAt(chosenObjectActualRow, 1);
+						
+						//Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID-1]; 
+						Reservation reservation = Database.getInstance().Get(chosenObjectID, Flight.class).getReservations()[chosenObjectID2]; 
+						for( Passenger passenger : reservation.getPassengers() )
+						{
+							passenger.setPerson( Database.getInstance().Get( passenger.getPerson().getID(), Person.class ) );
+						}
+						reservation.setOwner( Database.getInstance().Get( reservation.getOwner().getID(), Person.class ) );
+						//reservation.setFlight( Database.getInstance().Get( reservation.getFlight().getID(), Flight.class ));
+						//Database.getInstance().Replace( reservation.getFlight().getID(), reservation.getFlight() );
+						new ReservationInfoMenu(new JFrame(), reservation, false);
+					}
+					
+					if(selectedAction == "Person")
+					{
+					
+						Person person = Database.getInstance().Get(chosenObjectID, Person.class);
+						new PassengerInformationMenu(new JFrame(), person);
+					}
 				}
-				if(reservationRadioButton.isSelected())
-				{
-					CalculateResults("Reservation");
-					System.out.println("Reservation search");
-				}
-				if(customerRadioButton.isSelected())
-				{
-					CalculateResults("Person");
-					System.out.println("Customer search");
-				}
+			}
+
+			if( command == "Close") {
+				System.out.println("Close");
+				dispose();
 			}
 		}
 	}
 
-	public FindDialog()
+	private void setupFrame()
 	{
-		Dimension dScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		pane = getContentPane();
-		SpringLayout layout = new SpringLayout();
-		float fScale = ( dScreenSize.width / dScreenSize.height ) / ( 4 / 3 );
-		
-		pane.setLayout( layout );
-
-		//this.setLocation( (int) ( dScreenSize.width * 0.5f - ( iSizeX * 0.5f )), (int) (dScreenSize.height * 0.5f - ( iSizeY * 0.5f )) );
-
-		this.setSize( new Dimension( 800, 600 ) );
-		this.setLocationRelativeTo( null );
+		this.setMinimumSize(new Dimension(500,300));
+		this.setPreferredSize(new Dimension(800,600));
+		this.pack();
 		this.setVisible(true);
-		this.requestFocusInWindow();
+		this.setTitle("Find");
+		this.setLocationRelativeTo( null );
+	}
 
-		criteriaLabel1 = new JLabel( "Criteria: " );
-		pane.add( criteriaLabel1 );
-		layout.putConstraint( SpringLayout.WEST, criteriaLabel1, ( int ) ( this.getWidth() / 2 - ( LABELOFFSET * fScale ) ), SpringLayout.WEST, pane );
-		layout.putConstraint( SpringLayout.NORTH, criteriaLabel1, ( int ) ( 40 * fScale ), SpringLayout.NORTH, pane );
-
-		textField1 = new JTextField("");
-		pane.add( textField1 );
-		layout.putConstraint( SpringLayout.WEST, textField1, ( int ) ( 10 * fScale ), SpringLayout.EAST, criteriaLabel1 );
-		layout.putConstraint( SpringLayout.NORTH, textField1, 0, SpringLayout.NORTH, criteriaLabel1 );
-		layout.putConstraint( SpringLayout.EAST, textField1, ( int ) ( -350 * fScale ), SpringLayout.EAST, pane );
-		textField1.addKeyListener(new EnterListener());
-
-		criteriaLabel2 = new JLabel( "Criteria: " );
-		pane.add( criteriaLabel2 );
-		layout.putConstraint( SpringLayout.WEST, criteriaLabel2, ( int ) ( this.getWidth() / 2 - ( LABELOFFSET * fScale ) ), SpringLayout.WEST, pane );
-		layout.putConstraint( SpringLayout.NORTH, criteriaLabel2, ( int ) ( 10 * fScale ), SpringLayout.SOUTH, criteriaLabel1 );
-
-		textField2 = new JTextField("");
-		pane.add( textField2 );
-		layout.putConstraint( SpringLayout.WEST, textField2, ( int ) ( 10 * fScale ), SpringLayout.EAST, criteriaLabel2 );
-		layout.putConstraint( SpringLayout.NORTH, textField2, 0, SpringLayout.NORTH, criteriaLabel2 );
-		layout.putConstraint( SpringLayout.EAST, textField2, ( int ) ( -350 * fScale ), SpringLayout.EAST, pane );
-		textField2.addKeyListener(new EnterListener());
-
-		criteriaLabel3 = new JLabel( "Criteria: " );
-		pane.add( criteriaLabel3 );
-		layout.putConstraint( SpringLayout.WEST, criteriaLabel3, ( int ) ( this.getWidth() / 2 - ( LABELOFFSET * fScale ) ), SpringLayout.WEST, pane );
-		layout.putConstraint( SpringLayout.NORTH, criteriaLabel3, ( int ) ( 10 * fScale ), SpringLayout.SOUTH, criteriaLabel2 );
-
-		textField3 = new JTextField("");
-		pane.add( textField3 );
-		layout.putConstraint( SpringLayout.WEST, textField3, ( int ) ( 10 * fScale ), SpringLayout.EAST, criteriaLabel3 );
-		layout.putConstraint( SpringLayout.NORTH, textField3, 0, SpringLayout.NORTH, criteriaLabel3 );
-		layout.putConstraint( SpringLayout.EAST, textField3, ( int ) ( -350 * fScale ), SpringLayout.EAST, pane );
-		textField3.addKeyListener(new EnterListener());
+	private void makeContent()
+	{
+		Container contentPane = this.getContentPane();
+		contentPane.setLayout( new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 
 		flightRadioButton = new JRadioButton("Flight",false);
 		flightRadioButton.setActionCommand("Flight");
 		flightRadioButton.setSelected(true);
 		flightRadioButton.addKeyListener(new EnterListener());
+		flightRadioButton.addActionListener(new ButtonActionListener());
 
 		reservationRadioButton = new JRadioButton("Reservation",false);
 		reservationRadioButton.setActionCommand("Reservation");
 		reservationRadioButton.addKeyListener(new EnterListener());
+		reservationRadioButton.addActionListener(new ButtonActionListener());
 
-		customerRadioButton = new JRadioButton("Customer",false);
-		customerRadioButton.setActionCommand("Customer");
+		customerRadioButton = new JRadioButton("Person",false);
+		customerRadioButton.setActionCommand("Person");
 		customerRadioButton.addKeyListener(new EnterListener());
+		customerRadioButton.addActionListener(new ButtonActionListener());
 
 		radioButtons = new ButtonGroup();
 		radioButtons.add(flightRadioButton);
@@ -150,173 +187,248 @@ class FindDialog extends JFrame
 		buttonPanel.add(flightRadioButton);
 		buttonPanel.add(reservationRadioButton);	
 		buttonPanel.add(customerRadioButton);
-		
-		table = new JTable();
-		
-		table.setColumnSelectionAllowed(false);
-		table.setCellSelectionEnabled(false);
-		table.setRowSelectionAllowed(true);
-		table.getTableHeader().setReorderingAllowed(false);
-		table.setFillsViewportHeight(true);
-		
-		//Tilføjer en sorteringsfunktion til tablen
-		table.setAutoCreateRowSorter(true);
-		tableModel = (DefaultTableModel) table.getModel();
-		
-		scrollPane = new JScrollPane( table );
 
-		
-		scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(pane.getWidth()-10,400));
-		pane.add( scrollPane );
+		JLabel criteriaLabel1 = new JLabel( "Criteria: " );
+		JLabel criteriaLabel2 = new JLabel( "Criteria: " );
+		JLabel criteriaLabel3 = new JLabel( "Criteria: " );
 
-		pane.add(buttonPanel);    	
-		layout.putConstraint( SpringLayout.WEST, buttonPanel, ( int ) ( this.getWidth() / 3), SpringLayout.WEST, pane );
-		layout.putConstraint( SpringLayout.NORTH, buttonPanel, ( int ) ( -40 * fScale ), SpringLayout.NORTH, criteriaLabel1 );
+		JPanel criteriaLabelPanel = new JPanel(new GridLayout(3, 1));
+		criteriaLabelPanel.add(criteriaLabel1);
+		criteriaLabelPanel.add(criteriaLabel2);
+		criteriaLabelPanel.add(criteriaLabel3);
+
+		textField1 = new JTextField("");
+		textField1.addKeyListener(new EnterListener());
+
+		textField2 = new JTextField("");
+		textField2.addKeyListener(new EnterListener());
+
+		textField3 = new JTextField("");
+		textField3.addKeyListener(new EnterListener());
+
+		JPanel criteriaFieldsPanel = new JPanel(new GridLayout(3, 1));
+		//criteriaFieldsPanel.setPreferredSize(new Dimension(300,50));
+		criteriaFieldsPanel.add(textField1);
+		criteriaFieldsPanel.add(textField2);
+		criteriaFieldsPanel.add(textField3);
+
+		JPanel criteriaPanel = new JPanel(new BorderLayout());
+		criteriaPanel.setMaximumSize(new Dimension(300,80));
+		criteriaPanel.add(criteriaLabelPanel, BorderLayout.WEST);
+		criteriaPanel.add(criteriaFieldsPanel, BorderLayout.CENTER);
+		TitledBorder criteriaTitleBorder = BorderFactory.createTitledBorder("Enter search criteria: ");
+		criteriaPanel.setBorder(criteriaTitleBorder);
+
+		columns = new String[]{"Columns"};
+		tableData = new Object[][]{{}};
+		tableModel = new DefaultTableModel(tableData,columns);
+		table = new JTable(tableModel);
+
+		tableScrollPane = new JScrollPane(table);
+		tableScrollPane.setMaximumSize(new Dimension(1000,1000));
+//		tableScrollPane.setMinimumSize(new Dimension(700,100));
+//		tableScrollPane.setMaximumSize(new Dimension(1000,1000));
+//		tableScrollPane.setPreferredSize(new Dimension(750,300));
+		tableScrollPane.setViewportView(table);
+		tableModel.removeRow(0);
+
+		makeTableData("None");
+
+		reservationsTablePanel = new JPanel();
+		reservationsTablePanel.add(tableScrollPane);
+
+		searchButton = new JButton("Search");
+		searchButton.setActionCommand("Search");
+		searchButton.addActionListener(new ButtonActionListener());
+
+		inspectReservationButton = new JButton("Inspect");
+		inspectReservationButton.setActionCommand("Inspect");
+		inspectReservationButton.addActionListener(new ButtonActionListener());
+
+		closeButton = new JButton("Close");
+		closeButton.setActionCommand("Close");
+		closeButton.addActionListener(new ButtonActionListener());
+
+		JPanel bottomsButtonPanel = new JPanel(new FlowLayout());
+		bottomsButtonPanel.add(searchButton);
+		bottomsButtonPanel.add(inspectReservationButton);
+		bottomsButtonPanel.add(closeButton);
 
 		this.addKeyListener(new EnterListener());
 
-		layout.putConstraint( SpringLayout.WEST, scrollPane, ( int ) ( 10 * fScale ), SpringLayout.WEST, pane );
-		layout.putConstraint( SpringLayout.SOUTH, scrollPane, ( int ) ( -10 * fScale ) , SpringLayout.SOUTH, pane );
-		layout.putConstraint( SpringLayout.EAST, scrollPane, ( int ) ( -10 * fScale ), SpringLayout.EAST, pane );
-
-		//this.pack();
+		contentPane.add(buttonPanel);
+		contentPane.add(criteriaPanel);
+		contentPane.add(reservationsTablePanel);
+		contentPane.add(bottomsButtonPanel);
 	}
 
-	private void CalculateResults(String tableToSearch)
-	{		
-		System.out.println("Calculate results");
-		//ResultSet results = Database.getInstance().executeQuery( "SELECT * FROM " + tableToSearch );
-		try {
-			listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		//ArrayList<Object>
-		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
-		
-//		try {
-//			System.out.println("Try");
-//			for(Object object : listItems)
-//			{
-//				
-//			}
-//			
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-
-		makeTable(tableToSearch);
-		
-//		try
-//		{
-////			System.out.println("Try");
-////			int iColumnCount = results.getMetaData().getColumnCount();
-////
-////			while( results.next() )
-////			{
-////				String sToCheck = "";
-////				for( int i = 1; i <= iColumnCount; i++ )
-////				{
-////					sToCheck += results.getString(i) + "        ";
-////				}
-////				if( sToCheck.toLowerCase().contains( sCriterias[0] ) && sToCheck.toLowerCase().contains( sCriterias[1] ) && sToCheck.toLowerCase().contains( sCriterias[2] ) )
-////				{
-////					//listItems.add( sToCheck );
-////					listItems.add(results.
-////				}
-////			}
-////			
-//		} 
-//		catch( SQLException e )
-//		{
-//			e.printStackTrace();
-//		}
-	}
-
-	private void makeTable(String tableToSearch)
-	{
-		tableModel.setRowCount(0);	
-		
-		//Resetter tabellen
-		System.out.println(listItems);
-		
-		if(tableToSearch.equals("Person")) {
-			String[] columns = {"First name","Surname","Phone","Country"};
-			tableData = new Object[listItems.size()][columns.length];
-			Object[] rowData = new Object[columns.length];
-
-			table.setTableHeader(new JTableHeader());
-			for (Object object : listItems) {
-				Person person = (Person) object;{
-					for (int j = 0; j < columns.length; j++) {
-						if(j%columns.length == 0)
-							rowData[j] = person.getFirstName();							
-						if(j%columns.length == 1)
-							rowData[j] = person.getSurName();	
-						if(j%columns.length == 2)
-							rowData[j] = person.getPhone();
-						if(j%columns.length == 3)
-							rowData[j] = person.getCountry();
+	/**
+	 * Generates a list of unfiltered data from a certain database table.
+	 * The method uses the Database-class to generate an unsorted list of all the objects in the specified database table.
+	 * When the method has finished and the list of data isn't empty, it calls the calculateResults method to filter the list.
+	 * Otherwise, it calls the noSearchResults method.
+	 * 
+	 * @param tableToSearch Which table in the database to search
+	 */
+	private void makeTableData(String tableToSearch)
+	{	
+		//Hvis metoden bliver kaldt med noget at søge efter
+		if(tableToSearch != "None") {
+			try {
+				if( !tableToSearch.equals( "Reservation" ) )
+					listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
+				else {
+					ArrayList<Flight> flights = Database.getInstance().Get(Flight.class);
+					ArrayList<Reservation> reservations = new ArrayList<>();
+					
+					for (Flight flight : flights) 
+					{
+						if(flight.getReservations() != null)
+						{
+							Reservation[] innerReservations = flight.getReservations();
+							
+							for (Reservation reservation : innerReservations) 
+							{
+								//TODO: Optimise! Eventually upload the REAL person when updating the reservation in the cloud?
+								reservation.setOwner( Database.getInstance().Get( reservation.getOwner().getID(), Person.class ) );
+								reservations.add(reservation);
+							}
+						}
 					}
-					tableModel.addRow(rowData);
-				}			
-			}
-		}
+					
+					listItems = reservations;
+				}
 
-		if(tableToSearch.equals("Reservation")) {
-			String[] columns = {"Reservation maker","Destination","Time of depature", "Number of passengers","Time of creation"};
-			tableData = new Object[listItems.size()][columns.length];
-			for (Object object : listItems) {
-				Reservation reservation = (Reservation) object;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			if(tableToSearch.equals("Person")) {						
+				columns = new String[]{"Person ID","First name","Surname","Phone","Country"};
+				tableModel.setColumnIdentifiers(columns);
+				tableData = new Object[listItems.size()][columns.length];
 				for (int i = 0; i < listItems.size(); i++) {
-					for (int j = 0; j < columns.length; j++) {
-						if(j%columns.length == 0)
-							tableData[i][j] = reservation.getOwner();
-						if(j%columns.length == 1)
-							tableData[i][j] = reservation.getFlight().getDestination();
-						if(j%columns.length == 2)
-							tableData[i][j] = reservation.getFlight().getDate();
-						if(j%columns.length == 3)
-							tableData[i][j] = reservation.getPassengers().length;
-						if(j%columns.length == 4)
-							tableData[i][j] = reservation.getReservationDate();
-					}
-				}			
-			}
-			table = new JTable(tableData, columns);
-		}
-
-		if(tableToSearch.equals("Flight")) {
-			String[] columns = {"Destination","Date of depature","Available seats"};
-			tableData = new Object[listItems.size()][columns.length];
-			for (Object object : listItems) {
-				Flight flight = (Flight) object;
-				for (int row = 0; row < listItems.size(); row++) {
-					for (int col = 0; col < columns.length; col++) {
-						if(col%columns.length == 0)
-							tableData[row][col] = flight.getDestination().getName();
-						if(col%columns.length == 1)
-							tableData[row][col] = flight.getDate();	
-						if(col%columns.length == 2)
-							tableData[row][col] = flight.getSeatsLeft();
+					Object object = listItems.get(i);
+					Person person = (Person) object;{
+						for (int j = 0; j < columns.length; j++) {
+							if(j%columns.length == 0)
+								tableData[i][j] = person.getID();
+							if(j%columns.length == 1)
+								tableData[i][j] = person.getFirstName();							
+							if(j%columns.length == 2)
+								tableData[i][j] = person.getSurName();	
+							if(j%columns.length == 3)
+								tableData[i][j] = person.getPhone();
+							if(j%columns.length == 4)
+								tableData[i][j] = person.getCountry();
+						}
 					}
 				}	
 			}
-			table = new JTable(tableData, columns);
-		}
-		
-		if(tableToSearch.equals("None")){
-			
-		}
-			
-		
-		System.out.println(tableModel.getValueAt(0, 0));
-		
-		pane.revalidate();
-		pane.invalidate();
-		pane.validate();
-		pane.repaint();
 
-	}	
+			if(tableToSearch.equals("Reservation")) {
+				columns = new String[] {"Flight ID", "Reservation ID","Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
+				tableModel.setColumnIdentifiers(columns);
+				tableData = new Object[listItems.size()][columns.length];
+				for (int i = 0; i < listItems.size(); i++) {
+					Object object = listItems.get(i);
+					Reservation reservation = (Reservation) object;
+					for (int j = 0; j < columns.length; j++) {
+						if(j%columns.length == 0)
+							tableData[i][j] = reservation.getFlight().getID();
+						if(j%columns.length == 1)
+							tableData[i][j] = reservation.getCurrentFlightReservationIndex();
+						if(j%columns.length == 2)
+							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
+						if(j%columns.length == 3)
+							tableData[i][j] = reservation.getFlight().getOrigin().getName();
+						if(j%columns.length == 4)
+							tableData[i][j] = reservation.getFlight().getDestination().getName();
+						if(j%columns.length == 5)
+							tableData[i][j] = reservation.getFlight().getDate().getTime();
+						if(j%columns.length == 6)
+							tableData[i][j] = reservation.getPassengers().length;
+						if(j%columns.length == 7)
+							tableData[i][j] = reservation.getReservationDate().getTime();
+					}
+				}
+			}
+
+			if(tableToSearch.equals("Flight")) {
+				columns = new String[] {"Flight ID", "Destination","Date of depature","Available seats"};
+				tableModel.setColumnIdentifiers(columns);
+				tableData = new Object[listItems.size()][columns.length];
+				for (int i = 0; i < listItems.size(); i++) {
+					Object object = listItems.get(i);
+					Flight flight = (Flight) object;
+					for (int j = 0; j < columns.length; j++) {
+						if(j%columns.length == 0)
+							tableData[i][j] = flight.getID();
+						if(j%columns.length == 1)
+							tableData[i][j] = flight.getDestination().getName();
+						if(j%columns.length == 2)
+							tableData[i][j] = flight.getDate().getTime();
+						if(j%columns.length == 3)
+							tableData[i][j] = flight.getSeatsLeft();
+					}
+				}
+			}
+			calculateResults();
+
+		}
+
+		//Hvis metoden ikke får noget at søge efter
+		else {
+			noSearchResults();
+		}
+
+		table.setColumnSelectionAllowed(false);
+		table.setCellSelectionEnabled(false);
+		table.setRowSelectionAllowed(true);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setFillsViewportHeight(true);
+		table.setAutoCreateRowSorter(true);
+
+	}
+
+	/**
+	 * Filters the search results according to the criterias given in the textfields, and adds the results to the table.
+	 * If no results is added to the table, the noSearchResults method is called.
+	 */
+	private void calculateResults()
+	{
+		//Resetter tabellens indhold
+		tableModel.setRowCount(0);
+
+		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
+
+		int height = 0;
+		
+		for (int i = 0; i < tableData.length; i++) {
+			for (int j = 0; j < columns.length; j++) {
+				if(tableData[i][j].toString().toLowerCase().contains( sCriterias[0] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[1] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[2] ))
+				{
+					tableModel.addRow(tableData[i]);
+					j = columns.length;
+				}
+			}
+
+		}
+		
+		height = tableModel.getRowCount()*17;
+		table.setPreferredSize(new Dimension(300, height));
+		
+		if(tableModel.getRowCount() == 0)
+			noSearchResults();
+	}
+
+	/**
+	 * noSearchResults changes the table to have no results shown.
+	 */
+	private void noSearchResults()
+	{
+		tableModel.setColumnIdentifiers(columns);
+		tableData = new Object[][]{{"No results"}};
+		tableModel.addRow(tableData[0]);
+	}
 }
