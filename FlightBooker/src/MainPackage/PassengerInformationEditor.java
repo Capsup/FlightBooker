@@ -36,6 +36,7 @@ public class PassengerInformationEditor extends JFrame
 					return;
 				
 				Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
+				updatedPerson.setReservations(person.getReservations());
 				if( fieldUpgraded != null )
 					fieldUpgraded.setPerson( updatedPerson );
 				if( isNew )

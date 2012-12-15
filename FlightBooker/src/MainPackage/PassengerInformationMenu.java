@@ -1,10 +1,11 @@
-	package MainPackage;
+package MainPackage;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.*;
@@ -16,25 +17,36 @@ public class PassengerInformationMenu {
 	private JFrame frame;
 	private JPanel mainPanel;
 
-	private Person person;	
+	private Person person;
+
+	JTextField nameTextField;
+	JTextField genderTextField;
+	JTextField birthTextField;
+	JTextField countryTextField;
+	JTextField nationaTextField;
+	JTextField adressTextField;
+	JTextField phoneTextField;
+	JTextField passporTextField;
 
 	private JButton editButton;
 	private JButton inspectReservationButton;
 	private JButton closeButton;
 
 	private JTable reservationsTable;
+	private String[] columns;
+	private Object[][] tableData;
+	private DefaultTableModel tableModel;
+	private JScrollPane tableScrollPane;
+	private JPanel reservationsTablePanel;
+
+	private Reservation[] listItems;
 
 	public PassengerInformationMenu(JFrame frame, Person person )
 	{
 		this.person = person;
-		update();
-
 		this.frame = frame;
 		setupFrame();
-		//setupFonts();
-
 		makeContent();
-		frame.setVisible(true);
 	}
 
 	private class actionListener implements ActionListener
@@ -46,15 +58,27 @@ public class PassengerInformationMenu {
 
 			if( command == "Edit information") {
 				System.out.println("Edit information");
-				//TODO: fix
-				//new PassengerInformationEditor();
+				new PassengerInformationEditor(person);
 			}
 
 			if( command == "Inspect reservation") {
 				System.out.println("Inspect reservation");
 				System.out.println(reservationsTable.getSelectionModel().getAnchorSelectionIndex());
-			}
 
+
+				int chosenObjectIncorrectRow = reservationsTable.getSelectionModel().getAnchorSelectionIndex();
+				if(chosenObjectIncorrectRow >= 0 && listItems != null){
+					{
+						if(chosenObjectIncorrectRow >= 0){
+							int chosenObjectActualRow = reservationsTable.convertRowIndexToModel(chosenObjectIncorrectRow);
+							int chosenObjectID = (int) reservationsTable.getValueAt(chosenObjectActualRow, 0);
+							System.out.println(chosenObjectID);
+							Reservation reservation = Database.getInstance().Get(chosenObjectID, Reservation.class);
+							new ReservationInfoMenu(new JFrame(), reservation, false);
+						}
+					}
+				}
+			}
 			if( command == "Close") {
 				System.out.println("Close");
 				frame.dispose();
@@ -66,15 +90,19 @@ public class PassengerInformationMenu {
 
 	private void setupFrame()
 	{
-		frame.setSize(500, 700);
+		frame.setSize(800, 700);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setTitle("Passenger Information");
+		frame.setVisible(true);
 
 		frame.addWindowListener( 
 				new WindowAdapter() { 
 					public void windowActivated(WindowEvent e) {
-						update();
+						if(person != null){
+							updatePerson();
+							updatePersonTextFields();
+						}
 					} 
 				} 
 				);
@@ -105,14 +133,15 @@ public class PassengerInformationMenu {
 		for(JLabel label : labels)
 			infoLabelsPanel.add(label);
 
-		JTextField nameTextField = new JTextField(person.getFirstName());
-		JTextField genderTextField = new JTextField(person.getSurName());
-		JTextField birthTextField = new JTextField(person.getDateOfBirth());
-		JTextField countryTextField = new JTextField(person.getCountry());
-		JTextField nationaTextField = new JTextField(person.getNationality());
-		JTextField adressTextField = new JTextField(person.getAdress());
-		JTextField phoneTextField = new JTextField(person.getPhone());
-		JTextField passporTextField = new JTextField(person.getPassportNumber());
+		nameTextField = new JTextField();
+		genderTextField = new JTextField();
+		birthTextField = new JTextField();
+		countryTextField = new JTextField();
+		nationaTextField = new JTextField();
+		adressTextField = new JTextField();
+		phoneTextField = new JTextField();
+		passporTextField = new JTextField();
+		updatePersonTextFields();
 
 		JTextField[] infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
 				nationaTextField, adressTextField, phoneTextField, passporTextField};
@@ -142,13 +171,7 @@ public class PassengerInformationMenu {
 		TitledBorder passengerTitleBorder = BorderFactory.createTitledBorder("Passenger details");
 		passengerInfoPanel.setBorder(passengerTitleBorder);
 
-		//Definerer data til reservationsTable
-		String[] columns = {"Date of reservation","Destination","Passengers"};
-
-		Object[][] reservationsData = makeReservationData();
-
-		//Laver reservationsTable
-		reservationsTable = new JTable(reservationsData, columns);
+		makeReservationTable();
 
 		//Sætter reservationsTable's specifikke egenskaber
 		reservationsTable.setColumnSelectionAllowed(false);
@@ -190,44 +213,63 @@ public class PassengerInformationMenu {
 		frame.add( mainPanel );
 	}
 
-	private void update()
+	private void updatePersonTextFields()
 	{
-		System.out.println("Update");
-		//this.person. = Database.getInstance().Get(3, Passenger.class);
+		System.out.println("updatePersonTextFields");
+		nameTextField.setText(person.getFirstName());
+		genderTextField.setText(person.getSurName());
+		birthTextField.setText(person.getDateOfBirth());
+		countryTextField.setText(person.getCountry());
+		nationaTextField.setText(person.getNationality());
+		adressTextField.setText(person.getAdress());
+		phoneTextField.setText(person.getPhone());
+		passporTextField.setText(person.getPassportNumber());
 	}
 
-	private Object[][] makeReservationData()
+	private void updatePerson()
 	{
-		Object[][] reservationsData = {
-				{new Date(34567887), "CPH",
-					new Integer(5)}, 
-					{new Date(System.currentTimeMillis()), "ROFL",
-						new Integer(1)},
-						{new Date(System.currentTimeMillis()), "LOL",
-							new Integer(3)},
-							{new Date(System.currentTimeMillis()), "JFK",
-								new Integer(1)},
-								{new Date(System.currentTimeMillis()), "JFK",
-									new Integer(1)},
-									{new Date(System.currentTimeMillis()), "JFK",
-										new Integer(1)},
-										{new Date(System.currentTimeMillis()), "JFK",
-											new Integer(1)},
-											{new Date(System.currentTimeMillis()), "JFK",
-												new Integer(1)},
-												{new Date(System.currentTimeMillis()), "JFK",
-													new Integer(1)},
-													{new Date(System.currentTimeMillis()), "JFK",
-														new Integer(1)},
-														{new Date(System.currentTimeMillis()), "JFK",
-															new Integer(1)},
-															{new Date(System.currentTimeMillis()), "JFK",
-																new Integer(1)},
-																{new Date(System.currentTimeMillis()), "JFK",
-																	new Integer(1)},
-																	{new Date(System.currentTimeMillis()), "JFK",
-																		new Integer(1)},
-		};
-		return reservationsData;
+		person = Database.getInstance().Get(person.getCustomerID(), Person.class);
+	}
+
+	private void makeReservationTable()
+	{		
+		columns = new String[]{" "};
+		tableData = new Object[][]{{"No reservations found"}};
+		tableModel = new DefaultTableModel(tableData,columns);
+		reservationsTable = new JTable(tableModel);
+
+		listItems = person.getReservations();
+
+		if( listItems != null )
+		{
+			if(listItems.length > 0 ){
+				tableModel.setRowCount(0);
+
+				String[] columns = new String[] {"Reservation ID", "Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
+				tableModel.setColumnIdentifiers(columns);
+				tableData = new Object[listItems.length][columns.length];
+				for (int i = 0; i < listItems.length; i++) {
+					Object object = listItems[i];
+					Reservation reservation = (Reservation) object;
+					for (int j = 0; j < columns.length; j++) {
+						if(j%columns.length == 0)
+							tableData[i][j] = reservation.getID();
+						if(j%columns.length == 1)
+							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
+						if(j%columns.length == 2)
+							tableData[i][j] = reservation.getFlight().getOrigin().getName();
+						if(j%columns.length == 3)
+							tableData[i][j] = reservation.getFlight().getDestination().getName();
+						if(j%columns.length == 4)
+							tableData[i][j] = reservation.getFlight().getDate().getTime();
+						if(j%columns.length == 5)
+							tableData[i][j] = reservation.getPassengers().length;
+						if(j%columns.length == 6)
+							tableData[i][j] = reservation.getReservationDate().getTime();
+					}
+					tableModel.addRow(tableData[i]);
+				}
+			}
+		}
 	}
 }
