@@ -216,8 +216,8 @@ public class PassengerInformationMenu {
 	private void updatePersonTextFields()
 	{
 		System.out.println("updatePersonTextFields");
-		nameTextField.setText(person.getFirstName());
-		genderTextField.setText(person.getSurName());
+		nameTextField.setText(person.getFirstName() + " " + person.getSurName());
+		genderTextField.setText(person.getGender());
 		birthTextField.setText(person.getDateOfBirth());
 		countryTextField.setText(person.getCountry());
 		nationaTextField.setText(person.getNationality());
