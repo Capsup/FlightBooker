@@ -130,6 +130,9 @@ public class NewReservationMenu
 			case "Make Reservation": 	
 				if(canCommit())
 				{
+					if(!isNew)
+						currentReservation.getFlight().replaceReservation(currentReservation.getCurrentFlightReservationIndex(), currentReservation);
+					
 					frame.remove(mainPanel);
 					new PassengerManagerMenu(frame, currentReservation, isNew);
 					
@@ -617,6 +620,7 @@ public class NewReservationMenu
 		//currentReservation.setFlight(currentFlight);
 		
 		updatePassengers();
+		
 	}
 	
 	private void updatePassengers()

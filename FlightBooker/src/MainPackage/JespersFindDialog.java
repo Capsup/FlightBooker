@@ -111,6 +111,7 @@ public class JespersFindDialog extends JFrame {
 					if(selectedAction == "Reservation")
 					{
 						Reservation reservation = Database.getInstance().Get(chosenObjectID, Reservation.class); 
+						reservation.setFlight(Database.getInstance().Get(reservation.getFlight().getID(), Flight.class));
 						new ReservationInfoMenu(new JFrame(), reservation, false);
 					}
 					

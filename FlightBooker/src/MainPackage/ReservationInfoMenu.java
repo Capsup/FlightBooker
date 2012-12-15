@@ -39,6 +39,7 @@ public class ReservationInfoMenu
 		this.frame = frame;
 		this.isNew = isNew;
 		currentReservation = reservation;
+		//currentReservation.setFlight(Database.getInstance().Get(currentReservation.getFlight().getID(), Flight.class));
 		
 		setupFrame();
 		
@@ -57,6 +58,8 @@ public class ReservationInfoMenu
 				{
 					frame.remove( mainPanel );
 			        
+					//currentReservation.getFlight().removeReservation(currentReservation.getCurrentFlightReservationIndex());
+					
 			        new NewReservationMenu( frame, currentReservation, isNew);
 					
 					//planePanel.setEditable();
@@ -71,8 +74,16 @@ public class ReservationInfoMenu
 				System.out.println("OK - Commit changes");
 				frame.dispose();
 				
+				
+				//Flight flightInstance = Database.getInstance().Get(currentReservation.getFlight().getID(), Flight.class);
+				
+				Flight flightInstance = currentReservation.getFlight();
+				
 				if(isNew)
 				{
+					//Add Reservation to flight
+					currentReservation.setCurrentFlightReservationIndex(flightInstance.addReservation(currentReservation));
+					
 					//Set the current date
 					Calendar newCalendar = Calendar.getInstance();
 					currentReservation.setReservedDate(newCalendar);
@@ -83,16 +94,13 @@ public class ReservationInfoMenu
 					Database.getInstance().Add(currentReservation);
 				}
 				else 
-				{	
+				{
 					Database.getInstance().Replace(currentReservation.getID(), currentReservation);
 				}
 				
-				//currentReservation.getFlight().addReservation(currentReservation);
-				
-				Flight flightInstance = Database.getInstance().Get(currentReservation.getFlight().getID(), Flight.class);
-				flightInstance.addReservation(currentReservation);
-				
 				Database.getInstance().Replace(flightInstance.getID(), flightInstance);
+				
+				//currentReservation.getFlight().addReservation(currentReservation);
 				
 				//Commit changes
 				break;

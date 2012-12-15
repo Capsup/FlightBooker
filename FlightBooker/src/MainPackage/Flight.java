@@ -125,9 +125,11 @@ public class Flight implements Serializable, Uploadable
 		this.reservations = reservations;
 	}
 	
-	public void addReservation(Reservation reservation)
+	public int addReservation(Reservation reservation)
 	{
 		Reservation[] newReservations;
+		
+		int newIndex = 0;
 		
 		if(reservations != null)
 		{
@@ -140,15 +142,28 @@ public class Flight implements Serializable, Uploadable
 			
 			newReservations[reservations.length] = reservation;
 			
+			newIndex = reservations.length;
 		}
 		else 
 		{
 			newReservations = new Reservation[1];	
 			
 			newReservations[0] = reservation;
+			
+			newIndex = 0;
 		}
 		
-		
 		reservations = newReservations;
+		
+		return newIndex;
+	}
+	
+	public void replaceReservation(int index, Reservation reservation)
+	{	
+		Reservation[] newReservations = getReservations();
+		
+		newReservations[index] = reservation;
+		
+		setReservations(newReservations);
 	}
 }

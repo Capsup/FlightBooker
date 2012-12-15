@@ -143,22 +143,23 @@ public class PlanePanel extends JPanel
 		
 		if(reservations != null)
 		{
-			for (Reservation reservation : reservations) 
+			for(int i=0; i<reservations.length; i++)
 			{
-				passengers = reservation.getPassengers();
-				
-				for (Passenger passenger : passengers) 
+				if(currentReservation.getCurrentFlightReservationIndex() != i)
 				{
-					passengerSeatPosition = passenger.getSeat().getPosition();
-					
-					int x = passengerSeatPosition.width;
-					int y = passengerSeatPosition.height;
-					
-					if(seatButtonArray[x][y] == null)
+					for (Passenger passenger : passengers) 
 					{
-						seatButton = InitializeSeatButton(x, y, mainPanel);
+						passengerSeatPosition = passenger.getSeat().getPosition();
 						
-						seatButton.setBooked(true);
+						int x = passengerSeatPosition.width;
+						int y = passengerSeatPosition.height;
+						
+						if(seatButtonArray[x][y] == null)
+						{
+							seatButton = InitializeSeatButton(x, y, mainPanel);
+							
+							seatButton.setBooked(true);
+						}
 					}
 				}
 			}
@@ -225,32 +226,36 @@ public class PlanePanel extends JPanel
 		Passenger[] passengers = currentReservation.getPassengers();
 		Dimension passengerSeatPosition;
 		
-		if(passengers != null)
-		{
-			for (Passenger passenger : passengers) 
-			{
-				if(passenger != null && passenger.getSeat() != null)
-				{
-					passengerSeatPosition = passenger.getSeat().getPosition();
-					
-					int x = passengerSeatPosition.width;
-					int y = passengerSeatPosition.height;
-					
-					seatButtonArray[x][y].setBooked(true);
-				}
-			}
-		}
 		
 		//Initialize seats for any reservation already booked
 		Reservation[] reservations = flight.getReservations();
 		
 		if(reservations != null)
 		{
-			for (Reservation reservation : reservations) 
+			for(int i=0; i<reservations.length; i++)
 			{
-				passengers = reservation.getPassengers();
-				
-				for (Passenger passenger : passengers) 
+				if(currentReservation.getCurrentFlightReservationIndex() != i)
+				{
+					passengers = reservations[i].getPassengers();
+					
+					for (Passenger passenger : passengers) 
+					{
+						passengerSeatPosition = passenger.getSeat().getPosition();
+						
+						int x = passengerSeatPosition.width;
+						int y = passengerSeatPosition.height;
+						
+						seatButtonArray[x][y].setBooked(true);
+					}
+				}
+			}
+		}
+		
+		if(passengers != null)
+		{
+			for (Passenger passenger : passengers) 
+			{
+				if(passenger != null && passenger.getSeat() != null)
 				{
 					passengerSeatPosition = passenger.getSeat().getPosition();
 					
