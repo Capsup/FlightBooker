@@ -313,6 +313,9 @@ public class Database
 		{
 			if( connection == null || !connection.isValid( 1 ) )
 				connectToDatabase();
+			
+			if( type.equals( Reservation.class ) )
+				System.out.println("sdggegt");
 
 			PreparedStatement statement = connection.prepareStatement( "SELECT object FROM " + type.getSimpleName().toLowerCase() + " WHERE id = ?" );
 			statement.setLong( 1, iID );

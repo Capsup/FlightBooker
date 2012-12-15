@@ -57,8 +57,10 @@ public class JespersFindDialog extends JFrame {
 
 	public JespersFindDialog()
 	{
-		setupFrame();
+
 		makeContent();
+		setupFrame();
+
 	}
 
 	class EnterListener extends KeyAdapter
@@ -86,9 +88,9 @@ public class JespersFindDialog extends JFrame {
 		public void actionPerformed( ActionEvent e )
 		{
 			String command = e.getActionCommand();
-
+			String selectedAction = radioButtons.getSelection().getActionCommand();
+			
 			if( command == "Search" || command == "Flight" || command == "Reservation" || command == "Person") {
-				String selectedAction = radioButtons.getSelection().getActionCommand();
 				makeTableData(selectedAction);
 			}
 
@@ -96,12 +98,11 @@ public class JespersFindDialog extends JFrame {
 				System.out.println("Inspect");
 				int chosenObjectIncorrectRow = table.getSelectionModel().getAnchorSelectionIndex();
 				
-				if(chosenObjectIncorrectRow >= 0){
+				if(chosenObjectIncorrectRow >= 0 && listItems != null){
 					int chosenObjectActualRow = table.convertRowIndexToModel(chosenObjectIncorrectRow);
 					int chosenObjectID = (int) tableModel.getValueAt(chosenObjectActualRow, 0);
 					System.out.println(chosenObjectID);
 					
-					String selectedAction = radioButtons.getSelection().getActionCommand();
 					if(selectedAction == "Flight")
 					{
 						Flight flight = Database.getInstance().Get(chosenObjectID, Flight.class);
@@ -110,7 +111,9 @@ public class JespersFindDialog extends JFrame {
 					
 					if(selectedAction == "Reservation")
 					{
-						Reservation reservation = Database.getInstance().Get(chosenObjectID, Reservation.class); 
+						Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID-1]; 
+						reservation.setFlight( Database.getInstance().Get( reservation.getFlight().getID(), Flight.class )  );
+						//Database.getInstance().Replace( reservation.getFlight().getID(), reservation.getFlight() );
 						new ReservationInfoMenu(new JFrame(), reservation, false);
 					}
 					
@@ -118,7 +121,6 @@ public class JespersFindDialog extends JFrame {
 					{
 					
 						Person person = Database.getInstance().Get(chosenObjectID, Person.class);
-						System.out.println(person);						
 						new PassengerInformationMenu(new JFrame(), person);
 					}
 				}
@@ -133,16 +135,16 @@ public class JespersFindDialog extends JFrame {
 
 	private void setupFrame()
 	{
-		this.setSize( new Dimension( 800, 600 ) );
-		this.setLocationRelativeTo( null );
+		this.setMinimumSize(new Dimension(500,300));
+		this.setPreferredSize(new Dimension(800,600));
+		this.pack();
 		this.setVisible(true);
-		this.requestFocusInWindow();
+		this.setLocationRelativeTo( null );
 	}
 
 	private void makeContent()
 	{
 		Container contentPane = this.getContentPane();
-		//contentPane.setLayout( new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 		contentPane.setLayout( new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 
 		flightRadioButton = new JRadioButton("Flight",false);
@@ -196,7 +198,7 @@ public class JespersFindDialog extends JFrame {
 		criteriaFieldsPanel.add(textField3);
 
 		JPanel criteriaPanel = new JPanel(new BorderLayout());
-		criteriaPanel.setPreferredSize(new Dimension(300,80));
+		criteriaPanel.setMaximumSize(new Dimension(300,80));
 		criteriaPanel.add(criteriaLabelPanel, BorderLayout.WEST);
 		criteriaPanel.add(criteriaFieldsPanel, BorderLayout.CENTER);
 		TitledBorder criteriaTitleBorder = BorderFactory.createTitledBorder("Enter search criteria: ");
@@ -208,7 +210,10 @@ public class JespersFindDialog extends JFrame {
 		table = new JTable(tableModel);
 
 		tableScrollPane = new JScrollPane(table);
-		tableScrollPane.setPreferredSize(new Dimension(600,400));
+		tableScrollPane.setMaximumSize(new Dimension(1000,1000));
+//		tableScrollPane.setMinimumSize(new Dimension(700,100));
+//		tableScrollPane.setMaximumSize(new Dimension(1000,1000));
+//		tableScrollPane.setPreferredSize(new Dimension(750,300));
 		tableScrollPane.setViewportView(table);
 		tableModel.removeRow(0);
 
@@ -247,7 +252,26 @@ public class JespersFindDialog extends JFrame {
 		//Hvis metoden bliver kaldt med noget at søge efter
 		if(tableToSearch != "None") {
 			try {
-				listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
+				if( !tableToSearch.equals( "Reservation" ) )
+					listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
+				else {
+					ArrayList<Flight> flights = Database.getInstance().Get(Flight.class);
+					ArrayList<Reservation> reservations = new ArrayList<>();
+					
+					for (Flight flight : flights) 
+					{
+						if(flight.getReservations() != null)
+						{
+							Reservation[] innerReservations = flight.getReservations();
+							
+							for (Reservation reservation : innerReservations) {
+								reservations.add(reservation);
+							}
+						}
+					}
+					
+					listItems = reservations;
+				}
 
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
