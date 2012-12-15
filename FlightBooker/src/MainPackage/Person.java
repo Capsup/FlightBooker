@@ -102,7 +102,23 @@ public class Person implements Serializable, Uploadable
 
 	public Reservation[] getReservations()
     {
-	    return reservations;
+		//Database.getInstance().Get( reservations[], type )
+		
+		if( reservations == null || reservations.length == 0 )
+			return null;
+		
+		Reservation[] newReservations = new Reservation[reservations.length];
+		
+		int iCount = 0;
+		for( Reservation reservation : reservations )
+		{
+			newReservations[iCount] = Database.getInstance().Get( reservation.getFlight().getID(), Flight.class ).getReservations()[iCount]; 
+			
+			iCount++;
+		}
+		
+	    //return reservations;
+		return newReservations;
     }
 
 	public void setReservations( Reservation[] reservations )

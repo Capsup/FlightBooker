@@ -119,6 +119,11 @@ public class JespersFindDialog extends JFrame {
 						
 						//Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID-1]; 
 						Reservation reservation = Database.getInstance().Get(chosenObjectID, Flight.class).getReservations()[chosenObjectID2]; 
+						for( Passenger passenger : reservation.getPassengers() )
+						{
+							passenger.setPerson( Database.getInstance().Get( passenger.getPerson().getID(), Person.class ) );
+						}
+						reservation.setOwner( Database.getInstance().Get( reservation.getOwner().getID(), Person.class ) );
 						//reservation.setFlight( Database.getInstance().Get( reservation.getFlight().getID(), Flight.class ));
 						//Database.getInstance().Replace( reservation.getFlight().getID(), reservation.getFlight() );
 						new ReservationInfoMenu(new JFrame(), reservation, false);
@@ -281,7 +286,10 @@ public class JespersFindDialog extends JFrame {
 						{
 							Reservation[] innerReservations = flight.getReservations();
 							
-							for (Reservation reservation : innerReservations) {
+							for (Reservation reservation : innerReservations) 
+							{
+								//TODO: Optimise! Eventually upload the REAL person when updating the reservation in the cloud?
+								reservation.setOwner( Database.getInstance().Get( reservation.getOwner().getID(), Person.class ) );
 								reservations.add(reservation);
 							}
 						}
