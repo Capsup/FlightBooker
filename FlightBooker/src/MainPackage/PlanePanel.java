@@ -220,6 +220,8 @@ public class PlanePanel extends JPanel
 		{
 			for(int j=0; j<seatButtonArray[i].length; j++)
 			{
+				seatButtonArray[i][j].setCurrentReservation(currentReservation);
+				
 				seatButtonArray[i][j].setButtonEnabled(editable);
 				
 				seatButtonArray[i][j].setBooked(false);
@@ -318,5 +320,10 @@ public class PlanePanel extends JPanel
 	{
 		editable = !editable;
 		updateSeats();
+	}
+	
+	public void setCurrentReservation(Reservation currentReservation)
+	{
+		this.currentReservation = currentReservation;
 	}
 }

@@ -8,6 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -17,6 +22,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import MainPackage.NewReservationMenu.ButtonListener;
+
 public class FlightInfoMenu extends JFrame
 {
 	private static final String X_AXIS = null;
@@ -25,8 +32,10 @@ public class FlightInfoMenu extends JFrame
 	
 	Flight currentFlight;
 	Reservation currentReservation;
+	PlanePanel planePanel;
 	
 	JTable reservationTable;
+	
 	
 	public FlightInfoMenu(Flight flight)
 	{
@@ -42,15 +51,64 @@ public class FlightInfoMenu extends JFrame
 		makeContent();
 	}
 	
-	private class TableListener implements FocusListener
+	/*
+	private class FrameListener implements WindowAdapter
 	{
-		public void focusGained(FocusEvent e)
+		public void windowActivated(WindowEvent e)
 		{
-			System.out.println("UIDGI");
+			System.out.println("WAT");
+			
+			updateMenu();
+		}	
+	}*/
+	
+	private class TableListener implements MouseListener
+	{
+		public void mouseClicked(MouseEvent e)
+		{
+			if(reservationTable.getSelectedRow() >= 0 && reservationTable.getSelectedRow() < currentFlight.getReservations().length)
+			{
+				currentReservation = currentFlight.getReservations()[reservationTable.getSelectedRow()];
+				
+				planePanel.setCurrentReservation(currentReservation);
+				
+				planePanel.updateSeats();
+				
+				//revalidate();
+				//repaint();
+			}
 		}
-		public void focusLost(FocusEvent e)
+		
+		public void mouseEntered(MouseEvent e)
 		{
 			
+		}
+		
+		public void mouseReleased(MouseEvent e)
+		{
+			
+		}
+		
+		public void mousePressed(MouseEvent e)
+		{
+			
+		}
+		
+		public void mouseExited(MouseEvent e)
+		{
+			
+		}
+	}
+	
+	private class ButtonListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			if(e.getActionCommand() == "Inspect")
+			{
+				if(currentReservation != null)
+					new ReservationInfoMenu(new JFrame(), currentReservation, false);
+			}
 		}
 	}
 	
@@ -90,22 +148,32 @@ public class FlightInfoMenu extends JFrame
 		
 		TableListener listener = new TableListener();
 		
-		//reservationTableModel.addTableModelListener(listener);
-		reservationTable.addFocusListener(listener);
+		reservationTable.addMouseListener(listener);
+		
+		
+				//Inspect Reservation Button
+		JButton inspectReservationButton = new JButton("Inspect Reservation");
+		inspectReservationButton.setAlignmentX(CENTER_ALIGNMENT);
+		inspectReservationButton.setActionCommand("Inspect");
+		
+		ButtonListener buttonListener = new ButtonListener();
+		
+		inspectReservationButton.addActionListener(buttonListener);
 		
 			//Top Panel Finish Up
 		topPanel.add(reservationLabel);
 		topPanel.add(reservationTable);
+		topPanel.add(inspectReservationButton);
 			//Top Panel Finished
 		
 			//Center Panel
 		JPanel centerPanel = new JPanel();
 		
 				//Flight Panel
-		PlanePanel flightPanel = new PlanePanel(currentFlight, currentReservation, new Dimension(400,200), false);
+		planePanel = new PlanePanel(currentFlight, currentReservation, new Dimension(400,200), false);
 		
 			//Center Panel Finish Up
-		centerPanel.add(flightPanel);
+		centerPanel.add(planePanel);
 			//Center Panel Finished
 		
 			//Bottom Panel
@@ -175,8 +243,16 @@ public class FlightInfoMenu extends JFrame
 		mainPanel.add(topPanel, BorderLayout.NORTH);
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
 		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
-		
 		//Main Panel Finished
+		
+		
+		this.addWindowListener(new WindowAdapter() {
+			
+			public void windowActivated(WindowEvent e)
+			{
+				updateMenu();
+			}
+		});
 		
 		contentPane.add(mainPanel);
 		
@@ -218,5 +294,19 @@ public class FlightInfoMenu extends JFrame
 		}
 		
 		return returnArray;
+	}
+	
+	void updateMenu()
+	{
+		System.out.println("WAT");
+		
+		currentFlight = Database.getInstance().Get(currentFlight.getID(), Flight.class);
+		
+		if(reservationTable.getSelectedRow() >= 0 && reservationTable.getSelectedRow() < currentFlight.getReservations().length)
+		{
+			currentReservation = currentFlight.getReservations()[reservationTable.getSelectedRow()];
+		}
+		
+		planePanel.updateSeats();
 	}
 }

@@ -116,9 +116,11 @@ public class SeatButton extends JButton
 		}
 		
 		if(seat.isBooked())
-		{
+		{	
+			
 			if(isMySeat)
 			{
+				//System.out.println("WAT");
 				setBackground(Color.GREEN);
 				setEnabled(isEnabled);
 			}
@@ -134,6 +136,11 @@ public class SeatButton extends JButton
 			setEnabled(isEnabled);
 		}
 		
+	}
+	
+	public void setCurrentReservation(Reservation currentReservation)
+	{
+		this.currentReservation = currentReservation;
 	}
 	
 	void setMyIndex(int count)

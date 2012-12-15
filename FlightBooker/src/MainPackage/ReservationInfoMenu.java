@@ -92,13 +92,13 @@ public class ReservationInfoMenu
 					//Set the id of the database instance
 					currentReservation.setID(Database.getInstance().GetID(Reservation.class));
 					
-					Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
+					//Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
 					
-					Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+					//Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
 					
-					newReservations[ newReservations.length - 1 ] = currentReservation;
+					//newReservations[ newReservations.length - 1 ] = currentReservation;
 					
-					currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
+					//currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
 					
 					Database.getInstance().Add(currentReservation);
 				}
