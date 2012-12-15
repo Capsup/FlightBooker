@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.acl.Owner;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -92,22 +93,24 @@ public class ReservationInfoMenu
 					//Set the id of the database instance
 					currentReservation.setID(Database.getInstance().GetID(Reservation.class));
 					
+					
+					currentReservation.getPassengers()[0].getPerson().updateReservations();
+					
 					Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
 					
 					if( newReservations == null )
 						newReservations = new Reservation[1];
 						else {
-							Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+							newReservations = Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
 						}
-					
-					
 					
 					newReservations[ newReservations.length - 1 ] = currentReservation;
 					
 					currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
 					
-					Database.getInstance().Add(currentReservation);
 					Database.getInstance().Replace(currentReservation.getPassengers()[0].getPerson().getID(), currentReservation.getPassengers()[0].getPerson());
+					
+					Database.getInstance().Add(currentReservation);
 				}
 				else 
 				{
@@ -202,6 +205,26 @@ public class ReservationInfoMenu
 		flightPanel.add(flightLabel);
 				//Flight Panel Finished
 		
+				//Time Panel
+		JPanel timePanel = new JPanel();
+		timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.X_AXIS));
+		
+					//Time Title Label
+		JLabel timeTitleLabel = new JLabel("Time:  ");
+		
+		String timeString = "";
+		
+		if(currentReservation.getFlight() != null)
+			timeString = ""+currentReservation.getFlight().getDate().getTime();
+		
+					//Time Label
+		JLabel timeLabel = new JLabel(timeString);
+				
+				//Time Panel Finishup
+		timePanel.add(timeTitleLabel);
+		timePanel.add(timeLabel);
+				//Time Panel Finished
+	
 				//Passenger Panel
 		JPanel passengerPanel = new JPanel();
 		
@@ -229,6 +252,7 @@ public class ReservationInfoMenu
 			//Info Panel finishup
 		infoPanel.add(customerPanel);
 		infoPanel.add(flightPanel);
+		infoPanel.add(timePanel);
 		infoPanel.add(passengerPanel);
 			//Info Panel Finished
 		
@@ -277,16 +301,20 @@ public class ReservationInfoMenu
 		cancelButton.setActionCommand("Cancel");
 		cancelButton.addActionListener(listener);
 		
-				//Delete Button
-		JButton deleteButton = new JButton("Delete Reservation");
-		deleteButton.setActionCommand("Delete");
-		deleteButton.addActionListener(listener);
-		
 			//Button Panel Finishup
 		buttonPanel.add(editReservationButton);
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		buttonPanel.add(deleteButton);
+		
+		if(!isNew)
+		{
+				//Delete Button
+			JButton deleteButton = new JButton("Delete Reservation");
+			deleteButton.setActionCommand("Delete");
+			deleteButton.addActionListener(listener);
+	
+			buttonPanel.add(deleteButton);
+		}
 			//Button Panel Finished
 		
 		//Bottom Panel Finishup
@@ -314,6 +342,7 @@ public class ReservationInfoMenu
 			for(int i=0; i<passengers.length; i++)
 			{
 				String firstData = passengers[i].getPerson().getFirstName()+" "+passengers[i].getPerson().getSurName();
+				
 				String secondData = "("+passengers[i].getSeat().getPosition().width+","+passengers[i].getSeat().getPosition().height+")";
 				
 				returnArray[i] = new Object[]{firstData, secondData};
@@ -342,8 +371,19 @@ public class ReservationInfoMenu
 	{
 		currentReservation.getFlight().removeReservationAt(currentReservation.getCurrentFlightReservationIndex());
 		
-		System.out.println(currentReservation.getFlight().getReservations().length);
+		int count = 0;
 		
+		for (Reservation reservation : currentReservation.getOwner().getReservations()) 
+		{
+			if(reservation.getID() == currentReservation.getID())
+			{
+				currentReservation.getOwner().removeReservationAt(count);
+			}
+			
+			count += 1;
+		}
+		
+		Database.getInstance().Replace(currentReservation.getOwner().getID(), currentReservation.getOwner());
 		Database.getInstance().Replace(currentReservation.getFlight().getID(), currentReservation.getFlight());
 		
 		frame.dispose();

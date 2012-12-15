@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * Creates the first window of the application.
+ * MainMenu creates the first window of the application.
  * The window contains a menu consisting of three buttons: "New Reservation", "Find" and "Database".
  * 
  * Clicking "New reservation" opens a new menu, through which the user can make a new reservation.
@@ -20,13 +20,11 @@ public class MainMenu extends JFrame {
 
 	private Dimension buttonSize;
 
-	/**
-	 * Creates a new MainMenu
-	 */
 	public MainMenu()
 	{
 		setupFrame();
 		makeContent();
+		
 	}
 
 	/*
@@ -60,7 +58,7 @@ public class MainMenu extends JFrame {
 	}
 
 	/**
-	 * Sets the frames properties: 
+	 * setupFrame sets the frames properties: 
 	 * The size of the frame, whether the frame is resizable or not, the title of the frame, where on the screen, the frame should appear and
 	 * what to do, when user tries to close the frame
 	 * 
@@ -72,7 +70,8 @@ public class MainMenu extends JFrame {
 		this.setResizable(false);
 		this.setTitle("Main menu");
 		this.setLocationRelativeTo(null);
-
+		this.setVisible(true);
+ 
 		buttonSize = new Dimension(250,50);
 
 		//Tilføjer listener til rammen, der tjekker om vinduet lukkes
@@ -86,7 +85,7 @@ public class MainMenu extends JFrame {
 	}
 
 	/**
-	 * Creates and places all of the menu's content.
+	 * makeContent creates and places all of the menu's content.
 	 * 
 	 */
 	private void makeContent()
@@ -142,8 +141,9 @@ public class MainMenu extends JFrame {
 
 		//Add everything to the contentPane
 		contentPane.add(buttonPanel);
-		this.setVisible(true);
 		
+		this.setVisible(true);
+		 
 	}
 
 	/**

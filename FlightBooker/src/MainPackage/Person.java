@@ -105,15 +105,71 @@ public class Person implements Serializable, Uploadable
 		return customerID;
 	}
 
+	public void updateReservations()
+	{
+		reservations = Database.getInstance().Get(id, Person.class).getReservations();
+		
+		
+		//System.out.println(reservations.length);
+	}
+	
+	public Reservation[] getReservations()
+	{
+		return reservations;
+	}
+	
+	/*
 	public Reservation[] getReservations()
     {
-	    return reservations;
+		//Database.getInstance().Get( reservations[], type )
+		
+		//reservations = Database.getInstance().Get(id, Person.class);
+		
+		if( reservations == null || reservations.length == 0 )
+			return null;
+		
+		Reservation[] newReservations = new Reservation[reservations.length];
+		
+		int iCount = 0;
+		for( Reservation reservation : reservations )
+		{
+			newReservations[iCount] = Database.getInstance().Get( reservation.getFlight().getID(), Flight.class ).getReservations()[reservation.getCurrentFlightReservationIndex()]; 
+			
+			iCount++;
+		}
+		
+	    //return reservations;
+		return newReservations;
     }
+    */
 
 	public void setReservations( Reservation[] reservations )
     {
 	    this.reservations = reservations;
     }
+	
+	public void removeReservationAt(int index)
+	{
+		updateReservations();
+		
+		Reservation[] modifiedReservations = getReservations();
+		
+		//Flight Reservations
+		for(int i=index; i<modifiedReservations.length-1; i++)
+		{
+			modifiedReservations[i] = modifiedReservations[i+1];
+		}
+		
+		Reservation[] newReservations = new Reservation[getReservations().length-1];
+		
+		for(int j=0; j<newReservations.length; j++)
+		{
+			newReservations[j] = modifiedReservations[j];
+			newReservations[j].setCurrentFlightReservationIndex(newReservations[j].getCurrentFlightReservationIndex()-1);
+		}
+		
+		setReservations(newReservations);
+	}
 	
 	/*public String toString()
 	{

@@ -280,7 +280,7 @@ public class FlightInfoMenu extends JFrame
 				{
 					String firstData = reservations[i].getOwner().getFirstName()+" "+reservations[i].getOwner().getSurName();
 					String secondData = ""+reservations[i].getPassengers().length;
-					String thirdData = ""+reservations[i].getReservationDate();
+					String thirdData = ""+reservations[i].getReservationDate().getTime();
 					
 					returnArray[i] = new Object[]{firstData, secondData, thirdData};
 				}
@@ -298,8 +298,6 @@ public class FlightInfoMenu extends JFrame
 	
 	void updateMenu()
 	{
-		System.out.println("WAT");
-		
 		currentFlight = Database.getInstance().Get(currentFlight.getID(), Flight.class);
 		
 		if(reservationTable.getSelectedRow() >= 0 && reservationTable.getSelectedRow() < currentFlight.getReservations().length)
