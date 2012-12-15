@@ -73,7 +73,7 @@ public class PassengerInformationMenu {
 							int chosenObjectActualRow = reservationsTable.convertRowIndexToModel(chosenObjectIncorrectRow);
 							int chosenObjectID = (int) reservationsTable.getValueAt(chosenObjectActualRow, 0);
 							System.out.println(chosenObjectID);
-							Reservation reservation = Database.getInstance().Get(chosenObjectID, Reservation.class);
+							Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID];
 							new ReservationInfoMenu(new JFrame(), reservation, false);
 						}
 					}
