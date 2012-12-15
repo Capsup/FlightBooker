@@ -297,8 +297,9 @@ public class PassengerManagerMenu
 	{
 		frame.setSize(300, 600);
 		frame.setResizable(false);
+		frame.setTitle("Passenger Manager");
 		
-		frame.setLocationRelativeTo(null);
+		//frame.setLocationRelativeTo(null);
 		
 		update();
 	}

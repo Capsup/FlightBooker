@@ -28,6 +28,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * FindDialog enables the user to search the database for reservations, persons and flights.
+ * 
+ * 
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ *
+ */
 public class JespersFindDialog extends JFrame {
 
 	private JRadioButton flightRadioButton;
@@ -55,7 +62,6 @@ public class JespersFindDialog extends JFrame {
 
 	public JespersFindDialog()
 	{
-
 		makeContent();
 		setupFrame();
 
@@ -133,16 +139,26 @@ public class JespersFindDialog extends JFrame {
 			}
 		}
 	}
-
+	
+	/**
+	 * setupFrame sets the frames properties: 
+	 * The size of the frame, the title of the frame and where on the screen, the frame should appear
+	 * 
+	 */
 	private void setupFrame()
 	{
 		this.setMinimumSize(new Dimension(500,300));
 		this.setPreferredSize(new Dimension(800,600));
 		this.pack();
 		this.setVisible(true);
+		this.setTitle("Find");
 		this.setLocationRelativeTo( null );
 	}
 
+	/**
+	 * makeContent creates and places all of the menu's content.
+	 * 
+	 */
 	private void makeContent()
 	{
 		Container contentPane = this.getContentPane();
@@ -373,6 +389,8 @@ public class JespersFindDialog extends JFrame {
 
 		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
 
+		int height = 0;
+		
 		for (int i = 0; i < tableData.length; i++) {
 			for (int j = 0; j < columns.length; j++) {
 				if(tableData[i][j].toString().toLowerCase().contains( sCriterias[0] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[1] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[2] ))
@@ -383,6 +401,10 @@ public class JespersFindDialog extends JFrame {
 			}
 
 		}
+		
+		height = tableModel.getRowCount()*17;
+		table.setPreferredSize(new Dimension(300, height));
+		
 		if(tableModel.getRowCount() == 0)
 			noSearchResults();
 	}

@@ -32,6 +32,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -80,6 +81,8 @@ public class NewReservationMenu
 	private JPanel bottomPanel;
 	
 	private boolean isNew;
+	
+	private int firstPlaneIndex;
 	
 	public NewReservationMenu(JFrame frame, Reservation reservation, boolean isNew)
 	{
@@ -192,6 +195,8 @@ public class NewReservationMenu
 		
 		int height = 0;
 		
+		boolean firstTaken = false;
+		
 		//listModel.clear();
 		viewedList.removeAll();
 		for( int i = 0; i < flights.size(); i++ )
@@ -255,6 +260,12 @@ public class NewReservationMenu
 				
 				flightPanelButton.addActionListener(new ButtonListener(i));
 				
+				if(!firstTaken)
+				{
+					firstTaken = true;
+					firstPlaneIndex = i;
+				}
+				
 				height += flightPanelButton.getPreferredSize().height;
 				
 				viewedList.add(flightPanelButton);
@@ -276,8 +287,17 @@ public class NewReservationMenu
 		height += 5;
 		
 		viewedList.setPreferredSize(new Dimension(200,height));
+		/*
+		bottomPanel.remove(planePanel);
+		wipePassengers();
 		
+		currentReservation.setFlight(flights.get(firstPlaneIndex));
+		planePanel = new PlanePanel(currentReservation.getFlight(), currentReservation, new Dimension(frameSize.width,(((frameSize.height/3*2)/4)*3)), true);
 		
+		bottomPanel.add(planePanel); 
+		
+		updateFlightPanel();
+		*/
 		mainPanel.invalidate();
 		mainPanel.validate();
 		mainPanel.repaint();
@@ -701,7 +721,10 @@ public class NewReservationMenu
 			for (Passenger passenger : passengers) 
 			{
 				if(passenger.getSeat() == null)
+				{
 					returnBool = false;
+					showErrorDialog();
+				}
 			}
 		}
 		else 
@@ -710,5 +733,13 @@ public class NewReservationMenu
 		}
 			
 		return returnBool;
+	}
+	
+	private void showErrorDialog()
+	{
+		JOptionPane.showMessageDialog(frame,
+				"Please choose enough seats",
+				"Error",
+				JOptionPane.ERROR_MESSAGE);
 	}
 }

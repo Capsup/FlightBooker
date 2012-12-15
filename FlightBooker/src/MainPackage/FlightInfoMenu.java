@@ -298,8 +298,6 @@ public class FlightInfoMenu extends JFrame
 	
 	void updateMenu()
 	{
-		System.out.println("WAT");
-		
 		currentFlight = Database.getInstance().Get(currentFlight.getID(), Flight.class);
 		
 		if(reservationTable.getSelectedRow() >= 0 && reservationTable.getSelectedRow() < currentFlight.getReservations().length)

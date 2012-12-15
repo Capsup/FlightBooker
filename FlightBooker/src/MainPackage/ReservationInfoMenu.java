@@ -202,6 +202,27 @@ public class ReservationInfoMenu
 		flightPanel.add(flightLabel);
 				//Flight Panel Finished
 		
+				//Time Panel
+		JPanel timePanel = new JPanel();
+		timePanel.setLayout(new BoxLayout(timePanel, BoxLayout.X_AXIS));
+		
+					//Time Title Label
+		JLabel timeTitleLabel = new JLabel("Time:  ");
+		
+		String timeString = "";
+		
+		if(currentReservation.getFlight() != null)
+			timeString = ""+currentReservation.getFlight().getDate().getTime();
+		
+					//Time Label
+		JLabel timeLabel = new JLabel(timeString);
+				
+				//Time Panel Finishup
+		timePanel.add(timeTitleLabel);
+		timePanel.add(timeLabel);
+				//Time Panel Finished
+	
+		
 				//Passenger Panel
 		JPanel passengerPanel = new JPanel();
 		
@@ -229,6 +250,7 @@ public class ReservationInfoMenu
 			//Info Panel finishup
 		infoPanel.add(customerPanel);
 		infoPanel.add(flightPanel);
+		infoPanel.add(timePanel);
 		infoPanel.add(passengerPanel);
 			//Info Panel Finished
 		
@@ -314,6 +336,7 @@ public class ReservationInfoMenu
 			for(int i=0; i<passengers.length; i++)
 			{
 				String firstData = passengers[i].getPerson().getFirstName()+" "+passengers[i].getPerson().getSurName();
+				
 				String secondData = "("+passengers[i].getSeat().getPosition().width+","+passengers[i].getSeat().getPosition().height+")";
 				
 				returnArray[i] = new Object[]{firstData, secondData};

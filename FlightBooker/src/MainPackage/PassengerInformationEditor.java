@@ -33,7 +33,10 @@ public class PassengerInformationEditor extends JFrame
 //				Database.
 				
 				if( nameTextField.getText().equals( "" ) || genderTextField.getText().equals( "" ) || birthTextField.getText().equals( "" ) || countryTextField.getText().equals( "" ) || nationaTextField.getText().equals( "" ) || adressTextField.getText().equals( "" ) || phoneTextField.getText().equals( "" ) || passporTextField.getText().equals( "" ) )
+				{
+					showErrorDialog();
 					return;
+				}
 				
 				Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
 				updatedPerson.setReservations(person.getReservations());
@@ -171,5 +174,13 @@ public class PassengerInformationEditor extends JFrame
 	private void addPassenger()
 	{
 
+	}
+	
+	private void showErrorDialog()
+	{
+		JOptionPane.showMessageDialog(this,
+			    "Please fill out all fields",
+			    "Error",
+			    JOptionPane.ERROR_MESSAGE);
 	}
 }
