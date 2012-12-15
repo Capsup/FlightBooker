@@ -125,7 +125,12 @@ public class ReservationInfoMenu
 				System.out.println("Cancel");
 				frame.dispose();
 				break;
+			case "Delete":
+				System.out.println("Delete");
+				deleteReservation();
+				break;
 			}
+			
 		}
 	}
 	
@@ -272,11 +277,16 @@ public class ReservationInfoMenu
 		cancelButton.setActionCommand("Cancel");
 		cancelButton.addActionListener(listener);
 		
+				//Delete Button
+		JButton deleteButton = new JButton("Delete Reservation");
+		deleteButton.setActionCommand("Delete");
+		deleteButton.addActionListener(listener);
+		
 			//Button Panel Finishup
 		buttonPanel.add(editReservationButton);
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		//buttonPanel.add(deleteButton);
+		buttonPanel.add(deleteButton);
 			//Button Panel Finished
 		
 		//Bottom Panel Finishup
@@ -326,5 +336,16 @@ public class ReservationInfoMenu
 		}
 		
 		return returnBool;
+	}
+	
+	void deleteReservation()
+	{
+		currentReservation.getFlight().removeReservationAt(currentReservation.getCurrentFlightReservationIndex());
+		
+		System.out.println(currentReservation.getFlight().getReservations().length);
+		
+		Database.getInstance().Replace(currentReservation.getFlight().getID(), currentReservation.getFlight());
+		
+		frame.dispose();
 	}
 }

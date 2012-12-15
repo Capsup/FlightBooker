@@ -166,4 +166,25 @@ public class Flight implements Serializable, Uploadable
 		
 		setReservations(newReservations);
 	}
+	
+	public void removeReservationAt(int index)
+	{
+		Reservation[] modifiedReservations = getReservations();
+		
+		for(int i=index; i<modifiedReservations.length-1; i++)
+		{
+			modifiedReservations[i] = modifiedReservations[i+1];
+		}
+		
+		Reservation[] newReservations = new Reservation[getReservations().length-1];
+		
+		for(int j=0; j<newReservations.length; j++)
+		{
+			newReservations[j] = modifiedReservations[j];
+			newReservations[j].setCurrentFlightReservationIndex(j);
+		}
+		
+		
+		setReservations(newReservations);
+	}
 }
