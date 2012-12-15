@@ -287,7 +287,7 @@ public class PassengerManagerMenu
 					listModel.addElement( person );
 		*/
 		
-		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, 200, 100 );
+		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, currentField.getWidth(), 100 );
 		//passengerPanel.setComponentZOrder( list, 5 );
 		if( listModel.getSize() > 0 )
 			list.setVisible( true );
@@ -316,14 +316,12 @@ public class PassengerManagerMenu
 		
 		JLabel mainPassengerHeaderLabel = new JLabel("Main Passenger");
 		//mainPassengerHeaderLabel.setFont(FontCollection.HEADER);
-		JLabel mainPassengerLabel = new JLabel("Sir Martin Fagalot, 60249924");
 		//mainPassengerLabel.setFont(FontCollection.NORMAL);
 		JLabel additionalPassengerLabel = new JLabel("Additional Passengers");
 		//additionalPassengerLabel.setFont(FontCollection.HEADER);
 		
 		middlePanel.add(mainPassengerHeaderLabel);
-		middlePanel.add(mainPassengerLabel);
-		middlePanel.add(additionalPassengerLabel);
+		//middlePanel.add(additionalPassengerLabel);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		//scrollPane.setPreferredSize(new Dimension(100,200));
@@ -355,13 +353,13 @@ public class PassengerManagerMenu
 	        if(currentReservation.getPassengers()[i].getPerson() != null)
 	        	passengerField[i].setPerson(currentReservation.getPassengers()[i].getPerson());
 	        
-	        passengerField[i].setBounds( 20, (i+1) * 50, 200, 25 );
+	        passengerField[i].setBounds( 20, (i+1) * 50, 175, 25 );
 	        passengerField[i].addKeyListener( new keyListener() );
 	        
 	        passengerPanel.add( passengerField[i] );
 	        
 	        JButton editButton = new JButton("edit");
-	        editButton.setBounds( 240, ( i + 1 ) * 50, 50, 25 );
+	        editButton.setBounds( 200, ( i + 1 ) * 50, 75, 25 );
 	        editButton.setActionCommand( "edit" );
 	        editButton.addActionListener( new actionListener(passengerField[i]) );
 	        passengerPanel.add( editButton );
@@ -382,7 +380,6 @@ public class PassengerManagerMenu
 	        //passengerPanel.setComponentZOrder( list, 5 );
 	        
 	        
-	        
 	        mainPassengerPanel.add( passengerPanel );
         }
 		
@@ -393,7 +390,7 @@ public class PassengerManagerMenu
 		
 		mainPanel.add(middlePanel, BorderLayout.CENTER);
 		
-		JButton button = new JButton("test");
+		JButton button = new JButton("OK");
 		button.addActionListener( new okListener() );
 		
 		mainPanel.add( button, BorderLayout.SOUTH );

@@ -225,6 +225,16 @@ public class NewReservationMenu
 				bounce = false;
 			}
 			
+			int amount = 0;
+			
+			if(seatAmountLabel.getValue() != null)
+				amount = Integer.parseInt((String)seatAmountLabel.getValue());
+			
+			
+			if(currentFlight.getSeatsLeft() < amount)
+			{
+				bounce = false;
+			}
 			
 			//Martins lange satan
 			//currentFlight.getDate().getTimeInMillis() >= startDateLabel.getCalendar().getTimeInMillis() && currentFlight.getDate().getTimeInMillis() <= endDateLabel.getCalendar().getTimeInMillis() && departureList.getSelectedItem().toString().equals( currentFlight.getOrigin().getName() ) && destinationList.getSelectedItem().toString().equals( currentFlight.getDestination().getName() ) 

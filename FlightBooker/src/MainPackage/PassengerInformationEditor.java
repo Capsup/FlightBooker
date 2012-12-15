@@ -18,6 +18,8 @@ public class PassengerInformationEditor extends JFrame
 	private Person person;
 	
 	private JTextField nameTextField, genderTextField, birthTextField, countryTextField, nationaTextField, adressTextField, phoneTextField, passporTextField;
+	
+	boolean isNew;
 
 	private class actionListener implements ActionListener
 	{
@@ -30,10 +32,17 @@ public class PassengerInformationEditor extends JFrame
 				//fieldUpgraded.setPerson( new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), fieldUpgraded.getPerson().getCustomerID() ) );
 //				Database.
 				
+				if( nameTextField.getText().equals( "" ) || genderTextField.getText().equals( "" ) || birthTextField.getText().equals( "" ) || countryTextField.getText().equals( "" ) || nationaTextField.getText().equals( "" ) || adressTextField.getText().equals( "" ) || phoneTextField.getText().equals( "" ) || passporTextField.getText().equals( "" ) )
+					return;
+				
 				Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1], genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(), adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
 				if( fieldUpgraded != null )
 					fieldUpgraded.setPerson( updatedPerson );
-				Database.getInstance().Replace( person.getCustomerID(), updatedPerson );
+				if( isNew )
+					Database.getInstance().Add( updatedPerson );
+				else
+					Database.getInstance().Replace( person.getCustomerID(), updatedPerson );
+				
 				getInstance().dispose();
 			}
 
@@ -64,7 +73,16 @@ public class PassengerInformationEditor extends JFrame
 	public PassengerInformationEditor(Person person, JTextFieldUpgraded fieldUpgraded)
 	{
 		this.fieldUpgraded = fieldUpgraded;
-		this.person = person;
+		if( person != null )
+		{
+			this.person = person;
+			isNew = false;
+		}
+		else 
+		{
+			this.person = new Person( "", "", "", "", "", "", "", "", "", Database.getInstance().GetID( Person.class ) );
+			isNew = true;
+		}
 		setupFrame();
 		makeContent();
 	}

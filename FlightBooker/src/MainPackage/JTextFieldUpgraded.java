@@ -29,7 +29,8 @@ public class JTextFieldUpgraded extends JTextField
 		
 		//boolean bSuccess = true;
 		if( myPerson == null || !(myPerson.getFirstName().equalsIgnoreCase( sInfo[0] ) ) || !( myPerson.getSurName().equalsIgnoreCase( sInfo[1] ) ) || !( myPerson.getPhone().equalsIgnoreCase( sInfo[3] ) )  )
-			return new Person( "", "", "", "", "", "", "", "", "", 0 );
+			//return new Person( "", "", "", "", "", "", "", "", "", 0 );
+			return null;
 			
 		return myPerson;
 	}
