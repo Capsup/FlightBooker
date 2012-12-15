@@ -92,15 +92,22 @@ public class ReservationInfoMenu
 					//Set the id of the database instance
 					currentReservation.setID(Database.getInstance().GetID(Reservation.class));
 					
-					//Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
+					Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
 					
-					//Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+					if( newReservations == null )
+						newReservations = new Reservation[1];
+						else {
+							Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+						}
 					
-					//newReservations[ newReservations.length - 1 ] = currentReservation;
 					
-					//currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
+					
+					newReservations[ newReservations.length - 1 ] = currentReservation;
+					
+					currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
 					
 					Database.getInstance().Add(currentReservation);
+					Database.getInstance().Replace(currentReservation.getPassengers()[0].getPerson().getID(), currentReservation.getPassengers()[0].getPerson());
 				}
 				else 
 				{
@@ -269,6 +276,7 @@ public class ReservationInfoMenu
 		buttonPanel.add(editReservationButton);
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
+		//buttonPanel.add(deleteButton);
 			//Button Panel Finished
 		
 		//Bottom Panel Finishup
