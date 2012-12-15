@@ -101,7 +101,6 @@ public class ReservationInfoMenu
 						}
 					
 					
-					
 					newReservations[ newReservations.length - 1 ] = currentReservation;
 					
 					currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
@@ -222,7 +221,6 @@ public class ReservationInfoMenu
 		timePanel.add(timeLabel);
 				//Time Panel Finished
 	
-		
 				//Passenger Panel
 		JPanel passengerPanel = new JPanel();
 		
@@ -299,16 +297,20 @@ public class ReservationInfoMenu
 		cancelButton.setActionCommand("Cancel");
 		cancelButton.addActionListener(listener);
 		
-				//Delete Button
-		JButton deleteButton = new JButton("Delete Reservation");
-		deleteButton.setActionCommand("Delete");
-		deleteButton.addActionListener(listener);
-		
 			//Button Panel Finishup
 		buttonPanel.add(editReservationButton);
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		buttonPanel.add(deleteButton);
+		
+		if(!isNew)
+		{
+				//Delete Button
+			JButton deleteButton = new JButton("Delete Reservation");
+			deleteButton.setActionCommand("Delete");
+			deleteButton.addActionListener(listener);
+	
+			buttonPanel.add(deleteButton);
+		}
 			//Button Panel Finished
 		
 		//Bottom Panel Finishup

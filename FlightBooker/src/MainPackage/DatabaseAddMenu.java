@@ -100,11 +100,7 @@ public class DatabaseAddMenu extends JFrame
 						//Random Person
 						int personRand = random.nextInt(Database.getInstance().GetID(Person.class)-1)+1;
 						
-						System.out.println(personRand);
-						
 						Person person = Database.getInstance().Get(personRand, Person.class);
-						
-						System.out.println(person);
 						
 						//Skal være random
 						int seatRand = random.nextInt(availableSeats.size());
@@ -116,8 +112,10 @@ public class DatabaseAddMenu extends JFrame
 						Passenger passenger = new Passenger(person, seat);
 						
 						if(j == 0)
+						{							
 							reservation.setOwner(person);
-							
+						}
+						
 						newPassengers[j] = passenger;
 					}
 					
@@ -128,6 +126,21 @@ public class DatabaseAddMenu extends JFrame
 					reservation.setReservedDate(calendarToUse);
 					
 					reservation.setCurrentFlightReservationIndex(i);
+					
+					//Update the ownership
+					Reservation[] newReservations = reservation.getPassengers()[0].getPerson().getReservations();
+					
+					if( newReservations == null )
+						newReservations = new Reservation[1];
+						else {
+							Arrays.copyOf( newReservations, reservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+						}
+					
+					
+					newReservations[ newReservations.length - 1 ] = reservation;
+					
+					reservation.getPassengers()[0].getPerson().setReservations( newReservations );
+					Database.getInstance().Replace(reservation.getPassengers()[0].getPerson().getID(), reservation.getPassengers()[0].getPerson());
 					
 					newFlight.addReservation(reservation);
 				}

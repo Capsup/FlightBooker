@@ -84,6 +84,7 @@ public class PassengerManagerMenu
 	        	
 	        	
 	        }
+	        
 	        if( bSuccess )
 	        {
 	        	Passenger[] passengers = currentReservation.getPassengers();
