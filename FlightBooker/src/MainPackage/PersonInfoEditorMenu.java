@@ -140,8 +140,12 @@ public class PersonInfoEditorMenu extends JFrame
 		for(JLabel label : labels)
 			infoLabelsPanel.add(label);
 
+		if(!person.getFirstName().equals(""))
+			nameTextField = new JTextField(person.getFirstName() + " " + person.getSurName());
+		else 
+			nameTextField = new JTextField("");
 		
-		nameTextField = new JTextField(person.getFirstName() + " " + person.getSurName());
+		
 		genderTextField = new JTextField(person.getGender());
 		birthTextField = new JTextField(person.getDateOfBirth());
 		countryTextField = new JTextField(person.getCountry());
