@@ -30,7 +30,6 @@ public class MainMenu extends JFrame {
 	/**
 	 * ButtonListener makes it possible to do something, when a button is clicked.
 	 * It is notified when a button with an added ButtonListener is clicked, and the button's ActionCommand decides what action to take.
-	 * 
 	 */
 	class ButtonListener implements ActionListener
 	{
@@ -68,13 +67,14 @@ public class MainMenu extends JFrame {
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setSize(250, 300);
 		this.setResizable(false);
-		this.setTitle("Main menu");
+		this.setTitle("Main Menu");
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
  
+		//Sets the size of the buttons to be created
 		buttonSize = new Dimension(250,50);
 
-		//Tilføjer listener til rammen, der tjekker om vinduet lukkes
+		//Adds a listener to the frame, to check if the frame is closing
 		this.addWindowListener( 
 				new WindowAdapter() { 
 					public void windowClosing(WindowEvent e) {
@@ -105,7 +105,7 @@ public class MainMenu extends JFrame {
 		findButton.setAlignmentX(CENTER_ALIGNMENT);
 
 		//Database Button
-		JButton databaseButton = new JButton("Database");
+		JButton databaseButton = new JButton("Database (Test)");
 		databaseButton.setActionCommand("Database");
 		databaseButton.setPreferredSize(buttonSize);
 		databaseButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -142,6 +142,7 @@ public class MainMenu extends JFrame {
 		//Add everything to the contentPane
 		contentPane.add(buttonPanel);
 		
+		//Sets the frame to be visible
 		this.setVisible(true);
 		 
 	}
@@ -152,19 +153,22 @@ public class MainMenu extends JFrame {
 	 */
 	private void exitDialog()
 	{
-
+		//Creates an array of all of the Windows created during this program run, and checks whether they are visible or not.
 		Window[] allWindows = Window.getWindows();
 		int openWindows = 0;
 		for(Window currentWindow : allWindows)
 			if(currentWindow.isVisible())
 				openWindows++;
 
+		//If the MainMenu is the only Window visible
 		if(openWindows == 1)
 			System.exit(0);
+		
+		//If more than one Window is visible, a dialogue appears to inform the user about possible loss of information.
 		else {
 			int n = JOptionPane.showConfirmDialog(this.getContentPane(), "This program will now close. Any work in progress will be discarded. Exit?",
 					"Exit?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			//If "Yes" is chosen
+			//If "Yes" in the dialogue is chosen
 			if(n == 0)
 				System.exit(0);
 		}

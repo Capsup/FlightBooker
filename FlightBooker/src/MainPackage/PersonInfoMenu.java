@@ -129,7 +129,7 @@ public class PersonInfoMenu {
 		frame.setSize(800, 700);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
-		frame.setTitle("Passenger Information");
+		frame.setTitle("Passenger Info Menu");
 		frame.setVisible(true);
 
 		frame.addWindowListener( 
@@ -163,9 +163,11 @@ public class PersonInfoMenu {
 		JLabel phoneLabel = new JLabel( "Phone: " );
 		JLabel passportLabel = new JLabel( "Passport Nr: " );
 
+		//Creates an array of all the labels just created
 		JLabel[] labels = {nameLabel, genderLabel, birthLabel, countryLabel, nationalityLabel, adressLabel, phoneLabel, passportLabel};
 		JPanel infoLabelsPanel = new JPanel(new GridLayout(labels.length, 1));
 
+		//Puts all these labels into a JPanel
 		for(JLabel label : labels)
 			infoLabelsPanel.add(label);
 
@@ -177,14 +179,18 @@ public class PersonInfoMenu {
 		adressTextField = new JTextField();
 		phoneTextField = new JTextField();
 		passporTextField = new JTextField();
+		//Set up the information in the text fields
 		updatePersonTextFields();
 
+		//Creates an array of all the text fields just created
 		JTextField[] infoFields = new JTextField[]{nameTextField, genderTextField, birthTextField, countryTextField, 
 				nationaTextField, adressTextField, phoneTextField, passporTextField};
 
+		//Puts all these text fields into a JPanel
 		for(JTextField field : infoFields)
 			field.setEditable(false);
 
+		//Create a new panel to contain the panels of the entire info section
 		JPanel infoFieldsPanel = new JPanel(new GridLayout(infoFields.length, 1));
 
 		for(JTextField field : infoFields)
@@ -209,7 +215,7 @@ public class PersonInfoMenu {
 
 		makeReservationTable();
 
-		//Sætter reservationsTable's specifikke egenskaber
+		//Sets the reservationsTable's properties
 		reservationsTable.setColumnSelectionAllowed(false);
 		reservationsTable.setCellSelectionEnabled(false);
 		reservationsTable.setRowSelectionAllowed(true);
@@ -217,14 +223,14 @@ public class PersonInfoMenu {
 		reservationsTable.getTableHeader().setReorderingAllowed(false);
 		reservationsTable.setFillsViewportHeight(true);
 
-		//Tilføjer en sorteringsfunktion til tablen
+		//Adds a sorting function to the table
 		reservationsTable.setAutoCreateRowSorter(true);
 
-		//Tilføjer et scrollpane til reservationsTable
+		//Adds a scrollpane to reservationsTable
 		JScrollPane reservationsScrollPane = new JScrollPane(reservationsTable);
 		reservationsScrollPane.setPreferredSize(new Dimension(mainPanel.getWidth()-10,200));
 
-		//Tilføjer en border til reservationsTablen
+		//Adds a border to the reservationsTable
 		TitledBorder reservationsTitleBorder = BorderFactory.createTitledBorder("Passenger reservations");
 		reservationsScrollPane.setBorder(reservationsTitleBorder);
 
@@ -273,6 +279,9 @@ public class PersonInfoMenu {
 		person = Database.getInstance().Get(person.getCustomerID(), Person.class);
 	}
 
+	/**
+	 * Creates the table of reservations
+	 */
 	private void makeReservationTable()
 	{		
 		columns = new String[]{" "};
@@ -280,13 +289,16 @@ public class PersonInfoMenu {
 		tableModel = new DefaultTableModel(tableData,columns);
 		reservationsTable = new JTable(tableModel);
 
+		//Gets all of a Persons reservations and put them in a list
 		listItems = person.getReservations();
 
+		//If the Person do have reservations
 		if( listItems != null )
 		{
 			if(listItems.length > 0 ){
 				tableModel.setRowCount(0);
 
+				//Creates the table an fills it with the Person's reservations
 				String[] columns = new String[] {"Reservation ID", "Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
 				tableModel.setColumnIdentifiers(columns);
 				tableData = new Object[listItems.length][columns.length];
@@ -294,19 +306,19 @@ public class PersonInfoMenu {
 					Object object = listItems[i];
 					Reservation reservation = (Reservation) object;
 					for (int j = 0; j < columns.length; j++) {
-						if(j%columns.length == 0)
+						if(j == 0)
 							tableData[i][j] = reservation.getID();
-						if(j%columns.length == 1)
+						if(j == 1)
 							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
-						if(j%columns.length == 2)
+						if(j == 2)
 							tableData[i][j] = reservation.getFlight().getOrigin().getName();
-						if(j%columns.length == 3)
+						if(j == 3)
 							tableData[i][j] = reservation.getFlight().getDestination().getName();
-						if(j%columns.length == 4)
+						if(j == 4)
 							tableData[i][j] = reservation.getFlight().getDate().getTime();
-						if(j%columns.length == 5)
+						if(j == 5)
 							tableData[i][j] = reservation.getPassengers().length;
-						if(j%columns.length == 6)
+						if(j == 6)
 							tableData[i][j] = reservation.getReservationDate().getTime();
 					}
 					tableModel.addRow(tableData[i]);

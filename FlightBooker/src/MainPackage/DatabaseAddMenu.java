@@ -88,28 +88,38 @@ public class DatabaseAddMenu extends JFrame
 					Calendar calendarToUse = Calendar.getInstance();
 					calendarToUse.set( 2012, random.nextInt( 12 ) + 1, random.nextInt( 28 ) + 1 );
 
-					// Defining Random Airports
+					// Defining a list of Airports from which to choose a random
 					ArrayList<AirportType> airportTypeArray = new ArrayList( Arrays.asList( Airport.getAirportTypes() ) );
 
+					//Defining the random departure airport
 					int randInt = random.nextInt( airportTypeArray.size() );
 					Airport airport1 = new Airport( airportTypeArray.get( randInt ) );
 					//We need to remove the airport from the array so we don't get a flight having the same departure and destination airport.
 					airportTypeArray.remove( randInt );
 
+					//Defining the random destination airport
 					randInt = random.nextInt( airportTypeArray.size() );
 					Airport airport2 = new Airport( airportTypeArray.get( randInt ) );
 
-					int airport2Index = random.nextInt( Airport.getAirportTypes().length );
-
+					//Here we initialize the flight for us to upload
 					Flight newFlight = new Flight( calendarToUse, new Plane( Plane.planeTypes()[random.nextInt( Plane.planeTypes().length )] ),
 					        airport1, airport2, Database.getInstance().GetID( Flight.class ) );
 
+					//If we press the /With passengers we generate a series of reservations
+					//for it to use.
+					//Otherwise we leave it empty.
 					if( withPassengers )
 					{
+						//We fetch the all available persons from the database, in order to avoid calling it too many times.
+						ArrayList<Person> persons = Database.getInstance().Get(Person.class);
+						
+						//First we generate a random amount of reservations
 						int randReservationAmount = random.nextInt( 3 );
-
+						
+						//We initialize an array for us to add the seats we wish to randomize between
 						ArrayList<Seat> availableSeats = new ArrayList<>();
-
+						
+						//We access the seat array of the current flight, in order to randomize between the correct amount of seats in our reservations
 						Seat[][] seatArray = newFlight.getSeats();
 
 						for( int i = 0; i < seatArray.length; i++ )
@@ -119,92 +129,110 @@ public class DatabaseAddMenu extends JFrame
 								availableSeats.add( seatArray[i][j] );
 							}
 						}
-
+						
+						//We iterate over the amount of reservations we want to add
 						for( int i = 0; i < randReservationAmount; i++ )
 						{
+							//We initialize the reservation
 							Reservation reservation = new Reservation();
-
+							
+							//We generate a random amount of passengers for the current reservation, insuring we always have atleast 1
 							int randPassengerAmount = random.nextInt( 4 ) + 1;
-
+							
+							//We initialize the array of passengers to add to our reservation
 							Passenger[] newPassengers = new Passenger[randPassengerAmount];
 
+							//We iterate over the amount of passengers we want to add to the current reeservation
 							for( int j = 0; j < randPassengerAmount; j++ )
 							{
-								// Random Person
-								int personRand = random.nextInt( Database.getInstance().GetID( Person.class ) - 1 ) + 1;
+								//We get a randomPerson
+								int personRand = random.nextInt(persons.size());
 
-								Person person = Database.getInstance().Get( personRand, Person.class );
+								//We get the random person from our person array.
+								Person person = persons.get(personRand);
 
-								// Skal være random
+								//We get a random integer to access the random seat we want.
 								int seatRand = random.nextInt( availableSeats.size() );
-
+								
+								//We get the random seat from our seat array.
 								Seat seat = availableSeats.get( seatRand );
-
+								
+								//We remove the seat we randomed, so that we do not place two passengers on the same seat.
 								availableSeats.remove( seatRand );
 
+								//We initialize the new passenger that we want to add to our reservation.
 								Passenger passenger = new Passenger( person, seat );
-
+								
+								//If this is the first passenger we add, we insure that the owner of the reservation is also this person.
 								if( j == 0 )
 								{
 									reservation.setOwner( person );
 								}
 
+								//We put the new passenger into our passenger array.
 								newPassengers[j] = passenger;
 							}
-
+							
+							//We set the passengers of the reservation to be our generated passenger array.
 							reservation.setPassengers( newPassengers );
 
+							//We set the flight of the reservation to be the flight we wish to upload.
 							reservation.setFlight( newFlight );
 
+							//We set the reserved date of the reservation to be the same as of the flights lift off date.
 							reservation.setReservedDate( calendarToUse );
-
+							
+							//We set the accessing index of the reservation, so we can access it later through the flight.
 							reservation.setCurrentFlightReservationIndex( i );
 
-							/*
-							 * //Update the ownership Reservation[] newReservations = reservation.getPassengers()[0].getPerson().getReservations();
-							 * 
-							 * if( newReservations == null ) newReservations = new Reservation[1]; else { Arrays.copyOf( newReservations,
-							 * reservation.getPassengers()[0].getPerson().getReservations().length + 1 ); }
-							 * 
-							 * 
-							 * newReservations[ newReservations.length - 1 ] = reservation;
-							 * 
-							 * reservation.getPassengers()[0].getPerson().setReservations( newReservations );
-							 * Database.getInstance().Replace(reservation.getPassengers()[0].getPerson().getID(),
-							 * reservation.getPassengers()[0].getPerson());
-							 */
+							//We wish to add the newly initialized reservation to the owners array of reservations.
+							//Thus we can access it for later use.
+							
+							//We make sure that the reservations of the owner is up to date with the database.
+							reservation.getOwner().updateReservations();
+							
+							//We get the current reservation array of the owner.
+							Reservation[] newReservations = reservation.getOwner().getReservations();
 
-							reservation.getPassengers()[0].getPerson().updateReservations();
-
-							Reservation[] newReservations = reservation.getPassengers()[0].getPerson().getReservations();
-
+							//If there is no reservations so far we initialize the reservation array.
 							if( newReservations == null )
 								newReservations = new Reservation[1];
 							else
 							{
+								//If there are already reservations in the array, we make a new array with the same data
+								//but which is 1 index longer.
 								newReservations = Arrays.copyOf( newReservations,
-								        reservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+								        reservation.getOwner().getReservations().length + 1 );
 							}
-
+							
+							//We add the new reservation to our reservation array.
 							newReservations[newReservations.length - 1] = reservation;
-
-							reservation.getPassengers()[0].getPerson().setReservations( newReservations );
-
+							
+							//We assign the new reservation array to that of the owner.
+							reservation.getOwner().setReservations( newReservations );
+							
+							//We set the id of the reservation to the next available database index.
 							reservation.setID( Database.getInstance().GetID( Reservation.class ) );
-
-							Database.getInstance().Replace( reservation.getPassengers()[0].getPerson().getID(),
-							        reservation.getPassengers()[0].getPerson() );
+							
+							//We replace the owner in the database with the updated owner.
+							//We access the id at which we want to replace through the owner of the reservation.
+							Database.getInstance().Replace( reservation.getOwner().getID(),
+							        reservation.getOwner() );
+							
+							//We add the reservation to our database
 							Database.getInstance().Add( reservation );
 
+							//We add the reservation to the flights array of reservations.
 							newFlight.addReservation( reservation );
 						}
 					}
-
+					
+					//We add the flight to our database.
 					Database.getInstance().Add( newFlight );
-					System.out.println( "Flight Added" );
 				break;
-
+				
 				case "Delete Database":
+					//We delete the whole database.
 					Database.getInstance().executeQuery( "DELETE FROM person" );
 					Database.getInstance().executeQuery( "DELETE FROM passenger" );
 					Database.getInstance().executeQuery( "DELETE FROM flight" );
@@ -220,10 +248,9 @@ public class DatabaseAddMenu extends JFrame
 	{
 		this.setSize( 250, 300 );
 		this.setResizable( false );
-		this.setTitle( "Database" );
+		this.setTitle( "Database Add Menu" );
 		this.setLocationRelativeTo( null );
 		this.setVisible( true );
-
 	}
 
 	void makeContent()
@@ -234,25 +261,25 @@ public class DatabaseAddMenu extends JFrame
 		mainPanel = new JPanel();
 		mainPanel.setLayout( new BoxLayout( mainPanel, BoxLayout.Y_AXIS ) );
 
-		// Add Person Button
+			// Add Person Button
 		JButton addPersonButton = new JButton( "Add Person" );
 		addPersonButton.setActionCommand( "Add Person" );
 
 		addPersonButton.setAlignmentX( CENTER_ALIGNMENT );
 
-		// Add Flight Button
+			// Add Flight Button
 		JButton addFlightButton = new JButton( "Add Flight With Passengers" );
 		addFlightButton.setActionCommand( "Add Flight" );
 
 		addFlightButton.setAlignmentX( CENTER_ALIGNMENT );
 
-		// Add Flight Without Button
+			// Add Flight Without Button
 		JButton addFlightWithoutButton = new JButton( "Add Flight Without Passengers" );
 		addFlightWithoutButton.setActionCommand( "Add Flight" );
 
 		addFlightWithoutButton.setAlignmentX( CENTER_ALIGNMENT );
 
-		// Delete Database Button
+			// Delete Database Button
 		JButton deleteDatabaseButton = new JButton( "Delete Database" );
 		deleteDatabaseButton.setActionCommand( "Delete Database" );
 
@@ -270,8 +297,10 @@ public class DatabaseAddMenu extends JFrame
 		mainPanel.add( Box.createVerticalGlue() );
 		// Main Panel Finished
 
+		//We initialize a buttonlistener for us to use.
 		ButtonListener listener = new ButtonListener( false );
-
+		
+		//We add the button listener to the different buttons.
 		addPersonButton.addActionListener( listener );
 		addFlightButton.addActionListener( new ButtonListener( true ) );
 		addFlightWithoutButton.addActionListener( new ButtonListener( false ) );
@@ -280,6 +309,12 @@ public class DatabaseAddMenu extends JFrame
 		contentPane.add( mainPanel );
 	}
 
+	/**
+	 * We use this method to return a random object in the array we passed.
+	 * 
+	 * @param Object array to get a random object from
+	 * @return the randomed object.
+	 */
 	Object rand( Object[] array )
 	{
 		Object returnObject;
@@ -289,6 +324,11 @@ public class DatabaseAddMenu extends JFrame
 		return returnObject;
 	}
 
+	/**
+	 *  We calculate the birth date of the generated passenger.
+	 *  
+	 * @return The calculated birth date.
+	 */
 	String calcBirthDate()
 	{
 		String finishedString = "";
