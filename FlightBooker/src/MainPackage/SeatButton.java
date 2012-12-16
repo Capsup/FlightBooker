@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+
 public class SeatButton extends JButton
 {
 	private Seat seat;
