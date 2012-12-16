@@ -162,12 +162,11 @@ public class MainMenu extends JFrame {
 		if(openWindows == 1)
 			System.exit(0);
 		else {
-			int n = JOptionPane.showConfirmDialog(this.getContentPane(), "This program will now close. Any changes not saved, will be discarded. Exit?",
+			int n = JOptionPane.showConfirmDialog(this.getContentPane(), "This program will now close. Any work in progress will be discarded. Exit?",
 					"Exit?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 			//If "Yes" is chosen
-			if(n == 0){
+			if(n == 0)
 				System.exit(0);
-			}
 		}
 
 	}
