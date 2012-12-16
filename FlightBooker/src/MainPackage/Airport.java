@@ -1,91 +1,118 @@
 package MainPackage;
 
-import java.awt.List;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import MainPackage.Plane.PlaneType;
-
+/**
+ * 
+ * This class represents our datatype for the Airports in our system.
+ * 
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @version 1.0
+ * 
+ */
 public class Airport implements Serializable, Uploadable
 {
+
+	// A simple enum of the airports that we have in the system currently.
 	public enum AirportType
 	{
 		COPENHAGEN, STOCKHOLM, MALMÖ, AALBORG, BERLIN, NEWYORK, TOKYO, RØNNE;
 	}
-	
+
 	private String airportName;
-	
+
 	private int id;
-	
-	@Override
-    public int getID()
-    {
-	    return id;
-    }
 
 	@Override
-    public void setID( int iID )
-    {
-	    id = iID;
-    }
-	
-	public Airport(AirportType airport)
+	public int getID()
 	{
-		switch(airport)
+		return id;
+	}
+
+	@Override
+	public void setID( int iID )
+	{
+		id = iID;
+	}
+
+	/**
+	 * Constructor for Airport.
+	 * 
+	 * @param airport
+	 *            - the type for the Airport as specified in the Enum.
+	 */
+	public Airport( AirportType airport )
+	{
+		switch( airport )
 		{
 			case COPENHAGEN:
 				airportName = "Copenhagen";
-				break;
+			break;
 			case STOCKHOLM:
 				airportName = "Stockholm";
-				break;
+			break;
 			case MALMÖ:
 				airportName = "Malmö";
-				break;
+			break;
 			case AALBORG:
 				airportName = "Aalborg";
-				break;
+			break;
 			case BERLIN:
 				airportName = "Berlin";
-				break;
+			break;
 			case NEWYORK:
 				airportName = "New York";
-				break;
+			break;
 			case TOKYO:
 				airportName = "Tokyo";
-				break;
+			break;
 			case RØNNE:
 				airportName = "Rønne";
-				break;
-				
+			break;
 		}
 	}
-	
+
+	/**
+	 * Accessor function for the name field.
+	 * 
+	 * @return the name field of this object.
+	 */
 	public String getName()
 	{
 		return airportName;
 	}
-	
+
+	/**
+	 * Static accessor function for the Enum AirportType.
+	 * 
+	 * @return an array consisting of the values of the Enum.
+	 */
 	public static AirportType[] getAirportTypes()
 	{
 		return AirportType.values();
 	}
-	
+
+	/**
+	 * Static accessor function that returns the name of all airports as a string.
+	 * 
+	 * @return String array of airport names.
+	 */
 	public static String[] getDestinations()
 	{
 		ArrayList<String> stringArray = new ArrayList<String>();
-		
-		Airport currentAirport;
-		
-		for(AirportType airportType : AirportType.values()) 
-		{
-			currentAirport = new Airport(airportType);
 
-			stringArray.add(currentAirport.getName());
+		Airport currentAirport;
+
+		for( AirportType airportType : AirportType.values() )
+		{
+			currentAirport = new Airport( airportType );
+
+			stringArray.add( currentAirport.getName() );
 		}
-		
-		String[] returnArray = stringArray.toArray(new String[0]);
-				
+
+		String[] returnArray = stringArray.toArray( new String[0] );
+
 		return returnArray;
 	}
 }

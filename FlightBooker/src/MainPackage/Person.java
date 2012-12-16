@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * 
- * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
 public class Person implements Serializable, Uploadable
