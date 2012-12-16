@@ -31,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Enables the user to search the database for reservations, persons and flights.
  
- * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
 public class FindMenu extends JFrame {
