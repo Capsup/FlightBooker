@@ -67,7 +67,6 @@ public class SeatButton extends JButton
 		}
 		else if(isMySeat)
 		{
-			//FIX
 			unreserve(passengers[myIndex]);
 		}
 		

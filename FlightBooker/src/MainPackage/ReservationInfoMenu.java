@@ -343,7 +343,7 @@ public class ReservationInfoMenu
 			{
 				String firstData = passengers[i].getPerson().getFirstName()+" "+passengers[i].getPerson().getSurName();
 				
-				String secondData = "("+passengers[i].getSeat().getPosition().width+","+passengers[i].getSeat().getPosition().height+")";
+				String secondData = "("+(passengers[i].getSeat().getPosition().height+1)+","+(passengers[i].getSeat().getPosition().width+1)+")";
 				
 				returnArray[i] = new Object[]{firstData, secondData};
 			}
