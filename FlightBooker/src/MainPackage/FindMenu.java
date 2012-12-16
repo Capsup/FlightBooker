@@ -32,20 +32,23 @@ import javax.swing.table.DefaultTableModel;
  * Enables the user to search the database for reservations, persons and flights.
  
  * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
- *
+ * @version 1.0
  */
 public class FindMenu extends JFrame {
 
+	//Radio buttons and their panel
 	private JRadioButton flightRadioButton;
 	private JRadioButton reservationRadioButton;
 	private JRadioButton customerRadioButton;
 	private ButtonGroup radioButtons;
 	private JPanel buttonPanel;
 
+	//The criteria textfields
 	private JTextField textField1;
 	private JTextField textField2;
 	private JTextField textField3;
 
+	//The search results table, its data and its scrollpane
 	private JTable table;
 	private String[] columns;
 	private Object[][] tableData;
@@ -53,8 +56,10 @@ public class FindMenu extends JFrame {
 	private JScrollPane tableScrollPane;
 	private JPanel reservationsTablePanel;
 
+	//The list of items returned from the database
 	private ArrayList<?> listItems;
 
+	//The buttons at the bottom of the window
 	private JButton searchButton;
 	private JButton inspectReservationButton;
 	private JButton closeButton;
@@ -69,6 +74,9 @@ public class FindMenu extends JFrame {
 
 	}
 
+	/**
+	 * Listens for if the Enter-key is pressed - if it is, the makeTableData is called according to which radiobutton is selected.
+	 */
 	class EnterListener extends KeyAdapter
 	{
 		private EnterListener()
@@ -78,37 +86,50 @@ public class FindMenu extends JFrame {
 		@Override
 		public void keyTyped(KeyEvent e)
 		{
+			//Gets which key on the keyboard is pressed
 			int key = e.getKeyChar();
 			if(key == KeyEvent.VK_ENTER){
+				//Checks which one of the radiobuttons is selected, then calls the method makeTableData with the radiobuttons action.
 				String selectedAction = radioButtons.getSelection().getActionCommand();
-				System.out.println(selectedAction);
 				makeTableData(selectedAction);
 			}
 		}
 
 	}
 
+	/** 
+	 * Listens for if any button, with an added ButtonActionListener is clicked, then takes action accordingly to which button is pressed.
+	 *
+	 */
 	private class ButtonActionListener implements ActionListener
 	{
 		@Override
 		public void actionPerformed( ActionEvent e )
 		{
+			//Gets the actual buttons command and checks which of the radio buttons which is selected
 			String command = e.getActionCommand();
 			String selectedAction = radioButtons.getSelection().getActionCommand();
 			
+			//If the Search button or any of the radio buttons are clicked
 			if( command == "Search" || command == "Flight" || command == "Reservation" || command == "Person") {
 				makeTableData(selectedAction);
 			}
 
+			//If the Inspect button is clicked
 			if( command == "Inspect") {
-				System.out.println("Inspect");
+				
+				//Gets the row of the table, which is chosen
 				int chosenObjectIncorrectRow = table.getSelectionModel().getAnchorSelectionIndex();
 				
+				//If a row is actually marked and there are some database results
 				if(chosenObjectIncorrectRow >= 0 && listItems != null){
-					int chosenObjectActualRow = table.convertRowIndexToModel(chosenObjectIncorrectRow);
-					int chosenObjectID = (int) tableModel.getValueAt(chosenObjectActualRow, 0);
-					System.out.println(chosenObjectID);
 					
+					// Converts the marked to the actually wanted row, just in case the user sorted the data by clicking the column names.
+					int chosenObjectActualRow = table.convertRowIndexToModel(chosenObjectIncorrectRow);
+					
+					//Gets the ID of the object by getting the value of the first column of the chosen row
+					int chosenObjectID = (int) tableModel.getValueAt(chosenObjectActualRow, 0);
+
 					if(selectedAction == "Flight")
 					{
 						Flight flight = Database.getInstance().Get(chosenObjectID, Flight.class);
@@ -117,23 +138,20 @@ public class FindMenu extends JFrame {
 					
 					if(selectedAction == "Reservation")
 					{
-						int chosenObjectID2 = (int) tableModel.getValueAt(chosenObjectActualRow, 1);
+						int reservationID = (int) tableModel.getValueAt(chosenObjectActualRow, 1);
+						Reservation reservation = Database.getInstance().Get(chosenObjectID, Flight.class).getReservations()[reservationID];
 						
-						//Reservation reservation = Database.getInstance().Get( Database.getInstance().Get(chosenObjectID, Reservation.class).getFlight().getID(), Flight.class ).getReservations()[chosenObjectID-1]; 
-						Reservation reservation = Database.getInstance().Get(chosenObjectID, Flight.class).getReservations()[chosenObjectID2]; 
 						for( Passenger passenger : reservation.getPassengers() )
 						{
 							passenger.setPerson( Database.getInstance().Get( passenger.getPerson().getID(), Person.class ) );
 						}
+						
 						reservation.setOwner( Database.getInstance().Get( reservation.getOwner().getID(), Person.class ) );
-						//reservation.setFlight( Database.getInstance().Get( reservation.getFlight().getID(), Flight.class ));
-						//Database.getInstance().Replace( reservation.getFlight().getID(), reservation.getFlight() );
 						new ReservationInfoMenu(new JFrame(), reservation, false);
 					}
 					
 					if(selectedAction == "Person")
 					{
-					
 						Person person = Database.getInstance().Get(chosenObjectID, Person.class);
 						new PersonInfoMenu(new JFrame(), person);
 					}
@@ -153,7 +171,7 @@ public class FindMenu extends JFrame {
 		this.setPreferredSize(new Dimension(800,600));
 		this.pack();
 		this.setVisible(true);
-		this.setTitle("Find");
+		this.setTitle("Find Menu");
 		this.setLocationRelativeTo( null );
 	}
 
@@ -178,6 +196,7 @@ public class FindMenu extends JFrame {
 		customerRadioButton.addKeyListener(new EnterListener());
 		customerRadioButton.addActionListener(new ButtonActionListener());
 
+		//Adds radiobuttons to a ButtonGroup to make sure, that only one radiobutton can be selected
 		radioButtons = new ButtonGroup();
 		radioButtons.add(flightRadioButton);
 		radioButtons.add(reservationRadioButton);
@@ -225,10 +244,7 @@ public class FindMenu extends JFrame {
 		table = new JTable(tableModel);
 
 		tableScrollPane = new JScrollPane(table);
-		tableScrollPane.setMaximumSize(new Dimension(1000,1000));
-//		tableScrollPane.setMinimumSize(new Dimension(700,100));
-//		tableScrollPane.setMaximumSize(new Dimension(1000,1000));
-//		tableScrollPane.setPreferredSize(new Dimension(750,300));
+		tableScrollPane.setPreferredSize(new Dimension(750,300));
 		tableScrollPane.setViewportView(table);
 		tableModel.removeRow(0);
 
@@ -272,15 +288,20 @@ public class FindMenu extends JFrame {
 	 */
 	private void makeTableData(String tableToSearch)
 	{	
-		//Hvis metoden bliver kaldt med noget at søge efter
+		//If the method is called with something to search for
 		if(tableToSearch != "None") {
 			try {
+				//If the reservations table is not to be searched, simply get the list of items from the database
 				if( !tableToSearch.equals( "Reservation" ) )
 					listItems = Database.getInstance().Get(Class.forName("MainPackage."+tableToSearch));
+				
+				//If the reservations table IS to be searched, this list of items is a bit more complicated to get
 				else {
+					//An ArrayList of flights is collected from the database
 					ArrayList<Flight> flights = Database.getInstance().Get(Flight.class);
 					ArrayList<Reservation> reservations = new ArrayList<>();
 					
+					//For every flight in the ArrayList, get it's reservations, go through every single reservation and update this reservation's owner, then add this reservation to the list of items.
 					for (Flight flight : flights) 
 					{
 						if(flight.getReservations() != null)
@@ -289,7 +310,6 @@ public class FindMenu extends JFrame {
 							
 							for (Reservation reservation : innerReservations) 
 							{
-								//TODO: Optimise! Eventually upload the REAL person when updating the reservation in the cloud?
 								reservation.setOwner( Database.getInstance().Get( reservation.getOwner().getID(), Person.class ) );
 								reservations.add(reservation);
 							}
@@ -302,6 +322,8 @@ public class FindMenu extends JFrame {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+			
+			//Fill the tableData with persons
 			if(tableToSearch.equals("Person")) {						
 				columns = new String[]{"Person ID","First name","Surname","Phone","Country"};
 				tableModel.setColumnIdentifiers(columns);
@@ -310,21 +332,22 @@ public class FindMenu extends JFrame {
 					Object object = listItems.get(i);
 					Person person = (Person) object;{
 						for (int j = 0; j < columns.length; j++) {
-							if(j%columns.length == 0)
+							if(j == 0)
 								tableData[i][j] = person.getID();
-							if(j%columns.length == 1)
+							if(j == 1)
 								tableData[i][j] = person.getFirstName();							
-							if(j%columns.length == 2)
+							if(j == 2)
 								tableData[i][j] = person.getSurName();	
-							if(j%columns.length == 3)
+							if(j == 3)
 								tableData[i][j] = person.getPhone();
-							if(j%columns.length == 4)
+							if(j == 4)
 								tableData[i][j] = person.getCountry();
 						}
 					}
 				}	
 			}
 
+			//Fill the tableData with reservations
 			if(tableToSearch.equals("Reservation")) {
 				columns = new String[] {"Flight ID", "Reservation ID","Reservation maker","Depature", "Destination","Time of depature", "Number of passengers","Time of creation"};
 				tableModel.setColumnIdentifiers(columns);
@@ -333,26 +356,27 @@ public class FindMenu extends JFrame {
 					Object object = listItems.get(i);
 					Reservation reservation = (Reservation) object;
 					for (int j = 0; j < columns.length; j++) {
-						if(j%columns.length == 0)
+						if(j == 0)
 							tableData[i][j] = reservation.getFlight().getID();
-						if(j%columns.length == 1)
+						if(j == 1)
 							tableData[i][j] = reservation.getCurrentFlightReservationIndex();
-						if(j%columns.length == 2)
+						if(j == 2)
 							tableData[i][j] = reservation.getOwner().getFirstName() + " " + reservation.getOwner().getSurName();
-						if(j%columns.length == 3)
+						if(j == 3)
 							tableData[i][j] = reservation.getFlight().getOrigin().getName();
-						if(j%columns.length == 4)
+						if(j == 4)
 							tableData[i][j] = reservation.getFlight().getDestination().getName();
-						if(j%columns.length == 5)
+						if(j == 5)
 							tableData[i][j] = reservation.getFlight().getDate().getTime();
-						if(j%columns.length == 6)
+						if(j == 6)
 							tableData[i][j] = reservation.getPassengers().length;
-						if(j%columns.length == 7)
+						if(j == 7)
 							tableData[i][j] = reservation.getReservationDate().getTime();
 					}
 				}
 			}
 
+			//Fill the tableData with flights
 			if(tableToSearch.equals("Flight")) {
 				columns = new String[] {"Flight ID", "Destination","Date of depature","Available seats"};
 				tableModel.setColumnIdentifiers(columns);
@@ -361,26 +385,28 @@ public class FindMenu extends JFrame {
 					Object object = listItems.get(i);
 					Flight flight = (Flight) object;
 					for (int j = 0; j < columns.length; j++) {
-						if(j%columns.length == 0)
+						if(j == 0)
 							tableData[i][j] = flight.getID();
-						if(j%columns.length == 1)
+						if(j == 1)
 							tableData[i][j] = flight.getDestination().getName();
-						if(j%columns.length == 2)
+						if(j == 2)
 							tableData[i][j] = flight.getDate().getTime();
-						if(j%columns.length == 3)
+						if(j == 3)
 							tableData[i][j] = flight.getSeatsLeft();
 					}
 				}
 			}
+			//Filter the results according to the search criterias and add them to the table
 			calculateResults();
 
 		}
 
-		//Hvis metoden ikke får noget at søge efter
+		//If the method is called with nothing to find
 		else {
 			noSearchResults();
 		}
 
+		//Sets up the tables properties and adds a sorting function
 		table.setColumnSelectionAllowed(false);
 		table.setCellSelectionEnabled(false);
 		table.setRowSelectionAllowed(true);
@@ -397,13 +423,14 @@ public class FindMenu extends JFrame {
 	 */
 	private void calculateResults()
 	{
-		//Resetter tabellens indhold
+		//Removes the current contents of the table
 		tableModel.setRowCount(0);
 
 		String[] sCriterias = { textField1.getText().toLowerCase(),  textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
 
 		int height = 0;
 		
+		//Filters the search results and adds these to the table, if search is a match
 		for (int i = 0; i < tableData.length; i++) {
 			for (int j = 0; j < columns.length; j++) {
 				if(tableData[i][j].toString().toLowerCase().contains( sCriterias[0] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[1] ) && tableData[i][j].toString().toLowerCase().contains( sCriterias[2] ))
