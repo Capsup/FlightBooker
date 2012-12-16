@@ -3,6 +3,7 @@ package MainPackage;
 import java.io.Serializable;
 
 /**
+ * This class represents our datatype for the Passengers in our system.
  * 
  * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *

@@ -248,7 +248,7 @@ public class DatabaseAddMenu extends JFrame
 	{
 		this.setSize( 250, 300 );
 		this.setResizable( false );
-		this.setTitle( "Database" );
+		this.setTitle( "Database Add Menu" );
 		this.setLocationRelativeTo( null );
 		this.setVisible( true );
 	}

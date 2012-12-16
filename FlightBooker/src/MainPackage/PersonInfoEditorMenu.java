@@ -13,8 +13,8 @@ import javax.swing.border.TitledBorder;
 /**
  * This editor enables the user to edit a persons details.
  * 
- * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
- *
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @version 1.0  
  */
 public class PersonInfoEditorMenu extends JFrame
 {

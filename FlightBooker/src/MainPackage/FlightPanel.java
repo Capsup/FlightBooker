@@ -197,6 +197,9 @@ public class FlightPanel extends JPanel
 		
 		//We add the main panel to the frame.
 		add(mainPanel);
+		
+		//We make sure that any seats are up to date.
+		updateSeats();
 	}
 	
 	/**

@@ -348,7 +348,7 @@ public class FlightManagerMenu
 		
 		frame.setSize(frameSize.width, frameSize.height);
 		frame.setResizable(false);
-		frame.setTitle("New Reservation Menu");
+		frame.setTitle("Flight Manager Menu");
 		frame.setLocationRelativeTo(null);
 	}
 	

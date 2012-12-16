@@ -1,17 +1,17 @@
 package MainPackage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Main
 {
 	/**
-	 * @param args
+	 * The sole purpose of this class is to isolate the main method in a single class
+	 * @author Jesper
+	 * @param args 
 	 */
 
-	public static int SIZE_X = 800;
-	public static int SIZE_Y = 600;
-
+	/**
+	 * Creates a new MainMenu
+	 * @param args 
+	 */
 	public static void main( String[] args )
 	{
 		new MainMenu();

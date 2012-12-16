@@ -25,6 +25,12 @@ import javax.swing.JTable;
 import MainPackage.FlightManagerMenu.ButtonListener;
 import MainPackage.Plane.PlaneType;
 
+/**
+ * A menu that the user can use in order to access the information of a given reservation
+ * 
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ *
+ */
 public class ReservationInfoMenu 
 {
 	private JFrame frame;
@@ -36,18 +42,34 @@ public class ReservationInfoMenu
 	
 	private boolean isNew;
 	
+	/**
+	 * This class is initialized by passing it a frame to contain all components, aswell
+	 * as a reservation which is used to display all the given information.
+	 * the boolean passed determines whether the reservation shall be added to the database,
+	 * or be updated in the database.
+	 * @param frame
+	 * @param reservation
+	 * @param isNew
+	 */
 	public ReservationInfoMenu(JFrame frame, Reservation reservation, boolean isNew)
 	{
 		this.frame = frame;
 		this.isNew = isNew;
 		currentReservation = reservation;
-		//currentReservation.setFlight(Database.getInstance().Get(currentReservation.getFlight().getID(), Flight.class));
 		
 		setupFrame();
 		
 		makeContent();
 	}
 	
+	/**
+	 * 
+	 * ButtonListener class that allows the listener to respond to events such as clicking on a button or other actions.
+	 * 
+	 * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+	 * @version 1.0
+	 * 
+	 */
 	class ButtonListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent event)
@@ -55,35 +77,23 @@ public class ReservationInfoMenu
 			switch(event.getActionCommand())
 			{
 			case "Edit Reservation":
-				System.out.println("Edit Reservation");
-				if(canCommit())
-				{
-					frame.remove( mainPanel );
-			        
-					//currentReservation.getFlight().removeReservation(currentReservation.getCurrentFlightReservationIndex());
-					
-			        new FlightManagerMenu( frame, currentReservation, isNew);
-					
-					//planePanel.setEditable();
-					//planePanel.updateSeats();
-					
-					//mainPanel.revalidate();
-					//mainPanel.repaint();
-				}
+				
+				frame.remove( mainPanel );
+		        
+				//we rewind to the flight manager menu, which we pass the current reservation.
+				new FlightManagerMenu( frame, currentReservation, isNew);
+				
 				break;
 				
 			case "OK":
-				System.out.println("OK - Commit changes");
+				
 				frame.dispose();
-				
-				
-				//Flight flightInstance = Database.getInstance().Get(currentReservation.getFlight().getID(), Flight.class);
 				
 				Flight flightInstance = currentReservation.getFlight();
 				
 				if(isNew)
 				{
-					//Add Reservation to flight
+					//Add Reservation to flight and set the current reservations flight index
 					currentReservation.setCurrentFlightReservationIndex(flightInstance.addReservation(currentReservation));
 					
 					//Set the current date
@@ -93,43 +103,49 @@ public class ReservationInfoMenu
 					//Set the id of the database instance
 					currentReservation.setID(Database.getInstance().GetID(Reservation.class));
 					
+					//We make sure that all the reservations stored in the owner is up to date.
+					currentReservation.getOwner().updateReservations();
 					
-					currentReservation.getPassengers()[0].getPerson().updateReservations();
-					
-					Reservation[] newReservations = currentReservation.getPassengers()[0].getPerson().getReservations();
+					Reservation[] newReservations = currentReservation.getOwner().getReservations();
 					
 					if( newReservations == null )
+					{
+						//If the new reservation array is null we initialize it
 						newReservations = new Reservation[1];
-						else {
-							newReservations = Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
-						}
+					}
+					else 
+					{
+						//If the new reservation is not null we extends it length by 1, maintaining any data in it.
+						newReservations = Arrays.copyOf( newReservations, currentReservation.getPassengers()[0].getPerson().getReservations().length + 1 );
+					}
 					
+					//We set the last index of the new reservation array to the current reservation.
 					newReservations[ newReservations.length - 1 ] = currentReservation;
 					
-					currentReservation.getPassengers()[0].getPerson().setReservations( newReservations );
+					//We set the reservations of the owner of the current reservation to be the new reservation array.
+					currentReservation.getOwner().setReservations( newReservations );
 					
-					Database.getInstance().Replace(currentReservation.getPassengers()[0].getPerson().getID(), currentReservation.getPassengers()[0].getPerson());
+					//We replace the owner in the database
+					Database.getInstance().Replace(currentReservation.getOwner().getID(), currentReservation.getOwner());
 					
+					//We add the reservation to the database
 					Database.getInstance().Add(currentReservation);
 				}
-				else 
+				else
 				{
+					//If the reservation is not new, we simply replace it in the database.
 					Database.getInstance().Replace(currentReservation.getID(), currentReservation);
 				}
 				
+				//We replace the flight that is associated with the reservation, in order to make sure that it is up to date in the database.
 				Database.getInstance().Replace(flightInstance.getID(), flightInstance);
 				
-				//currentReservation.getFlight().addReservation(currentReservation);
-				
-				//Commit changes
 				break;
 				
 			case "Cancel":
-				System.out.println("Cancel");
 				frame.dispose();
 				break;
 			case "Delete":
-				System.out.println("Delete");
 				deleteReservation();
 				break;
 			}
@@ -141,7 +157,7 @@ public class ReservationInfoMenu
 	{
 		frame.setSize(450, 600);
 		frame.setResizable(false);
-		frame.setTitle("Reservation Info");
+		frame.setTitle("Reservation Info Menu");
 		
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -266,8 +282,6 @@ public class ReservationInfoMenu
 		JPanel centerPanel = new JPanel();
 		
 			//Flight Panel
-		//Flight testFlight = new Flight(new Date(), new Plane(PlaneType.BOEING747));
-		
 		planePanel = new FlightPanel(currentReservation.getFlight(), currentReservation, new Dimension(400,200),false);
 		
 		
@@ -275,11 +289,8 @@ public class ReservationInfoMenu
 		centerPanel.add(planePanel);
 		//Center Panel Finish
 		
-		
 		//Bottom Panel
 		JPanel bottomPanel = new JPanel();
-		
-		// MANGLER SPACING OG ALLIGNMENT
 		
 			//Button Panel
 		JPanel buttonPanel = new JPanel();
@@ -329,6 +340,10 @@ public class ReservationInfoMenu
 		
 	}
 	
+	/**
+	 * This method returns the data of the passengers associated with the current reservation.
+	 * @return the data of the passenger table
+	 */
 	Object[][] makePassengerData()
 	{
 		Object[][] returnArray;
@@ -341,48 +356,48 @@ public class ReservationInfoMenu
 		{
 			for(int i=0; i<passengers.length; i++)
 			{
+				//We iterate through our passengers in order to assign each data label.
+				
+				//the first data string is assigned the persons first name and sur name.
 				String firstData = passengers[i].getPerson().getFirstName()+" "+passengers[i].getPerson().getSurName();
 				
+				//The second data string is assigned the persons seat position in the plane.
 				String secondData = "("+(passengers[i].getSeat().getPosition().height+1)+","+(passengers[i].getSeat().getPosition().width+1)+")";
 				
+				//We store the data in the return array
 				returnArray[i] = new Object[]{firstData, secondData};
 			}
 		}
 		
+		//We return the array
 		return returnArray;
 	}
 	
-	boolean canCommit()
-	{
-		boolean returnBool = true;
-		
-		Passenger[] passengers = currentReservation.getPassengers();
-		
-		for (Passenger passenger : passengers) 
-		{
-			if(passenger.getSeat() == null)
-				returnBool = false;
-		}
-		
-		return returnBool;
-	}
-	
+	/**
+	 * delete the current reservation, removing it from the database.
+	 * updates anything associated with the reservation.
+	 * closes the current reservation info menu.
+	 */
 	void deleteReservation()
 	{
+		//We remove the current reservation from the flight.
 		currentReservation.getFlight().removeReservationAt(currentReservation.getCurrentFlightReservationIndex());
 		
 		int count = 0;
 		
 		for (Reservation reservation : currentReservation.getOwner().getReservations()) 
 		{
+			//We iterate through the owner of the reservations reservation array, in order to find the current reservation in the array.
 			if(reservation.getID() == currentReservation.getID())
 			{
+				//We remove the reservation from the owners reservation array.
 				currentReservation.getOwner().removeReservationAt(count);
 			}
 			
 			count += 1;
 		}
 		
+		//We replace the owner and the flight in the database.
 		Database.getInstance().Replace(currentReservation.getOwner().getID(), currentReservation.getOwner());
 		Database.getInstance().Replace(currentReservation.getFlight().getID(), currentReservation.getFlight());
 		
