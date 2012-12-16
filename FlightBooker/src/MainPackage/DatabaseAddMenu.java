@@ -53,7 +53,7 @@ public class DatabaseAddMenu extends JFrame
 			switch(event.getActionCommand())
 			{
 			case "Add Person": 	
-				Database.getInstance().Add(new Person((String)(rand(firstNames)), (String)(rand(surNames)), (String)(rand(gender)), "", (String)(rand(countries)), (String)(rand(nationalities)), (String)(rand(adress)), ""+(random.nextInt(80000000)+10000000), ""+random.nextInt(), Database.getInstance().GetID(Person.class)));
+				Database.getInstance().Add(new Person((String)(rand(firstNames)), (String)(rand(surNames)), (String)(rand(gender)), "", (String)(rand(countries)), (String)(rand(nationalities)), (String)(rand(adress)), ""+(random.nextInt(80000000)+10000000), ""+ Math.abs(random.nextInt()), Database.getInstance().GetID(Person.class)));
 				System.out.println("Person Added");
 				break;
 
