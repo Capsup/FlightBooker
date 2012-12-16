@@ -6,6 +6,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+/**
+ * A button, which represents a Seat in a FlightPanel.
+ * 
+ * If the Seat is already booked, the SeatButton will be red. Non-booked seats will be the default color of a JButton.
+ * If the user clicks on a SeatButton, it will become green, unless it is already booked.
+ * 
+ * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @version 1.0 
+ *
+ */
 public class SeatButton extends JButton
 {
 	private Seat seat;
@@ -24,6 +34,11 @@ public class SeatButton extends JButton
 		}
 	}
 	
+	/**
+	 * 
+	 * @param seat The Seat for which to make a button
+	 * @param currentReservation 
+	 */
 	public SeatButton(Seat seat, Reservation currentReservation)
 	{
 		this.seat = seat;
