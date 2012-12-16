@@ -20,7 +20,7 @@ import javax.swing.table.*;
  * Clicking "Inspect" opens a new menu, through which the user can inspect the details of the chosen reservation.
  * Clicking "Close" closes the menu.
  * 
- * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  *
  */
 public class PersonInfoMenu {

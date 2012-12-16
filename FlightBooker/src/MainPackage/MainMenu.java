@@ -12,7 +12,7 @@ import javax.swing.*;
  * Clicking "Find" opens a new menu, through which the user can find reservations, persons and flights.
  * Clicking "Database" opens a new menu, through which the user can interact with database.
  * 
- * @author Martin Juul Pedersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  * @version 1.0 
  * 
  */
@@ -27,7 +27,7 @@ public class MainMenu extends JFrame {
 		
 	}
 
-	/*
+	/**
 	 * ButtonListener makes it possible to do something, when a button is clicked.
 	 * It is notified when a button with an added ButtonListener is clicked, and the button's ActionCommand decides what action to take.
 	 * 
