@@ -78,7 +78,7 @@ public class DatabaseAddMenu extends JFrame
 					Database.getInstance().Add(
 					        new Person( ( String ) ( rand( firstNames ) ), ( String ) ( rand( surNames ) ), ( String ) ( rand( gender ) ),
 					                calcBirthDate(), ( String ) ( rand( countries ) ), ( String ) ( rand( nationalities ) ),
-					                ( String ) ( rand( adress ) ), "" + ( random.nextInt( 80000000 ) + 10000000 ), "" + random.nextInt(), Database
+					                ( String ) ( rand( adress ) ), "" + ( random.nextInt( 80000000 ) + 10000000 ), "" + Math.abs(random.nextInt()), Database
 					                        .getInstance().GetID( Person.class ) ) );
 					System.out.println( "Person Added" );
 				break;
@@ -106,7 +106,7 @@ public class DatabaseAddMenu extends JFrame
 					        airport1, airport2, Database.getInstance().GetID( Flight.class ) );
 
 					// If we press the /With passengers we generate a series of reservations
-					// for it to use.
+					// for it to use. 
 					// Otherwise we leave it empty.
 					if( withPassengers )
 					{
@@ -114,7 +114,8 @@ public class DatabaseAddMenu extends JFrame
 						ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 
 						// First we generate a random amount of reservations
-						int randReservationAmount = random.nextInt( 3 );
+						//int randReservationAmount = random.nextInt( 3 )+1;
+						int randReservationAmount = 3;
 
 						// We initialize an array for us to add the seats we wish to randomize between
 						ArrayList<Seat> availableSeats = new ArrayList<>();
