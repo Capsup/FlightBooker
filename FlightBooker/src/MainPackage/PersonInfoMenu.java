@@ -310,7 +310,7 @@ public class PersonInfoMenu
 
 		// Gets all of a Persons reservations and put them in a list
 		listItems = person.getReservations();
-		
+
 		// If the Person do have reservations
 		if( listItems != null )
 		{
@@ -319,7 +319,7 @@ public class PersonInfoMenu
 				tableModel.setRowCount( 0 );
 
 				// Creates the table an fills it with the Person's reservations
-				String[] columns = new String[] { "Reservation ID", "Reservation maker", "Depature", "Destination", "Time of depature",
+				String[] columns = new String[] { "Reservation ID", "Reservation maker", "Departure", "Destination", "Time of depature",
 				        "Number of passengers", "Time of creation" };
 				tableModel.setColumnIdentifiers( columns );
 				tableData = new Object[listItems.length][columns.length];
