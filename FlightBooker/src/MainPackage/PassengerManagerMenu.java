@@ -22,6 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * This class is the class that controls the window where the user inputs the details of all the persons of the current reservation.
+ * 
+ * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+ * 
+ */
 public class PassengerManagerMenu
 {
 	private JFrame frame;
@@ -96,6 +103,13 @@ public class PassengerManagerMenu
 		}
 	}
 
+	/**
+	 * 
+	 * This class allows the JTextFields to respond to any keyPressed events.
+	 * 
+	 * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+	 * 
+	 */
 	private class keyListener implements KeyListener
 	{
 
@@ -108,15 +122,19 @@ public class PassengerManagerMenu
 		@Override
 		public void keyReleased( KeyEvent e )
 		{
-			// WORKS:
+			// Clear the current list.
 			listModel.clear();
+
+			// Set the currentField to the JTextFieldUpgraded that fired this event.
 			currentField = ( JTextFieldUpgraded ) e.getComponent();
+
+			// If this field's text contains anything, we want the suggestive list to show up.
 			if( !currentField.getText().equals( "" ) )
 				calculateResults( currentField );
+
+			// However if it doesn't contain anything, make sure the list is hidden.
 			if( currentField.getText().equals( "" ) )
 				list.setVisible( false );
-			// //
-			// calculateResults();
 		}
 
 		@Override
@@ -138,16 +156,9 @@ public class PassengerManagerMenu
 			Person selectedPerson = listModel.listPersons.get( list.getSelectedIndex() );
 
 			if( selectedPerson != null )
-			{
-				// JTextField currentField = (JTextField) e.getComponent();
-
-				// currentField.setText( selectedPerson.getFirstName() + " " + selectedPerson.getSurName() + " - " + selectedPerson.getPhone() );
 				currentField.setPerson( selectedPerson );
-			}
 
 			list.setVisible( false );
-			// System.out.println(list.getSelectedValue());
-			// list.getSelectedIndex();
 		}
 
 		@Override
@@ -173,11 +184,19 @@ public class PassengerManagerMenu
 		{
 
 		}
-
 	}
 
+	/**
+	 * 
+	 * This class makes it easy for us to display the information we want in the list. The list calls these functions automatically and we just return
+	 * the correct data.
+	 * 
+	 * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
+	 * 
+	 */
 	private class PersonData extends AbstractListModel
 	{
+		// Keep a list of the persons in the database.
 		ArrayList<Person> listPersons;
 
 		public PersonData( ArrayList<Person> persons )
@@ -185,6 +204,9 @@ public class PassengerManagerMenu
 			this.listPersons = persons;
 		}
 
+		/**
+		 * Clears the data of this datamodel.
+		 */
 		public void clear()
 		{
 			int index = listPersons.size() - 1;
@@ -200,6 +222,12 @@ public class PassengerManagerMenu
 			this.listPersons = new ArrayList<Person>();
 		}
 
+		/**
+		 * Adds the given person to the list.
+		 * 
+		 * @param person
+		 *            - the Person object to be added to the list.
+		 */
 		public void addElement( Person person )
 		{
 			int index = listPersons.size();
@@ -210,7 +238,9 @@ public class PassengerManagerMenu
 		@Override
 		public Object getElementAt( int index )
 		{
-			return( listPersons.get( index ).getFirstName() + " " + listPersons.get( index ).getSurName() + " -  " + listPersons.get( index )
+			// When the list attempts to get the element at a specified index, we return the data that we want to actually display. This makes it
+			// simple to make the list display the data we want but still allows us to have the list contain Person objects instead of Strings.
+			return( listPersons.get( index ).getFirstName() + " " + listPersons.get( index ).getSurName() + " - " + listPersons.get( index )
 			        .getPhone() );
 		}
 
@@ -235,24 +265,8 @@ public class PassengerManagerMenu
 		makeContent();
 	}
 
-	/*
-	 * public void calculateResults() { // JLabel testlLabel = new JLabel("wutwut"); // testlLabel.setBounds( passengerField.getBounds().x,
-	 * passengerField.getBounds().y + passengerField.getBounds().height + 5, 100, 20 ); //testlLabel.setBounds( 130, 50, 50, 20 );
-	 * 
-	 * 
-	 * 
-	 * //listModel.clear(); ArrayList<Person> persons = Database.getInstance().Get( Person.class ); for( Person person : persons ) { if(
-	 * person.getFirstName().toLowerCase().startsWith( passengerField.getText() ) ) listModel.addElement( person.getFirstName() ); }
-	 * 
-	 * list.setVisible( true );
-	 * 
-	 * }
-	 */
-
 	public void calculateResults( JTextField currentField )
 	{
-		// listModel.addElement( Database.getInstance().Get( Person.class ).get( 0 ) );
-
 		ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 		for( Person person : persons )
 		{
@@ -262,18 +276,13 @@ public class PassengerManagerMenu
 			        || ( person.getFirstName() + " " + person.getSurName() ).toLowerCase().startsWith( currentField.getText() ) )
 				listModel.addElement( person );
 		}
-		/*
-		 * //if( listModel.getSize() == 0 ) for( Person person : persons ) if( person.getSurName().toLowerCase().startsWith( currentField.getText() )
-		 * && !listModel.listPersons.contains(person)) listModel.addElement( person );
-		 * 
-		 * //if( listModel.getSize() == 0 ) for( Person person : persons ) if( person.getPhone().toLowerCase().startsWith( currentField.getText() ) &&
-		 * !listModel.listPersons.contains(person)) listModel.addElement( person );
-		 */
 
 		list.setBounds( currentField.getBounds().x, currentField.getBounds().y + currentField.getBounds().height + 1, currentField.getWidth(), 100 );
-		// passengerPanel.setComponentZOrder( list, 5 );
-		if( listModel.getSize() > 0 )
-			list.setVisible( true );
+
+		if( listModel.getSize() == 0 )
+			listModel.addElement( new Person( "", "- No persons found", "", "", "", "", "", "", "", -1 ) );
+
+		list.setVisible( true );
 	}
 
 	private void setupFrame()
@@ -281,8 +290,6 @@ public class PassengerManagerMenu
 		frame.setSize( 300, 600 );
 		frame.setResizable( false );
 		frame.setTitle( "Passenger Manager Menu" );
-
-		// frame.setLocationRelativeTo(null);
 
 		update();
 	}
@@ -298,37 +305,23 @@ public class PassengerManagerMenu
 		JPanel middlePanel = new JPanel();
 		middlePanel.setLayout( new BoxLayout( middlePanel, BoxLayout.Y_AXIS ) );
 
-		JLabel mainPassengerHeaderLabel = new JLabel( "Main Passenger" );
-		// mainPassengerHeaderLabel.setFont(FontCollection.HEADER);
-		// mainPassengerLabel.setFont(FontCollection.NORMAL);
-		JLabel additionalPassengerLabel = new JLabel( "Additional Passengers" );
-		// additionalPassengerLabel.setFont(FontCollection.HEADER);
-
-		middlePanel.add( mainPassengerHeaderLabel );
-		// middlePanel.add(additionalPassengerLabel);
-
 		JScrollPane scrollPane = new JScrollPane();
-		// scrollPane.setPreferredSize(new Dimension(100,200));
 		scrollPane.setBorder( BorderFactory.createEmptyBorder() );
 
 		mainPassengerPanel = new JPanel();
 		mainPassengerPanel.setLayout( new BoxLayout( mainPassengerPanel, BoxLayout.Y_AXIS ) );
-
-		// Hver passager skal have et suggestive panel hvor man skriver navn ind og så slår den resten
-		// Jeg får parsed en reservation hvor der er x antal passagerer og de har et sæde og denne menu skal tildele de person objekter de rigtige
-		// værdier
 
 		passengerField = new JTextFieldUpgraded[currentReservation.getPassengers().length];
 
 		passengerPanel = new JPanel();
 		passengerPanel.setLayout( null );
 
+		// Add a JTextFieldUpgraded for each passenger in the current reservation, to the panel
 		for( int i = 0; i < currentReservation.getPassengers().length; i++ )
 		{
 			listModel = new PersonData();
 			list = new JList<>( listModel );
-			// list.setBounds( passengerField[i].getBounds().x, passengerField[i].getBounds().y + passengerField[i].getBounds().height + 1, 200, 100
-			// );
+
 			list.addMouseListener( new mouseListener() );
 			passengerPanel.add( list );
 			passengerPanel.setComponentZOrder( list, 0 );
@@ -336,40 +329,38 @@ public class PassengerManagerMenu
 
 			passengerField[i] = new JTextFieldUpgraded();
 
+			// If the passenger already has a person object associated, display the person object.
 			if( currentReservation.getPassengers()[i].getPerson() != null )
 				passengerField[i].setPerson( currentReservation.getPassengers()[i].getPerson() );
 
+			// Set the bounds of the current passengerField correctly using AbsoluteLayout.
 			passengerField[i].setBounds( 20, ( i + 1 ) * 50, 175, 25 );
 			passengerField[i].addKeyListener( new keyListener() );
 
 			passengerPanel.add( passengerField[i] );
 
-			JButton editButton = new JButton( "edit" );
+			JButton editButton = new JButton( "New/Edit" );
 			editButton.setBounds( 200, ( i + 1 ) * 50, 75, 25 );
 			editButton.setActionCommand( "edit" );
 			editButton.addActionListener( new actionListener( passengerField[i] ) );
 			passengerPanel.add( editButton );
 
-			// WORKS:
-			/*
-			 * listModel = new DefaultListModel<>(); list = new JList<String>(listModel); list.setBounds( passengerField.getBounds().x,
-			 * passengerField.getBounds().y + passengerField.getBounds().height + 1, 100, 100 );
-			 * 
-			 * list.setVisible( false );
-			 * 
-			 * passengerPanel.add( list );
-			 */
-			// //////
-
-			// listModel = new DefaultListModel<>();
-
-			// passengerPanel.setComponentZOrder( list, 5 );
-
 			mainPassengerPanel.add( passengerPanel );
 		}
 
+		// Add some descriptive labels
+		JLabel mainPassengerHeaderLabel = new JLabel( "Reservation owner" );
+		mainPassengerHeaderLabel.setBounds( 20, 30, 175, 25 );
+		passengerPanel.add( mainPassengerHeaderLabel );
+
+		if( currentReservation.getPassengers().length > 1 )
+		{
+			JLabel additionalPassengerLabel = new JLabel( "Additional Passengers" );
+			additionalPassengerLabel.setBounds( 20, 50 * 2 - 20, 175, 25 );
+			passengerPanel.add( additionalPassengerLabel );
+		}
+
 		scrollPane.setViewportView( mainPassengerPanel );
-		// scrollPane.add(mainPassengerPanel);
 
 		middlePanel.add( scrollPane );
 
@@ -381,7 +372,6 @@ public class PassengerManagerMenu
 		mainPanel.add( button, BorderLayout.SOUTH );
 
 		contentPane.add( mainPanel );
-
 	}
 
 	private void update()
