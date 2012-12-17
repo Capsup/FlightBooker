@@ -65,13 +65,12 @@ public class FindMenu extends JFrame {
 	private JButton closeButton;
 
 	/**
-	 * Creates a new MainMenu
+	 * Creates a new FindMenu
 	 */
 	public FindMenu()
 	{
 		makeContent();
 		setupFrame();
-
 	}
 
 	/**
