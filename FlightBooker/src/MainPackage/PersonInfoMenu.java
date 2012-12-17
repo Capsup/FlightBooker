@@ -311,16 +311,6 @@ public class PersonInfoMenu
 		// Gets all of a Persons reservations and put them in a list
 		listItems = person.getReservations();
 		
-		//Updates the owner of each individual reservation in the database.
-		for(int i=0; i<listItems.length; i++)
-		{
-			listItems[i] = Database.getInstance().Get(person.getID(), Person.class).getReservations()[i];
-			
-			listItems[i].setOwner(person);
-			
-			Database.getInstance().Replace(listItems[i].getID(), listItems[i]);
-		}
-		
 		// If the Person do have reservations
 		if( listItems != null )
 		{
