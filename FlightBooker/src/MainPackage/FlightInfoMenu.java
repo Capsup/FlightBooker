@@ -156,7 +156,7 @@ public class FlightInfoMenu extends JFrame
 		JButton inspectReservationButton = new JButton( "Inspect Reservation" );
 		inspectReservationButton.setAlignmentX( CENTER_ALIGNMENT );
 		inspectReservationButton.setActionCommand( "Inspect" );
-
+		
 		ButtonListener buttonListener = new ButtonListener();
 
 		inspectReservationButton.addActionListener( buttonListener );
@@ -317,12 +317,7 @@ public class FlightInfoMenu extends JFrame
 		{
 			currentReservation = currentFlight.getReservations()[reservationTable.getSelectedRow()];
 		}
-		else {
-			currentReservation = null;
-		}
 		
-		planePanel.setCurrentReservation(currentReservation);
-
 		planePanel.updateSeats();
 		
 		reservationTableModel.setRowCount(0);

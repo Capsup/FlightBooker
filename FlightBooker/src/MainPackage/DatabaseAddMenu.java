@@ -114,7 +114,8 @@ public class DatabaseAddMenu extends JFrame
 						ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 
 						// First we generate a random amount of reservations
-						int randReservationAmount = random.nextInt( 3 );
+						//int randReservationAmount = random.nextInt( 3 )+1;
+						int randReservationAmount = 3;
 
 						// We initialize an array for us to add the seats we wish to randomize between
 						ArrayList<Seat> availableSeats = new ArrayList<>();
