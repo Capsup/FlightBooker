@@ -7,8 +7,12 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -32,7 +36,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  * @version 1.0
  */
-public class FindMenu extends JFrame
+public class FindMenu extends JFrame implements WindowFocusListener
 {
 
 	// Radio buttons and their panel
@@ -42,10 +46,8 @@ public class FindMenu extends JFrame
 	private ButtonGroup radioButtons;
 	private JPanel buttonPanel;
 
-	// The criteria textfields
-	private JTextField textField1;
-	private JTextField textField2;
-	private JTextField textField3;
+	// The criteria textfield
+	private JTextField textField;
 
 	// The search results table, its data and its scrollpane
 	private JTable table;
@@ -176,6 +178,9 @@ public class FindMenu extends JFrame
 		this.setVisible( true );
 		this.setTitle( "Find Menu" );
 		this.setLocationRelativeTo( null );
+		this.setResizable( false );
+
+		addWindowFocusListener( this );
 	}
 
 	private void makeContent()
@@ -210,29 +215,17 @@ public class FindMenu extends JFrame
 		buttonPanel.add( reservationRadioButton );
 		buttonPanel.add( customerRadioButton );
 
-		JLabel criteriaLabel1 = new JLabel( "Criteria: " );
-		JLabel criteriaLabel2 = new JLabel( "Criteria: " );
-		JLabel criteriaLabel3 = new JLabel( "Criteria: " );
+		JLabel criteriaLabel = new JLabel( "Criteria: " );
 
-		JPanel criteriaLabelPanel = new JPanel( new GridLayout( 3, 1 ) );
-		criteriaLabelPanel.add( criteriaLabel1 );
-		criteriaLabelPanel.add( criteriaLabel2 );
-		criteriaLabelPanel.add( criteriaLabel3 );
+		JPanel criteriaLabelPanel = new JPanel( new GridLayout( 1, 1 ) );
+		criteriaLabelPanel.add( criteriaLabel );
 
-		textField1 = new JTextField( "" );
-		textField1.addKeyListener( new EnterListener() );
+		textField = new JTextField( "" );
+		textField.addKeyListener( new EnterListener() );
 
-		textField2 = new JTextField( "" );
-		textField2.addKeyListener( new EnterListener() );
-
-		textField3 = new JTextField( "" );
-		textField3.addKeyListener( new EnterListener() );
-
-		JPanel criteriaFieldsPanel = new JPanel( new GridLayout( 3, 1 ) );
+		JPanel criteriaFieldsPanel = new JPanel( new GridLayout( 1, 1 ) );
 		// criteriaFieldsPanel.setPreferredSize(new Dimension(300,50));
-		criteriaFieldsPanel.add( textField1 );
-		criteriaFieldsPanel.add( textField2 );
-		criteriaFieldsPanel.add( textField3 );
+		criteriaFieldsPanel.add( textField );
 
 		JPanel criteriaPanel = new JPanel( new BorderLayout() );
 		criteriaPanel.setMaximumSize( new Dimension( 300, 80 ) );
@@ -247,7 +240,7 @@ public class FindMenu extends JFrame
 		table = new JTable( tableModel );
 
 		tableScrollPane = new JScrollPane( table );
-		tableScrollPane.setPreferredSize( new Dimension( 750, 300 ) );
+		tableScrollPane.setPreferredSize( new Dimension( 750, 400 ) );
 		tableScrollPane.setViewportView( table );
 		tableModel.removeRow( 0 );
 
@@ -396,7 +389,7 @@ public class FindMenu extends JFrame
 			// Fill the tableData with flights
 			if( tableToSearch.equals( "Flight" ) )
 			{
-				columns = new String[] { "Flight ID", "Destination", "Date of depature", "Available seats" };
+				columns = new String[] { "Flight ID", "Destination", "Departure", "Date of depature", "Available seats" };
 				tableModel.setColumnIdentifiers( columns );
 				tableData = new Object[listItems.size()][columns.length];
 				for( int i = 0; i < listItems.size(); i++ )
@@ -410,8 +403,10 @@ public class FindMenu extends JFrame
 						if( j == 1 )
 							tableData[i][j] = flight.getDestination().getName();
 						if( j == 2 )
-							tableData[i][j] = flight.getDate().getTime();
+							tableData[i][j] = flight.getOrigin().getName();
 						if( j == 3 )
+							tableData[i][j] = flight.getDate().getTime();
+						if( j == 4 )
 							tableData[i][j] = flight.getSeatsLeft();
 					}
 				}
@@ -439,15 +434,13 @@ public class FindMenu extends JFrame
 	}
 
 	/**
-	 * Filters the search results according to the criterias given in the textfields, and adds the results to the table. If no results is added to the
+	 * Filters the search results according to the criteria given in the textfield, and adds the results to the table. If no results is added to the
 	 * table, the noSearchResults method is called.
 	 */
 	private void calculateResults()
 	{
 		// Removes the current contents of the table
 		tableModel.setRowCount( 0 );
-
-		String[] sCriterias = { textField1.getText().toLowerCase(), textField2.getText().toLowerCase(), textField3.getText().toLowerCase() };
 
 		int height = 0;
 
@@ -456,9 +449,7 @@ public class FindMenu extends JFrame
 		{
 			for( int j = 0; j < columns.length; j++ )
 			{
-				if( tableData[i][j].toString().toLowerCase().contains( sCriterias[0] )
-				        && tableData[i][j].toString().toLowerCase().contains( sCriterias[1] )
-				        && tableData[i][j].toString().toLowerCase().contains( sCriterias[2] ) )
+				if( tableData[i][j].toString().toLowerCase().startsWith( textField.getText().toLowerCase() ) )
 				{
 					tableModel.addRow( tableData[i] );
 					j = columns.length;
@@ -482,5 +473,17 @@ public class FindMenu extends JFrame
 		tableModel.setColumnIdentifiers( columns );
 		tableData = new Object[][] { { "No results" } };
 		tableModel.addRow( tableData[0] );
+	}
+
+	@Override
+	public void windowGainedFocus( WindowEvent e )
+	{
+		makeTableData( radioButtons.getSelection().getActionCommand() );
+	}
+
+	@Override
+	public void windowLostFocus( WindowEvent e )
+	{
+
 	}
 }
