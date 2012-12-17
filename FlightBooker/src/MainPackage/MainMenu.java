@@ -30,7 +30,6 @@ public class MainMenu extends JFrame {
 	/**
 	 * ButtonListener makes it possible to do something, when a button is clicked.
 	 * It is notified when a button with an added ButtonListener is clicked, and the button's ActionCommand decides what action to take.
-	 * 
 	 */
 	class ButtonListener implements ActionListener
 	{
@@ -106,7 +105,7 @@ public class MainMenu extends JFrame {
 		findButton.setAlignmentX(CENTER_ALIGNMENT);
 
 		//Database Button
-		JButton databaseButton = new JButton("Database");
+		JButton databaseButton = new JButton("Database (Test)");
 		databaseButton.setActionCommand("Database");
 		databaseButton.setPreferredSize(buttonSize);
 		databaseButton.setAlignmentX(CENTER_ALIGNMENT);
