@@ -36,7 +36,7 @@ public class DatabaseAddMenu extends JFrame
 	String[] surNames = new String[] { "Hansen", "Kastberg", "Leonhardt", "Martinsen", "Jespersen", "Jonassen", "Hansi", "Lukesen", "Darthsen",
 	        "Mathiassen", "Solo", "Vader", "Skywalker" };
 	// ^ Speaking of butts... Here's one.
-	String[] gender = new String[] { "Male", "Female"};
+	String[] gender = new String[] { "Male", "Female" };
 	String[] countries = new String[] { "Denmark", "Somalia", "Germany", "USA", "Japan", "Uganda", "Uranus", "Alderaan" };
 	String[] nationalities = new String[] { "Denmark", "Somalia", "Germany", "USA", "Japan", "Uganda", "Uranus", "Alderaan" };
 	String[] adress = new String[] { "Rådhuspladsen nr. 1, 9000 København", "Nederenvej 1337, 2650 Hvidovre", "Platanvej 42, 1650 Vesterbronx",
@@ -78,9 +78,8 @@ public class DatabaseAddMenu extends JFrame
 					Database.getInstance().Add(
 					        new Person( ( String ) ( rand( firstNames ) ), ( String ) ( rand( surNames ) ), ( String ) ( rand( gender ) ),
 					                calcBirthDate(), ( String ) ( rand( countries ) ), ( String ) ( rand( nationalities ) ),
-					                ( String ) ( rand( adress ) ), "" + ( random.nextInt( 80000000 ) + 10000000 ), "" + random.nextInt(), Database
-					                        .getInstance().GetID( Person.class ) ) );
-					System.out.println( "Person Added" );
+					                ( String ) ( rand( adress ) ), "" + ( random.nextInt( 80000000 ) + 10000000 ), "" + Math.abs( random.nextInt() ),
+					                Database.getInstance().GetID( Person.class ) ) );
 				break;
 
 				case "Add Flight":
@@ -114,8 +113,7 @@ public class DatabaseAddMenu extends JFrame
 						ArrayList<Person> persons = Database.getInstance().Get( Person.class );
 
 						// First we generate a random amount of reservations
-						//int randReservationAmount = random.nextInt( 3 )+1;
-						int randReservationAmount = 3;
+						int randReservationAmount = random.nextInt( 3 ) + 1;
 
 						// We initialize an array for us to add the seats we wish to randomize between
 						ArrayList<Seat> availableSeats = new ArrayList<>();
@@ -237,8 +235,6 @@ public class DatabaseAddMenu extends JFrame
 					Database.getInstance().executeQuery( "DELETE FROM passenger" );
 					Database.getInstance().executeQuery( "DELETE FROM flight" );
 					Database.getInstance().executeQuery( "DELETE FROM reservation" );
-
-					System.out.println( "Database Deleted!" );
 				break;
 			}
 		}

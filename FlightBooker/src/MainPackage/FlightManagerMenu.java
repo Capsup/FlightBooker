@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -50,7 +49,7 @@ public class FlightManagerMenu
 	private Dimension frameSize;
 
 	private Reservation currentReservation;
-	
+
 	private JFormattedTextField seatAmountLabel;
 
 	private FlightPanel flightPanel;
@@ -71,8 +70,6 @@ public class FlightManagerMenu
 	private JPanel bottomPanel;
 
 	private boolean isNew;
-
-	private int firstPlaneIndex;
 
 	/**
 	 * This class is initialized by passing it a frame to use, since it is not always created with a new JFrame. Since this menu is used in order to
@@ -351,21 +348,21 @@ public class FlightManagerMenu
 		topPanel.setLayout( new BorderLayout() );
 		topPanel.setPreferredSize( new Dimension( frameSize.width, frameSize.height / 3 ) );
 
-			// Top Left Panel
+		// Top Left Panel
 		JPanel topLeftPanel = new JPanel();
-		topLeftPanel.setLayout( new BoxLayout(topLeftPanel, BoxLayout.Y_AXIS) );
+		topLeftPanel.setLayout( new BoxLayout( topLeftPanel, BoxLayout.Y_AXIS ) );
 		topLeftPanel.setPreferredSize( new Dimension( frameSize.width / 2, frameSize.height / 3 ) );
 
-				// Start Date Panel
+		// Start Date Panel
 		JPanel startDatePanel = new JPanel();
-		startDatePanel.setLayout(new BoxLayout(startDatePanel, BoxLayout.X_AXIS));
-		
-					//Start Date Title Label
+		startDatePanel.setLayout( new BoxLayout( startDatePanel, BoxLayout.X_AXIS ) );
+
+		// Start Date Title Label
 		JLabel startDateTitleLabel = new JLabel( "Start Date:" );
-		startDateTitleLabel.setPreferredSize(new Dimension(frameSize.width/4, (frameSize.height/2)/4));
-		startDateTitleLabel.setHorizontalAlignment(startDateTitleLabel.CENTER);
-		
-					//Start Date Label
+		startDateTitleLabel.setPreferredSize( new Dimension( frameSize.width / 4, ( frameSize.height / 2 ) / 4 ) );
+		startDateTitleLabel.setHorizontalAlignment( startDateTitleLabel.CENTER );
+
+		// Start Date Label
 		TextListener textListener = new TextListener();
 
 		Calendar calendarToUse = Calendar.getInstance();
@@ -374,43 +371,43 @@ public class FlightManagerMenu
 		calendarToUse.set( 2013, 0, 1 );
 		startDateLabel.setDate( calendarToUse.getTime() );
 		startDateLabel.addPropertyChangeListener( textListener );
-		
-				//Start Date Panel Finish Up
-		startDatePanel.add(startDateTitleLabel);
-		startDatePanel.add(startDateLabel);
-				//Start Date Panel Finished
-		
-				//End Date Panel
+
+		// Start Date Panel Finish Up
+		startDatePanel.add( startDateTitleLabel );
+		startDatePanel.add( startDateLabel );
+		// Start Date Panel Finished
+
+		// End Date Panel
 		JPanel endDatePanel = new JPanel();
-		endDatePanel.setLayout(new BoxLayout(endDatePanel, BoxLayout.X_AXIS));
-		
-					//End Date Title Label
+		endDatePanel.setLayout( new BoxLayout( endDatePanel, BoxLayout.X_AXIS ) );
+
+		// End Date Title Label
 		JLabel endDateTitleLabel = new JLabel( "End Date:" );
-		endDateTitleLabel.setPreferredSize(new Dimension(frameSize.width/4, (frameSize.height/2)/4));
-		endDateTitleLabel.setHorizontalAlignment(endDateTitleLabel.CENTER);
-		
-					//End Date Label
+		endDateTitleLabel.setPreferredSize( new Dimension( frameSize.width / 4, ( frameSize.height / 2 ) / 4 ) );
+		endDateTitleLabel.setHorizontalAlignment( endDateTitleLabel.CENTER );
+
+		// End Date Label
 		endDateLabel = new JDateChooser();
 		endDateLabel.setPreferredSize( new Dimension( frameSize.width / 8, ( ( frameSize.height / 6 ) / 4 ) ) );
 		calendarToUse.set( 2013, 11, 31 );
 		endDateLabel.setDate( calendarToUse.getTime() );
 		endDateLabel.addPropertyChangeListener( textListener );
-		
-				//End Date Panel Finish Up
-		endDatePanel.add(endDateTitleLabel);
-		endDatePanel.add(endDateLabel);
-				//End Date Panel Finished
-		
-				//Destination Panel
+
+		// End Date Panel Finish Up
+		endDatePanel.add( endDateTitleLabel );
+		endDatePanel.add( endDateLabel );
+		// End Date Panel Finished
+
+		// Destination Panel
 		JPanel destinationPanel = new JPanel();
-		destinationPanel.setLayout(new BoxLayout(destinationPanel, BoxLayout.X_AXIS));
-		
-					//Destination Title Label
+		destinationPanel.setLayout( new BoxLayout( destinationPanel, BoxLayout.X_AXIS ) );
+
+		// Destination Title Label
 		JLabel destinationTitleLabel = new JLabel( "Departure / Destination:" );
-		destinationTitleLabel.setPreferredSize(new Dimension(frameSize.width/4, (frameSize.height/2)/4));
-		destinationTitleLabel.setHorizontalAlignment(destinationTitleLabel.CENTER);
-		
-					//Destination Choose Panel
+		destinationTitleLabel.setPreferredSize( new Dimension( frameSize.width / 4, ( frameSize.height / 2 ) / 4 ) );
+		destinationTitleLabel.setHorizontalAlignment( destinationTitleLabel.CENTER );
+
+		// Destination Choose Panel
 		JPanel destinationChoosePanel = new JPanel();
 		destinationChoosePanel.setLayout( new BoxLayout( destinationChoosePanel, BoxLayout.X_AXIS ) );
 
@@ -428,26 +425,26 @@ public class FlightManagerMenu
 		destinationList = new JComboBox( availableAirports );
 		destinationList.addActionListener( new TextActionListener() );
 
-					//Destination Choose Panel Finish Up
+		// Destination Choose Panel Finish Up
 		destinationChoosePanel.add( departureList );
 		destinationChoosePanel.add( destinationList );
-					//Destination Choose Panel Finsihed
-		
-				//Destination Panel Finish Up
-		destinationPanel.add(destinationTitleLabel);
-		destinationPanel.add(destinationChoosePanel);
-				//Destination Panel Finished
-		
-				//Seat Amount Panel
+		// Destination Choose Panel Finsihed
+
+		// Destination Panel Finish Up
+		destinationPanel.add( destinationTitleLabel );
+		destinationPanel.add( destinationChoosePanel );
+		// Destination Panel Finished
+
+		// Seat Amount Panel
 		JPanel seatAmountPanel = new JPanel();
-		seatAmountPanel.setLayout(new BoxLayout(seatAmountPanel, BoxLayout.X_AXIS));
-		
-					//Seat Amount Title Label
+		seatAmountPanel.setLayout( new BoxLayout( seatAmountPanel, BoxLayout.X_AXIS ) );
+
+		// Seat Amount Title Label
 		JLabel seatAmountTitleLabel = new JLabel( "Seat Amount:" );
-		seatAmountTitleLabel.setPreferredSize(new Dimension(frameSize.width/4, (frameSize.height/2)/4));
-		seatAmountTitleLabel.setHorizontalAlignment(seatAmountTitleLabel.CENTER);
-		
-					//Seat Amount Label
+		seatAmountTitleLabel.setPreferredSize( new Dimension( frameSize.width / 4, ( frameSize.height / 2 ) / 4 ) );
+		seatAmountTitleLabel.setHorizontalAlignment( seatAmountTitleLabel.CENTER );
+
+		// Seat Amount Label
 		seatAmountLabel = new JFormattedTextField();
 
 		try
@@ -456,25 +453,25 @@ public class FlightManagerMenu
 		}
 		catch( ParseException e )
 		{
-			System.out.println( "Parsing error" );
+
 		}
 
 		seatAmountLabel.setText( "" + startSeatAmount );
 
 		seatAmountLabel.addPropertyChangeListener( textListener );
-		
-				//Seat Amount Panel Finish Up
-		seatAmountPanel.add(seatAmountTitleLabel);
-		seatAmountPanel.add(seatAmountLabel);
-				//Seat Amount Panel Finished
-			
-			//Top Left Panel Finish Up
-		topLeftPanel.add(startDatePanel);
-		topLeftPanel.add(endDatePanel);
-		topLeftPanel.add(destinationPanel);
-		topLeftPanel.add(seatAmountPanel);
-			//Top Left Panel Finished
-		
+
+		// Seat Amount Panel Finish Up
+		seatAmountPanel.add( seatAmountTitleLabel );
+		seatAmountPanel.add( seatAmountLabel );
+		// Seat Amount Panel Finished
+
+		// Top Left Panel Finish Up
+		topLeftPanel.add( startDatePanel );
+		topLeftPanel.add( endDatePanel );
+		topLeftPanel.add( destinationPanel );
+		topLeftPanel.add( seatAmountPanel );
+		// Top Left Panel Finished
+
 		// Top Right
 		JPanel topRightPanel = new JPanel();
 		// topRightPanel.setPreferredSize(new Dimension(frameSize.width/2, frameSize.height/3));

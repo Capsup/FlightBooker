@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -50,10 +49,10 @@ public class ReservationInfoMenu
 		this.frame = frame;
 		this.isNew = isNew;
 		currentReservation = reservation;
-		
-		if(isNew)
-			currentReservation.setID(Database.getInstance().GetID(Reservation.class));
-		
+
+		if( isNew )
+			currentReservation.setID( Database.getInstance().GetID( Reservation.class ) );
+
 		setupFrame();
 
 		makeContent();
@@ -160,7 +159,7 @@ public class ReservationInfoMenu
 		frame.setLocationRelativeTo( null );
 		frame.setVisible( true );
 	}
-	
+
 	void makeContent()
 	{
 		Container contentPane = frame.getContentPane();
@@ -175,22 +174,22 @@ public class ReservationInfoMenu
 		// Info Panel
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout( new BoxLayout( infoPanel, BoxLayout.Y_AXIS ) );
-		
+
 		// Reservation ID Panel
 		JPanel idPanel = new JPanel();
-		idPanel.setLayout(new BoxLayout( idPanel, BoxLayout.X_AXIS));
-		
+		idPanel.setLayout( new BoxLayout( idPanel, BoxLayout.X_AXIS ) );
+
 		// Reservation ID Title Label
-		JLabel idTitleLabel = new JLabel("Reservation ID: ");
-		
+		JLabel idTitleLabel = new JLabel( "Reservation ID: " );
+
 		// Reservation ID Label
-		JLabel idLabel = new JLabel(""+currentReservation.getID());
-		
+		JLabel idLabel = new JLabel( "" + currentReservation.getID() );
+
 		// ID panel finish up
-		idPanel.add(idTitleLabel);
-		idPanel.add(idLabel);
+		idPanel.add( idTitleLabel );
+		idPanel.add( idLabel );
 		// ID Panel finished
-		
+
 		// Customer Panel
 		JPanel customerPanel = new JPanel();
 		customerPanel.setLayout( new BoxLayout( customerPanel, BoxLayout.X_AXIS ) );
@@ -267,8 +266,7 @@ public class ReservationInfoMenu
 		passengerTable.setEnabled( false );
 		passengerTable.setBackground( Color.WHITE );
 		passengerTable.getTableHeader().setReorderingAllowed( false );
-		
-		
+
 		JScrollPane scrollPane = new JScrollPane( passengerTable );
 		scrollPane.setPreferredSize( new Dimension( 450, 200 ) );
 
@@ -278,7 +276,7 @@ public class ReservationInfoMenu
 		// Passenger Panel Finished
 
 		// Info Panel finishup
-		infoPanel.add(idPanel);
+		infoPanel.add( idPanel );
 		infoPanel.add( customerPanel );
 		infoPanel.add( flightPanel );
 		infoPanel.add( timePanel );
@@ -415,16 +413,15 @@ public class ReservationInfoMenu
 
 		frame.dispose();
 	}
-	
+
 	/**
 	 * Show a dialog prompting the user to confirm that he now wants to delete the reservation.
 	 */
 	private void confirmDeleteDialog()
 	{
-		int n = JOptionPane.showConfirmDialog( frame.getContentPane(),
-			        "Are you sure you want to delete this reservation?", "Delete Reservation?", JOptionPane.YES_NO_OPTION,
-			        JOptionPane.WARNING_MESSAGE );
-		
+		int n = JOptionPane.showConfirmDialog( frame.getContentPane(), "Are you sure you want to delete this reservation?", "Delete Reservation?",
+		        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
+
 		// If "Yes" in the dialogue is chosen
 		if( n == 0 )
 			deleteReservation();
