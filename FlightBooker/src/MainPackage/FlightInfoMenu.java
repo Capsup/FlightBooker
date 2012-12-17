@@ -41,26 +41,11 @@ public class FlightInfoMenu extends JFrame
 	{
 		currentFlight = flight;
 		
-		//Test
-		//currentFlight.setReservations(new Reservation[0]);
-		//currentReservation = currentFlight.getReservations()[0];
-		
 		setupFrame();
 		
 		
 		makeContent();
 	}
-	
-	/*
-	private class FrameListener implements WindowAdapter
-	{
-		public void windowActivated(WindowEvent e)
-		{
-			System.out.println("WAT");
-			
-			updateMenu();
-		}	
-	}*/
 	
 	private class TableListener implements MouseListener
 	{
@@ -73,9 +58,6 @@ public class FlightInfoMenu extends JFrame
 				planePanel.setCurrentReservation(currentReservation);
 				
 				planePanel.updateSeats();
-				
-				//revalidate();
-				//repaint();
 			}
 		}
 		
@@ -203,10 +185,10 @@ public class FlightInfoMenu extends JFrame
 		rightColumnPanel.setLayout(new BoxLayout(rightColumnPanel, BoxLayout.Y_AXIS));
 		
 						//Departure Label
-		JLabel departureLabel = new JLabel("Departure: "+currentFlight.getPlane().getPlaneTypeString());
+		JLabel departureLabel = new JLabel("Departure: "+currentFlight.getOrigin());
 		
 						//Destination Label
-		JLabel destinationLabel = new JLabel("Destination: "+currentFlight.getSeatAmount());
+		JLabel destinationLabel = new JLabel("Destination: "+currentFlight.getDestination());
 
 						//Departure Time Label
 		String minute = "";
