@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Airport implements Serializable, Uploadable
 {
 
-	// A simple enum of the airports that we have in the system currently.
+	// A simple enum of the Airports that we currently have in the system.
 	public enum AirportType
 	{
 		COPENHAGEN, STOCKHOLM, MALMÖ, AALBORG, BERLIN, NEWYORK, TOKYO, RØNNE;
