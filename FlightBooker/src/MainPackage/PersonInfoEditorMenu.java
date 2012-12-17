@@ -44,11 +44,33 @@ public class PersonInfoEditorMenu extends JFrame
 					showErrorDialog();
 					return;
 				}
+				
+				// Create a new person from all the data in fields. The name field is split up into first name and surname.
+				Person updatedPerson;
+				if( nameTextField.getText().split( " " ).length > 1 )
+				{
+					String[] sNameSplit = nameTextField.getText().split( " " );
+					
+					String sSurName = "";
+					for( int i = 1; i < sNameSplit.length; i++ )
+                    {
+	                    sSurName += ( i == 1 ? "" : " " ) + sNameSplit[i];
+                    }
+					
+					updatedPerson = new Person( sNameSplit[0], sSurName,
+					        genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(),
+					        adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
+					System.out.println(sSurName);
+				}
+				else
+					updatedPerson = new Person( nameTextField.getText(), "",
+					        genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(),
+					        adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
 
 				// Create a new person from all the data in fields. The name field is split up into first name and surname.
-				Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1],
+				/*Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1],
 				        genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(),
-				        adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
+				        adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );*/
 				updatedPerson.setReservations( person.getReservations() );
 
 				if( fieldUpgraded != null )
