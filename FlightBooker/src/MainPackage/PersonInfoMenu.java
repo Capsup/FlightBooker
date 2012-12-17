@@ -144,7 +144,7 @@ public class PersonInfoMenu
 
 	private void setupFrame()
 	{
-		frame.setSize( 800, 700 );
+		frame.setSize( 600, 500 );
 		frame.setResizable( false );
 		frame.setLocationRelativeTo( null );
 		frame.setTitle( "Passenger Info Menu" );
@@ -225,7 +225,7 @@ public class PersonInfoMenu
 		passengerButtonPanel.add( editButton );
 
 		JPanel passengerInfoPanel = new JPanel( new BorderLayout() );
-		passengerInfoPanel.setPreferredSize( new Dimension( 11, 11 ) );
+		passengerInfoPanel.setMaximumSize( new Dimension( 350, 1000 ) );
 		passengerInfoPanel.add( infoLabelsPanel, BorderLayout.WEST );
 		passengerInfoPanel.add( infoFieldsPanel, BorderLayout.CENTER );
 		passengerInfoPanel.add( passengerButtonPanel, BorderLayout.SOUTH );
@@ -310,7 +310,17 @@ public class PersonInfoMenu
 
 		// Gets all of a Persons reservations and put them in a list
 		listItems = person.getReservations();
-
+		
+		//Updates the owner of each individual reservation in the database.
+		for(int i=0; i<listItems.length; i++)
+		{
+			listItems[i] = Database.getInstance().Get(person.getID(), Person.class).getReservations()[i];
+			
+			listItems[i].setOwner(person);
+			
+			Database.getInstance().Replace(listItems[i].getID(), listItems[i]);
+		}
+		
 		// If the Person do have reservations
 		if( listItems != null )
 		{

@@ -430,7 +430,6 @@ public class FindMenu extends JFrame implements WindowFocusListener
 		table.getTableHeader().setReorderingAllowed( false );
 		table.setFillsViewportHeight( true );
 		table.setAutoCreateRowSorter( true );
-
 	}
 
 	/**
