@@ -48,6 +48,7 @@ public class JTextFieldUpgraded extends JTextField
 
 	/**
 	 * Validates the data inside the TextField and makes sure it corresponds to the Person object assigned to the field. If not, returns null.
+	 * 
 	 * @return the Person object assigned to this field.
 	 */
 	public Person getPerson()
@@ -55,18 +56,18 @@ public class JTextFieldUpgraded extends JTextField
 		String[] sInfo = this.getText().split( " " );
 
 		String sSurName = "";
-		//This allows the Persons to have more than just name + surname.
+		// This allows the Persons to have more than just name + surname.
 		for( int i = 1; i < sInfo.length; i++ )
-        {
+		{
 			if( sInfo[i].equalsIgnoreCase( "-" ) )
 				break;
-			
-	        sSurName += ( i == 1 ? "" : " " ) + sInfo[i];
-        }
+
+			sSurName += ( i == 1 ? "" : " " ) + sInfo[i];
+		}
 
 		// If text in this JTextField does not equal to the actual values in our Person object, we return a null Person object.
 		if( myPerson == null || !( myPerson.getFirstName().equalsIgnoreCase( sInfo[0] ) ) || !( myPerson.getSurName().equalsIgnoreCase( sSurName ) )
-		        || !( myPerson.getPhone().equalsIgnoreCase( sInfo[sInfo.length-1] ) ) )
+		        || !( myPerson.getPhone().equalsIgnoreCase( sInfo[sInfo.length - 1] ) ) )
 			return null;
 
 		return myPerson;

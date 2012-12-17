@@ -7,8 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -164,7 +162,6 @@ public class FindMenu extends JFrame implements WindowFocusListener
 
 			if( command == "Close" )
 			{
-				System.out.println( "Close" );
 				dispose();
 			}
 		}

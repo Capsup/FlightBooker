@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.util.Calendar;
 
 import javax.swing.BoxLayout;
@@ -20,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  * 
@@ -42,7 +40,7 @@ public class FlightInfoMenu extends JFrame
 
 	JTable reservationTable;
 	DefaultTableModel reservationTableModel;
-	
+
 	/**
 	 * Constructor for the class.
 	 * 
@@ -119,7 +117,6 @@ public class FlightInfoMenu extends JFrame
 		setResizable( false );
 		setTitle( "Flight Info Menu" );
 		setLocationRelativeTo( null );
-
 	}
 
 	void makeContent()
@@ -156,7 +153,7 @@ public class FlightInfoMenu extends JFrame
 		JButton inspectReservationButton = new JButton( "Inspect Reservation" );
 		inspectReservationButton.setAlignmentX( CENTER_ALIGNMENT );
 		inspectReservationButton.setActionCommand( "Inspect" );
-		
+
 		ButtonListener buttonListener = new ButtonListener();
 
 		inspectReservationButton.addActionListener( buttonListener );
@@ -312,19 +309,19 @@ public class FlightInfoMenu extends JFrame
 	void updateMenu()
 	{
 		currentFlight = Database.getInstance().Get( currentFlight.getID(), Flight.class );
-		
+
 		if( reservationTable.getSelectedRow() >= 0 && reservationTable.getSelectedRow() < currentFlight.getReservations().length )
 		{
 			currentReservation = currentFlight.getReservations()[reservationTable.getSelectedRow()];
 		}
-		
+
 		planePanel.updateSeats();
-		
-		reservationTableModel.setRowCount(0);
-		
+
+		reservationTableModel.setRowCount( 0 );
+
 		String[] columns = { "Name", "Seats", "Date of Reservation" };
 
-		reservationTableModel.setDataVector(makeReservationData(), columns);
+		reservationTableModel.setDataVector( makeReservationData(), columns );
 	}
 
 }

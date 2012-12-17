@@ -76,8 +76,6 @@ public class PersonInfoMenu
 		this.frame = frame;
 		setupFrame();
 		makeContent();
-
-		// System.out.println("FUCKING SHIT"+person.getReservations().length);
 	}
 
 	/**
@@ -93,15 +91,11 @@ public class PersonInfoMenu
 
 			if( command == "Edit information" )
 			{
-				System.out.println( "Edit information" );
 				new PersonInfoEditorMenu( person );
 			}
 
 			if( command == "Inspect reservation" )
 			{
-				System.out.println( "Inspect reservation" );
-				System.out.println( reservationsTable.getSelectionModel().getAnchorSelectionIndex() );
-
 				int chosenObjectIncorrectRow = reservationsTable.getSelectionModel().getAnchorSelectionIndex();
 				if( chosenObjectIncorrectRow >= 0 && listItems != null )
 				{
@@ -110,7 +104,6 @@ public class PersonInfoMenu
 						{
 							int chosenObjectActualRow = reservationsTable.convertRowIndexToModel( chosenObjectIncorrectRow );
 							int chosenObjectID = ( int ) reservationsTable.getValueAt( chosenObjectActualRow, 0 );
-							System.out.println( chosenObjectID );
 
 							Reservation reservationToFind = Database.getInstance().Get( chosenObjectID, Reservation.class );
 
@@ -125,8 +118,6 @@ public class PersonInfoMenu
 								}
 							}
 
-							// Reservation reservation = Database.getInstance().Get(reservationToFind.getFlight().getID(), Flight.class
-							// ).getReservations()[reservationToFind.getCurrentFlightReservationIndex()];
 							Reservation reservation = reservationToFind;
 							new ReservationInfoMenu( new JFrame(), reservation, false );
 						}
@@ -135,7 +126,6 @@ public class PersonInfoMenu
 			}
 			if( command == "Close" )
 			{
-				System.out.println( "Close" );
 				frame.dispose();
 			}
 
@@ -279,7 +269,6 @@ public class PersonInfoMenu
 	 */
 	private void updatePersonTextFields()
 	{
-		System.out.println( "updatePersonTextFields" );
 		nameTextField.setText( person.getFirstName() + " " + person.getSurName() );
 		genderTextField.setText( person.getGender() );
 		birthTextField.setText( person.getDateOfBirth() );
@@ -310,17 +299,17 @@ public class PersonInfoMenu
 
 		// Gets all of a Persons reservations and put them in a list
 		listItems = person.getReservations();
-		
-		//Updates the owner of each individual reservation in the database.
-		for(int i=0; i<listItems.length; i++)
+
+		// Updates the owner of each individual reservation in the database.
+		for( int i = 0; i < listItems.length; i++ )
 		{
-			listItems[i] = Database.getInstance().Get(person.getID(), Person.class).getReservations()[i];
-			
-			listItems[i].setOwner(person);
-			
-			Database.getInstance().Replace(listItems[i].getID(), listItems[i]);
+			listItems[i] = Database.getInstance().Get( person.getID(), Person.class ).getReservations()[i];
+
+			listItems[i].setOwner( person );
+
+			Database.getInstance().Replace( listItems[i].getID(), listItems[i] );
 		}
-		
+
 		// If the Person do have reservations
 		if( listItems != null )
 		{
