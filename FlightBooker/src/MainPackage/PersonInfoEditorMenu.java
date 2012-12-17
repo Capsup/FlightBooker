@@ -14,7 +14,7 @@ import javax.swing.border.TitledBorder;
  * This editor enables the user to edit a persons details.
  * 
  * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
- * @version 1.0  
+ * @version 1.0
  */
 public class PersonInfoEditorMenu extends JFrame
 {
@@ -44,14 +44,13 @@ public class PersonInfoEditorMenu extends JFrame
 					showErrorDialog();
 					return;
 				}
-					
+
 				// Create a new person from all the data in fields. The name field is split up into first name and surname.
 				Person updatedPerson = new Person( nameTextField.getText().split( " " )[0], nameTextField.getText().split( " " )[1],
 				        genderTextField.getText(), birthTextField.getText(), countryTextField.getText(), nationaTextField.getText(),
 				        adressTextField.getText(), phoneTextField.getText(), passporTextField.getText(), person.getID() );
 				updatedPerson.setReservations( person.getReservations() );
-					
-					
+
 				if( fieldUpgraded != null )
 					fieldUpgraded.setPerson( updatedPerson );
 

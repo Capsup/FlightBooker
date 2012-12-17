@@ -6,19 +6,22 @@ package MainPackage;
  * 
  * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
  * @version 1.0
- *
+ * 
  */
 public interface Uploadable
 {
 	/**
 	 * Accessor function for the ID field of this object.
+	 * 
 	 * @return the ID of the object.
 	 */
 	public int getID();
-	
+
 	/**
 	 * Mutator function for the ID field of this object.
-	 * @param iID - an Integer that the ID of this object is set to.
+	 * 
+	 * @param iID
+	 *            - an Integer that the ID of this object is set to.
 	 */
 	public void setID( int iID );
 }

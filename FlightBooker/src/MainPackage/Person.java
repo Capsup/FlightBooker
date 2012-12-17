@@ -6,7 +6,7 @@ import java.io.Serializable;
  * This class represents our datatype for the Persons in our system.
  * 
  * @author Martin Juul Petersen (mjup@itu.dk), Jesper Nysteen (jnys@itu.dk) and Jonas Kastberg (jkas@itu.dk)
- *
+ * 
  */
 public class Person implements Serializable, Uploadable
 {
@@ -39,35 +39,47 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Creates a new Person
-	 * @param firstName the first name of the Person
-	 * @param surName the surname of the Person
-	 * @param gender the gender of the Person
-	 * @param dateOfBirth the date of birth of the Person
-	 * @param country the country of the Person
-	 * @param nationality the nationality of the Person
-	 * @param adress the adress of the Person
-	 * @param phone the phone number of the Person
-	 * @param passportNumber the passport number of the Person
-	 * @param customerID the customerID of the Person
+	 * 
+	 * @param firstName
+	 *            the first name of the Person
+	 * @param surName
+	 *            the surname of the Person
+	 * @param gender
+	 *            the gender of the Person
+	 * @param dateOfBirth
+	 *            the date of birth of the Person
+	 * @param country
+	 *            the country of the Person
+	 * @param nationality
+	 *            the nationality of the Person
+	 * @param adress
+	 *            the adress of the Person
+	 * @param phone
+	 *            the phone number of the Person
+	 * @param passportNumber
+	 *            the passport number of the Person
+	 * @param customerID
+	 *            the customerID of the Person
 	 */
-	public Person(String firstName, String surName, String gender, String dateOfBirth, String country,
-			String nationality, String adress, String phone, String passportNumber, int customerID)
+	public Person( String firstName, String surName, String gender, String dateOfBirth, String country, String nationality, String adress,
+	        String phone, String passportNumber, int customerID )
 	{
 		this.firstName = firstName;
 		this.surName = surName;
-		this.gender = gender;		
+		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.country = country;
 		this.nationality = nationality;
 		this.adress = adress;
 		this.phone = phone;
 		this.passportNumber = passportNumber;
-		this.customerID = customerID;	
+		this.customerID = customerID;
 		this.id = customerID;
 	}
 
 	/**
 	 * Gets the first name of the Person
+	 * 
 	 * @return the first name of the Person
 	 */
 	public String getFirstName()
@@ -77,6 +89,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the surname of the Person
+	 * 
 	 * @return the surname of the Person
 	 */
 	public String getSurName()
@@ -86,6 +99,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the gender of the Person
+	 * 
 	 * @return the gender of the Person
 	 */
 	public String getGender()
@@ -95,6 +109,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the date of birth of the Person
+	 * 
 	 * @return the date of birth of the Person
 	 */
 	public String getDateOfBirth()
@@ -104,6 +119,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the country of the Person
+	 * 
 	 * @return the country of the Person
 	 */
 	public String getCountry()
@@ -113,6 +129,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the nationality of the Person
+	 * 
 	 * @return the nationality of the Person
 	 */
 	public String getNationality()
@@ -122,6 +139,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the address of the Person
+	 * 
 	 * @return the address of the Person
 	 */
 	public String getAdress()
@@ -131,6 +149,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the phone number of the Person
+	 * 
 	 * @return the phone number of the Person
 	 */
 	public String getPhone()
@@ -140,6 +159,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the passport number of the Person
+	 * 
 	 * @return the passport number of the Person
 	 */
 	public String getPassportNumber()
@@ -149,6 +169,7 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Gets the customerID of the Person
+	 * 
 	 * @return the customerID of the Person
 	 */
 	public int getCustomerID()
@@ -161,12 +182,13 @@ public class Person implements Serializable, Uploadable
 	 */
 	public void updateReservations()
 	{
-		reservations = Database.getInstance().Get(id, Person.class).getReservations();
+		reservations = Database.getInstance().Get( id, Person.class ).getReservations();
 
 	}
 
 	/**
 	 * Gets a Person's reservations
+	 * 
 	 * @return a Reservation[] of all the Person's reservations
 	 */
 	public Reservation[] getReservations()
@@ -174,10 +196,11 @@ public class Person implements Serializable, Uploadable
 		return reservations;
 	}
 
-	
 	/**
 	 * Gets a Person's reservations
-	 * @param reservations a Reservation[] of all the Person's reservations
+	 * 
+	 * @param reservations
+	 *            a Reservation[] of all the Person's reservations
 	 */
 	public void setReservations( Reservation[] reservations )
 	{
@@ -186,30 +209,32 @@ public class Person implements Serializable, Uploadable
 
 	/**
 	 * Removes one of the Person's Reservations, specified by the index
-	 * @param index the index of the Reservation to be removed
+	 * 
+	 * @param index
+	 *            the index of the Reservation to be removed
 	 */
-	public void removeReservationAt(int index)
+	public void removeReservationAt( int index )
 	{
 		updateReservations();
 
-		//Gets all of the Person's current reservations
+		// Gets all of the Person's current reservations
 		Reservation[] modifiedReservations = getReservations();
-		
-		//Moves all of the Person's Reservations in the array to overwrite the Reservation to be removed and compensating for the lack of the removed Reservation
-		for(int i=index; i<modifiedReservations.length-1; i++)
+
+		// Moves all of the Person's Reservations in the array to overwrite the Reservation to be removed and compensating for the lack of the removed
+		// Reservation
+		for( int i = index; i < modifiedReservations.length - 1; i++ )
 		{
-			modifiedReservations[i] = modifiedReservations[i+1];
+			modifiedReservations[i] = modifiedReservations[i + 1];
 		}
 
-		
-		//Makes a new array with the updated Reservations, and each of the Reservations Indices.
-		Reservation[] newReservations = new Reservation[getReservations().length-1];
-		for(int j=0; j<newReservations.length; j++)
+		// Makes a new array with the updated Reservations, and each of the Reservations Indices.
+		Reservation[] newReservations = new Reservation[getReservations().length - 1];
+		for( int j = 0; j < newReservations.length; j++ )
 		{
 			newReservations[j] = modifiedReservations[j];
-			newReservations[j].setCurrentFlightReservationIndex(newReservations[j].getCurrentFlightReservationIndex()-1);
+			newReservations[j].setCurrentFlightReservationIndex( newReservations[j].getCurrentFlightReservationIndex() - 1 );
 		}
 
-		setReservations(newReservations);
+		setReservations( newReservations );
 	}
 }

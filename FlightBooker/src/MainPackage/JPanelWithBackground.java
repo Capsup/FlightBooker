@@ -17,19 +17,19 @@ import javax.swing.JPanel;
  */
 public class JPanelWithBackground extends JPanel
 {
-	//We use these fields to save the background image as 
-	//well as the rect that we pass to the constructor
+	// We use these fields to save the background image as
+	// well as the rect that we pass to the constructor
 	private BufferedImage backgroundImage;
 	private Rectangle rect;
 
 	public JPanelWithBackground( String fileName, Rectangle rect ) throws IOException
 	{
-		//We initialize the class by passing it a string and a rectangle.
-		
-		//We use the passed string to search for an image in our Images folder.
+		// We initialize the class by passing it a string and a rectangle.
+
+		// We use the passed string to search for an image in our Images folder.
 		backgroundImage = ImageIO.read( getClass().getResource( fileName ) );
-		
-		//We set the rect field to the passed rect.
+
+		// We set the rect field to the passed rect.
 		this.rect = rect;
 	}
 

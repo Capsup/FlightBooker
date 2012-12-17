@@ -4,13 +4,15 @@ public class Main
 {
 	/**
 	 * The sole purpose of this class is to isolate the main method in a single class
+	 * 
 	 * @author Jesper
-	 * @param args 
+	 * @param args
 	 */
 
 	/**
 	 * Creates a new MainMenu
-	 * @param args 
+	 * 
+	 * @param args
 	 */
 	public static void main( String[] args )
 	{

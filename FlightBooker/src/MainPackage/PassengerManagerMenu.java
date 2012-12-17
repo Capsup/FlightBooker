@@ -67,7 +67,7 @@ public class PassengerManagerMenu
 				String sText = textFieldUpgraded.getText();
 				if( sText.equals( "" ) )
 					bSuccess = false;
-				else 
+				else
 				{
 					if( textFieldUpgraded.getPerson() == null )
 						bSuccess = false;
@@ -89,7 +89,7 @@ public class PassengerManagerMenu
 
 				new ReservationInfoMenu( frame, currentReservation, isNew );
 			}
-			else 
+			else
 			{
 				showErrorDialog();
 			}
@@ -388,7 +388,7 @@ public class PassengerManagerMenu
 	{
 		frame.setVisible( true );
 	}
-	
+
 	private void showErrorDialog()
 	{
 		JOptionPane.showMessageDialog( frame, "Please make sure all fields contains a valid person", "Error", JOptionPane.ERROR_MESSAGE );
