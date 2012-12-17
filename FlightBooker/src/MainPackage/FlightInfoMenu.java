@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.Calendar;
 
 import javax.swing.BoxLayout;
@@ -40,7 +41,8 @@ public class FlightInfoMenu extends JFrame
 	FlightPanel planePanel;
 
 	JTable reservationTable;
-
+	DefaultTableModel reservationTableModel;
+	
 	/**
 	 * Constructor for the class.
 	 * 
@@ -141,7 +143,7 @@ public class FlightInfoMenu extends JFrame
 		Object[][] reservationData = makeReservationData();
 
 		// Creates a DefaultTableModel for this JTable. This allows us to add and remove data at runtime.
-		TableModel reservationTableModel = new DefaultTableModel( reservationData, columns );
+		reservationTableModel = new DefaultTableModel( reservationData, columns );
 		reservationTable = new JTable( reservationTableModel );
 		reservationLabel.setPreferredSize( new Dimension( 400, 200 ) );
 		reservationLabel.setBackground( Color.WHITE );
@@ -309,14 +311,25 @@ public class FlightInfoMenu extends JFrame
 	 */
 	void updateMenu()
 	{
-		//
 		currentFlight = Database.getInstance().Get( currentFlight.getID(), Flight.class );
-
+		
 		if( reservationTable.getSelectedRow() >= 0 && reservationTable.getSelectedRow() < currentFlight.getReservations().length )
 		{
 			currentReservation = currentFlight.getReservations()[reservationTable.getSelectedRow()];
 		}
+		else {
+			currentReservation = null;
+		}
+		
+		planePanel.setCurrentReservation(currentReservation);
 
 		planePanel.updateSeats();
+		
+		reservationTableModel.setRowCount(0);
+		
+		String[] columns = { "Name", "Seats", "Date of Reservation" };
+
+		reservationTableModel.setDataVector(makeReservationData(), columns);
 	}
+
 }

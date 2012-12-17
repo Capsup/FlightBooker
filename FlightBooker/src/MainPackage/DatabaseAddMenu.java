@@ -36,7 +36,7 @@ public class DatabaseAddMenu extends JFrame
 	String[] surNames = new String[] { "Hansen", "Kastberg", "Leonhardt", "Martinsen", "Jespersen", "Jonassen", "Hansi", "Lukesen", "Darthsen",
 	        "Mathiassen", "Solo", "Vader", "Skywalker" };
 	// ^ Speaking of butts... Here's one.
-	String[] gender = new String[] { "Male", "Female", "Unknown" };
+	String[] gender = new String[] { "Male", "Female"};
 	String[] countries = new String[] { "Denmark", "Somalia", "Germany", "USA", "Japan", "Uganda", "Uranus", "Alderaan" };
 	String[] nationalities = new String[] { "Denmark", "Somalia", "Germany", "USA", "Japan", "Uganda", "Uranus", "Alderaan" };
 	String[] adress = new String[] { "Rådhuspladsen nr. 1, 9000 København", "Nederenvej 1337, 2650 Hvidovre", "Platanvej 42, 1650 Vesterbronx",
@@ -86,7 +86,7 @@ public class DatabaseAddMenu extends JFrame
 				case "Add Flight":
 					// Defining Random Calendar
 					Calendar calendarToUse = Calendar.getInstance();
-					calendarToUse.set( 2012, random.nextInt( 12 ) + 1, random.nextInt( 28 ) + 1 );
+					calendarToUse.set( 2013, random.nextInt( 12 ) + 1, random.nextInt( 28 ) + 1 );
 
 					// Defining a list of Airports from which to choose a random
 					ArrayList<AirportType> airportTypeArray = new ArrayList( Arrays.asList( Airport.getAirportTypes() ) );
@@ -267,13 +267,13 @@ public class DatabaseAddMenu extends JFrame
 		addPersonButton.setAlignmentX( CENTER_ALIGNMENT );
 
 		// Add Flight Button
-		JButton addFlightButton = new JButton( "Add Flight With Passengers" );
+		JButton addFlightButton = new JButton( "Add Flight With Reservations" );
 		addFlightButton.setActionCommand( "Add Flight" );
 
 		addFlightButton.setAlignmentX( CENTER_ALIGNMENT );
 
 		// Add Flight Without Button
-		JButton addFlightWithoutButton = new JButton( "Add Flight Without Passengers" );
+		JButton addFlightWithoutButton = new JButton( "Add Flight Without Reservations" );
 		addFlightWithoutButton.setActionCommand( "Add Flight" );
 
 		addFlightWithoutButton.setAlignmentX( CENTER_ALIGNMENT );

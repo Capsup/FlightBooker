@@ -435,7 +435,6 @@ public class FindMenu extends JFrame
 		table.getTableHeader().setReorderingAllowed( false );
 		table.setFillsViewportHeight( true );
 		table.setAutoCreateRowSorter( true );
-
 	}
 
 	/**
